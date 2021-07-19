@@ -1,0 +1,15 @@
+.element {
+  width: max-content;
+  height: max-content;
+}
+
+.move-state {
+  cursor: move;
+
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.element.move-state {
+  outline: 3px dotted springgreen;
+}

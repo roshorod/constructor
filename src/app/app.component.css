@@ -1,0 +1,50 @@
+
+#app-container {
+  display: grid;
+  grid-template-columns: 12%;
+  height: 100%;
+  padding: 10px;
+}
+
+#app-toolbar {
+  grid-row: 1;
+  display: grid;
+  flex-direction: column;
+}
+
+#app-hierarchy {
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 4px 0 black;
+}
+
+#app-components {
+  border-radius: 10px;
+  box-shadow: 0 0 4px 0 black;
+  overflow-y: scroll;
+}
+
+#app-components #tags {
+  margin: 5px;
+}
+
+#app-renderer {
+  border-radius: 10px;
+  box-shadow: 0 0 4px 0 black;
+
+  margin: 0 0 0px 15px;
+  grid-column: 2;
+}
+
+h4 {
+  margin: 10px;
+}
+
+hr {
+  border: 1px solid #d3d3d3;
+  margin: 0 10px;
+}
+
+button {
+  margin: 0 5px;
+}
