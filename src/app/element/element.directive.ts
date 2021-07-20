@@ -83,4 +83,19 @@ export class ElementDirective implements OnDestroy{
     if (this.moveEvent)
       this.moveEvent.unsubscribe();
   }
+
+  @HostListener('mouseenter')
+  private onMouseEnter() {
+    this.element.classList.add('move-state');
+  }
+
+  @HostListener('mouseleave')
+  private onMouseLeave() {
+    this.element.classList.remove('move-state');
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  private onEscapeKeydown(event: KeyboardEvent) {
+    this.element.classList.remove('move-state');
+  }
 }

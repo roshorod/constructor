@@ -1,6 +1,7 @@
 .element {
   width: max-content;
   height: max-content;
+  position: absolute;
 }
 
 .move-state {
