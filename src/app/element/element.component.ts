@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HTMLTags } from '../models/HTMLTags';
+import { ElementDirective } from './element.directive';
 
 @Component({
   selector: 'app-element',
-  template: `<div [innerHTML]="content" class="element"></div>`,
+  template: `<div [innerHTML]="content" class="element" #ref=appElement></div>`,
   styleUrls: ['./element.component.css'],
 })
 export class ElementComponent implements OnInit {
@@ -12,12 +13,21 @@ export class ElementComponent implements OnInit {
   tag: HTMLTags | undefined;
   style: string | undefined;
 
+  @ViewChild('ref')
+  directive: ElementDirective | undefined;
+
   constructor(
-    protected sanitized: DomSanitizer,
+    private sanitized: DomSanitizer,
   ) { }
 
-  signHTML(content: string) : SafeHtml {
+  private signHTML(content: string) : SafeHtml {
     return this.sanitized.bypassSecurityTrustHtml(content);
+  }
+
+  select() {
+    const element = this.directive as ElementDirective;
+
+    element.showElement();
   }
 
   ngOnInit() {

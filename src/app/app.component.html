@@ -3,13 +3,20 @@
     <div id="app-hierarchy">
       <h4>Hierarchy</h4>
       <hr>
+      <div id="hierarchy-tags" *ngFor="let element of elements">
+        <button (click)="onComponentSelect(element)">{{element.element.instance.tag}}</button>
+      </div>
     </div>
     <div id="app-components">
       <h4> Components </h4>
       <hr>
-      <div id="tags" *ngFor="let tag of htmlTags | iterateEnum">
+      <div id="components-tags" *ngFor="let tag of htmlTags | iterateEnum">
         <button (click)="onComponentCreate(tag)">{{tag}}</button>
       </div>
+    </div>
+    <div id="app-properties">
+      <h4> Properties </h4>
+      <hr>
     </div>
   </div>
   <div id="app-renderer">

@@ -15,7 +15,7 @@ export class Item {
 }
 
 export class Container {
-  private root: Item | undefined;
+  public root: Item | undefined;
 
   private createItem (element: ComponentRef<ElementComponent>) : Item {
     const item = new Item(element, null, null);
@@ -39,8 +39,19 @@ export class Container {
     }
   }
 
-  getItems() : Item | undefined {
-    return this.root instanceof Item ? this.root
-      : undefined;
+  getItems() : Item[] {
+    let items: Item[] = []
+
+    const traverse = (item: Item) => {
+      if (item instanceof Item)
+        items.push(item);
+
+      if(item.next != null)
+        traverse(item.next);
+    };
+
+    traverse(this.root as Item);
+
+    return items;
   }
 }

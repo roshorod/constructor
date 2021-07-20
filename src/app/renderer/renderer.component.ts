@@ -7,7 +7,7 @@ import { BuilderService } from '../services/builder.service';
 
 @Component({
   selector: 'app-renderer',
-  template: '<ng-template id="template" elements></ng-template>',
+  template: '<ng-template></ng-template>',
 })
 export class RendererComponent {
 

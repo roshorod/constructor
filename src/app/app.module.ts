@@ -13,7 +13,7 @@ import { ElementDirective } from './element/element.directive';
     ElementComponent,
     ElementDirective,
 
-    IterateEnumPipe
+    IterateEnumPipe,
   ],
   imports: [
     BrowserModule

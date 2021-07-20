@@ -1,14 +1,16 @@
 import { DOCUMENT } from "@angular/common";
 
-import { Directive, ElementRef, HostBinding, Inject,
+import { Directive, ElementRef, Inject,
          OnDestroy, OnInit } from "@angular/core";
 
 import { fromEvent, Subscription } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 @Directive({
-  // selector: '[appElement]'
-  selector: '.element'
+  // selector: '[appElement]',
+  selector: '.element',
+  // Help to acess directive in ElementComponent
+  exportAs: 'appElement'
 })
 export class ElementDirective implements OnInit, OnDestroy{
 
@@ -23,6 +25,13 @@ export class ElementDirective implements OnInit, OnDestroy{
     @Inject(DOCUMENT) document: Document) {
     this.element = this.elemRef.nativeElement as HTMLElement;
     this.renderer = document.getElementById("app-renderer") as HTMLElement;
+  }
+
+  showElement() {
+    this.element.classList.add('move-state');
+    setTimeout(() => {
+      this.element.classList.remove('move-state');
+    }, 1000);
   }
 
   ngOnInit() {
