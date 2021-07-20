@@ -1,30 +1,29 @@
 import { DOCUMENT } from "@angular/common";
 
-import { Directive, ElementRef, Inject,
-         OnDestroy, OnInit } from "@angular/core";
+import { Directive, ElementRef, HostListener, Inject,
+         OnDestroy } from "@angular/core";
 
 import { fromEvent, Subscription } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 @Directive({
-  // selector: '[appElement]',
   selector: '.element',
-  // Help to acess directive in ElementComponent
   exportAs: 'appElement'
 })
-export class ElementDirective implements OnInit, OnDestroy{
-
+export class ElementDirective implements OnDestroy{
   private element: HTMLElement;
-  private subscriptions: Subscription[] = [];
-
-  // Help make bounds for renderer.component
   private renderer: HTMLElement;
 
   constructor(
     private elemRef: ElementRef,
-    @Inject(DOCUMENT) document: Document) {
+    @Inject(DOCUMENT) document: Document
+  ) {
     this.element = this.elemRef.nativeElement as HTMLElement;
     this.renderer = document.getElementById("app-renderer") as HTMLElement;
+  }
+
+  ngOnDestroy() {
+    (this.moveEvent as Subscription).unsubscribe();
   }
 
   showElement() {
@@ -34,68 +33,54 @@ export class ElementDirective implements OnInit, OnDestroy{
     }, 1000);
   }
 
-  ngOnInit() {
-    this.handleMoving();
-  }
+  private moveEvent: Subscription | undefined;
 
-  ngOnDestroy() {
-    this.subscriptions.forEach((x) => x.unsubscribe());
-  }
+  private initX = 0;
+  private initY = 0;
+  private currentX = 0;
+  private currentY = 0;
 
-  private handleMoving() {
-    const moveStart$ = fromEvent<MouseEvent>(this.element, "mousedown");
-    const moveEnd$ = fromEvent<MouseEvent>(this.element, "mouseup");
-
-    const move$ = fromEvent<MouseEvent>(this.element, "mousemove").pipe(
-      takeUntil(moveEnd$)
-    );
-
-    let initX: number;
-    let initY: number;
-
-    let currentX = 0;
-    let currentY = 0;
+  @HostListener('mousedown', ['$event'])
+  private onMoveStart(event: MouseEvent) {
+    const move = fromEvent<MouseEvent>(this.element, 'mousemove').pipe(
+      takeUntil(fromEvent<MouseEvent>(this.element, 'mouseup')));
 
     const minBoundX = (this.renderer.offsetParent) as HTMLElement;
     // const minBoundY = (this.renderer.offsetParent) as HTMLElement;
 
-    const maxBoundX = minBoundX.offsetLeft + this.renderer.offsetWidth - this.element.offsetWidth;
-    // const maxBoundY = minBoundY.offsetTop + this.renderer.offsetHeight - this.element.offsetHeight;
+    const maxBoundX = minBoundX.offsetLeft + this.renderer.offsetWidth -
+      this.element.offsetWidth;
 
-    let movingRegister: Subscription;
+    // const maxBoundY = minBoundY.offsetTop + this.renderer.offsetHeight -
+      // this.element.offsetHeight;
 
-    const moveStartRegister = moveStart$.subscribe((event: MouseEvent) => {
-      initX = event.clientX - currentX;
-      initY = event.clientY - currentY;
+    this.initX = event.clientX - this.currentX;
+    this.initY = event.clientY - this.currentY;
 
-      this.element.classList.add('move-state');
+    this.element.classList.add('move-state');
 
-      movingRegister = move$.subscribe((event: MouseEvent) => {
-        event.preventDefault();
+    this.moveEvent = move.subscribe((event: MouseEvent) => {
+      event.preventDefault();
 
-        const x = event.clientX - initX;
-        const y = event.clientY - initY;
+      const x = event.clientX - this.initX;
+      const y = event.clientY - this.initY;
 
-        currentX = Math.max(minBoundX.offsetLeft, Math.min(x, maxBoundX));
-        currentY = y;
+      this.currentX = Math.max(minBoundX.offsetLeft, Math.min(x, maxBoundX));
+      // this.currentY = Math.max(minBoundY.offsetTop, Math.min(y, maxBoundY));
+      this.currentY = y;
 
-        this.element.style.transform = `translate3d(${currentX}px,${currentY}px, 0)`;
-      });
+      this.element.style.transform = `translate3d(${this.currentX}px,${this.currentY}px, 0)`;
     });
+  }
 
-    const moveStopRegister = moveEnd$.subscribe(() => {
-      initX = currentX;
-      initY = currentY;
+  @HostListener('mouseup', ['$event'])
+  private onMoveStop(event: MouseEvent) {
+    this.initX = this.currentX;
+    this.initY = this.currentY;
 
-      this.element.classList.remove('move-state');
+    this.element.classList.remove('move-state');
 
-      if (movingRegister)
-        movingRegister.unsubscribe();
-    });
-
-    this.subscriptions.push.apply(this.subscriptions, [
-      moveStartRegister,
-      moveStopRegister,
-    ]);
+    if (this.moveEvent)
+      this.moveEvent.unsubscribe();
   }
 }
