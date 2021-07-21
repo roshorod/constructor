@@ -3,6 +3,7 @@ import { HTMLTags } from './models/HTMLTags';
 import { Element } from './models/element';
 import { RendererComponent } from './renderer/renderer.component';
 import { ContainerService } from './services/container.service';
+import { WorkspaceService } from './services/workspace.service';
 
 @Pipe({
   name: 'iterateEnum'
@@ -24,7 +25,10 @@ export class AppComponent {
   htmlTags = HTMLTags;
   elements: Element[] = []
 
-  constructor(private container: ContainerService) { }
+  constructor(
+    private container: ContainerService,
+    private workspace: WorkspaceService,
+  ) { }
 
   onComponentCreate(tag: string) {
     this.renderer.createElement(tag as HTMLTags);
@@ -33,5 +37,9 @@ export class AppComponent {
 
   onComponentSelect(element: Element) {
     element.component.instance.select();
+  }
+
+  onWorkspaceLoad() {
+    this.workspace.loadProjectOnScreen(this.elements);
   }
 }

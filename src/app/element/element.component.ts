@@ -5,13 +5,19 @@ import { ElementDirective } from './element.directive';
 
 @Component({
   selector: 'app-element',
-  template: `<div [innerHTML]="content" class="element" #ref=appElement></div>`,
+  template: `<div [innerHTML]="template" class="element" #ref=appElement></div>`,
   styleUrls: ['./element.component.css'],
 })
 export class ElementComponent implements OnInit {
-  content: SafeHtml | undefined;
+  template: SafeHtml | undefined;
+
+  content: string | undefined = 'test';
   tag: HTMLTags | undefined;
   style: string | undefined;
+
+  getPosition = () => {
+    return (this.directive as ElementDirective).getTransformPosition();
+  };
 
   @ViewChild('ref')
   directive: ElementDirective | undefined;
@@ -31,8 +37,8 @@ export class ElementComponent implements OnInit {
   }
 
   ngOnInit() {
-    const template = `<${this.tag} style="${this.style}">test</${this.tag}>`;
+    const template = `<${this.tag} style="${this.style}">${this.content}</${this.tag}>`;
 
-    this.content = this.signHTML(template);
+    this.template = this.signHTML(template);
   }
 }

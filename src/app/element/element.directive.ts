@@ -26,6 +26,10 @@ export class ElementDirective implements OnDestroy{
     (this.moveEvent as Subscription).unsubscribe();
   }
 
+  getTransformPosition() {
+    return this.element.style.transform;
+  }
+
   showElement() {
     this.element.classList.add('move-state');
     setTimeout(() => {

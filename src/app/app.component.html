@@ -2,6 +2,9 @@
   <div id="app-toolbar">
     <div id="app-hierarchy">
       <h4>Hierarchy</h4>
+      <button (click)="onWorkspaceLoad()" style="margin: 5px;">
+        Load Project
+      </button>
       <hr>
       <div id="hierarchy-tags" *ngFor="let element of elements">
         <button (click)="onComponentSelect(element)">
