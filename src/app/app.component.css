@@ -1,19 +1,39 @@
 
 #app-container {
-  display: grid;
-  grid-template-columns: 12%;
   height: 100%;
-  padding: 10px;
+
+  display: grid;
+
+  gap: 10px;
+
+  grid-template-columns: 1fr 8fr 1fr;
+  grid-template-rows: 1fr 20fr 1fr;
 }
 
+#app-renderer {
+  grid-row: 2;
+  border-radius: 10px;
+  box-shadow: 0 0 4px 0 black;
+  margin: 0 0 0px 15px;
+  grid-column: 2;
+}
+
+
 #app-toolbar {
-  grid-row: 1;
+  grid-row: 2;
+
+  gap: 10px;
   display: grid;
-  grid-template-rows: repeat(3, 310px);
+  grid-template-rows: 1fr 30% 30%;
+
+  height: 100%;
 }
 
 #app-hierarchy {
-  height: 300px;
+  grid-row: 1;
+
+  height: 100%;
+
   border-radius: 10px;
   box-shadow: 0 0 4px 0 black;
   overflow-y: scroll;
@@ -24,7 +44,10 @@
 }
 
 #app-components {
-  height: 300px;
+  height: 100%;
+
+  grid-row: 2;
+
   border-radius: 10px;
   box-shadow: 0 0 4px 0 black;
   overflow-y: scroll;
@@ -35,18 +58,15 @@
 }
 
 #app-properties {
-  height: 335px;
+  height: 100%;
+
+  grid-row: 3;
   border-radius: 10px;
   box-shadow: 0 0 4px 0 black;
+  overflow-y: scroll;
 }
 
-#app-renderer {
-  border-radius: 10px;
-  box-shadow: 0 0 4px 0 black;
 
-  margin: 0 0 0px 15px;
-  grid-column: 2;
-}
 
 h4 {
   margin: 10px;

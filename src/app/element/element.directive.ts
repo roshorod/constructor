@@ -50,13 +50,13 @@ export class ElementDirective implements OnDestroy{
       takeUntil(fromEvent<MouseEvent>(this.element, 'mouseup')));
 
     const minBoundX = (this.renderer.offsetParent) as HTMLElement;
-    // const minBoundY = (this.renderer.offsetParent) as HTMLElement;
+    const minBoundY = (this.renderer.offsetParent) as HTMLElement;
 
     const maxBoundX = minBoundX.offsetLeft + this.renderer.offsetWidth -
       this.element.offsetWidth;
 
-    // const maxBoundY = minBoundY.offsetTop + this.renderer.offsetHeight -
-      // this.element.offsetHeight;
+    const maxBoundY = minBoundY.offsetTop + this.renderer.offsetHeight -
+      this.element.offsetHeight;
 
     this.initX = event.clientX - this.currentX;
     this.initY = event.clientY - this.currentY;
@@ -70,8 +70,7 @@ export class ElementDirective implements OnDestroy{
       const y = event.clientY - this.initY;
 
       this.currentX = Math.max(minBoundX.offsetLeft, Math.min(x, maxBoundX));
-      // this.currentY = Math.max(minBoundY.offsetTop, Math.min(y, maxBoundY));
-      this.currentY = y;
+      this.currentY = Math.max(minBoundY.offsetTop, Math.min(y, maxBoundY));
 
       this.element.style.transform = `translate3d(${this.currentX}px,${this.currentY}px, 0)`;
     });
