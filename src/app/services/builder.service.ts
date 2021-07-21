@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Container } from '../models/container';
+import { ElementContainer } from '../models/element-container';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class BuilderService {
-  container: Container;
+  elementContainer: ElementContainer;
 
   constructor() {
-    this.container = new Container();
+    this.elementContainer = new ElementContainer();
   }
 }

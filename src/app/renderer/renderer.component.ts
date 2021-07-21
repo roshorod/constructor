@@ -26,6 +26,6 @@ export class RendererComponent {
 
     component.instance.tag = tag;
 
-    this.builder.container.addItem(component);
+    this.builder.elementContainer.insert(component);
   }
 }
