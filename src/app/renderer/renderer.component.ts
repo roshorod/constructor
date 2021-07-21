@@ -3,7 +3,7 @@ import { Component, ComponentFactoryResolver,
 
 import { ElementComponent } from '../element/element.component';
 import { HTMLTags } from '../models/HTMLTags';
-import { BuilderService } from '../services/builder.service';
+import { ContainerService } from '../services/container.service';
 
 @Component({
   selector: 'app-renderer',
@@ -15,17 +15,17 @@ export class RendererComponent {
   private elements: ViewContainerRef | undefined;
 
   constructor(
-    private builder: BuilderService,
+    private container: ContainerService,
     private ngFactory: ComponentFactoryResolver,
     private ngContainer: ViewContainerRef
   ) { }
 
   createElement(tag: HTMLTags) {
-    const T = this.ngFactory.resolveComponentFactory(ElementComponent);
-    const component = this.ngContainer.createComponent(T);
+    const componentType = this.ngFactory.resolveComponentFactory(ElementComponent);
 
+    const component = this.ngContainer.createComponent(componentType);
     component.instance.tag = tag;
 
-    this.builder.elementContainer.insert(component);
+    this.container.elementContainer.insert(component);
   }
 }

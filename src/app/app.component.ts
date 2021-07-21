@@ -2,8 +2,7 @@ import { Component, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { HTMLTags } from './models/HTMLTags';
 import { Element } from './models/element';
 import { RendererComponent } from './renderer/renderer.component';
-import { BuilderService } from './services/builder.service';
-
+import { ContainerService } from './services/container.service';
 
 @Pipe({
   name: 'iterateEnum'
@@ -25,11 +24,11 @@ export class AppComponent {
   htmlTags = HTMLTags;
   elements: Element[] = []
 
-  constructor(private builder: BuilderService) { }
+  constructor(private container: ContainerService) { }
 
   onComponentCreate(tag: string) {
     this.renderer.createElement(tag as HTMLTags);
-    this.elements = this.builder.elementContainer.getArray();
+    this.elements = this.container.elementContainer.getArray();
   }
 
   onComponentSelect(element: Element) {

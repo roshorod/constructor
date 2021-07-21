@@ -5,7 +5,7 @@ import { ElementContainer } from '../models/element-container';
 @Injectable({
   providedIn: 'root'
 })
-export class BuilderService {
+export class ContainerService {
   elementContainer: ElementContainer;
 
   constructor() {
