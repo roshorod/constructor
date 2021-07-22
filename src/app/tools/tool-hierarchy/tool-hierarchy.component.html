@@ -1,0 +1,12 @@
+<div>
+  <h4>Hierarchy</h4>
+  <button (click)="onWorkspaceLoad()">
+    Load Project
+  </button>
+  <hr>
+  <div class="tag" *ngFor="let element of elements">
+    <button (click)="onComponentSelect(element)">
+      {{element.component.instance.tag}}
+    </button>
+  </div>
+</div>

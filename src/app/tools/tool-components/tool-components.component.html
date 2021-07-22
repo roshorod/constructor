@@ -1,0 +1,9 @@
+<div>
+  <h4>Components</h4>
+  <hr>
+  <div class="tag" *ngFor="let tag of tags | htmlTags">
+    <button (click)="onComponentCreate(tag)">
+      {{tag}}
+    </button>
+  </div>
+</div>

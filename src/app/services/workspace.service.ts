@@ -9,12 +9,17 @@ export class WorkspaceService {
   project: Document;
   title: string = "MyTitle"
   projectBody: HTMLElement;
+  projectStyle: HTMLElement;
 
   constructor(
     @Inject(DOCUMENT) private document: Document
   ) {
     this.project = document.implementation.createHTMLDocument(this.title);
     this.projectBody = this.project.body;
+    this.projectStyle = this.project.createElement('style');
+    this.projectBody.appendChild(this.projectStyle);
+
+    this.projectStyle.innerHTML = "h1 { margin: 10px; }"
   }
 
   loadProjectOnScreen(elements: Element[]) {

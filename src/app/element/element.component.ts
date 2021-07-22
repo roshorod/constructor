@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { HTMLTags } from '../models/HTMLTags';
+import { HTMLTags } from '../models/htmltags';
 import { ElementDirective } from './element.directive';
 
 @Component({
@@ -11,9 +11,8 @@ import { ElementDirective } from './element.directive';
 export class ElementComponent implements OnInit {
   template: SafeHtml | undefined;
 
-  content: string | undefined = 'test';
+  content: string = 'test';
   tag: HTMLTags | undefined;
-  style: string | undefined;
 
   getPosition = () => {
     return (this.directive as ElementDirective).getTransformPosition();
@@ -37,7 +36,7 @@ export class ElementComponent implements OnInit {
   }
 
   ngOnInit() {
-    const template = `<${this.tag} style="${this.style}">${this.content}</${this.tag}>`;
+    const template = `<${this.tag}>${this.content}</${this.tag}>`;
 
     this.template = this.signHTML(template);
   }

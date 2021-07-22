@@ -1,29 +1,9 @@
 <div id="app-container">
   <div id="app-toolbar">
-    <div id="app-hierarchy">
-      <h4>Hierarchy</h4>
-      <button (click)="onWorkspaceLoad()" style="margin: 5px;">
-        Load Project
-      </button>
-      <hr>
-      <div id="hierarchy-tags" *ngFor="let element of elements">
-        <button (click)="onComponentSelect(element)">
-          {{element.component.instance.tag}}
-        </button>
-      </div>
-    </div>
-    <div id="app-components">
-      <h4> Components </h4>
-      <hr>
-      <div id="components-tags" *ngFor="let tag of htmlTags | iterateEnum">
-        <button (click)="onComponentCreate(tag)">{{tag}}</button>
-      </div>
-    </div>
-    <div id="app-properties">
-      <h4> Properties </h4>
-      <hr>
-    </div>
+    <tool-hierarchy [elements]="elements"></tool-hierarchy>
+    <tool-components (onUpdate)="onComponentCreate($event)"></tool-components>
   </div>
+
   <div id="app-renderer">
     <app-renderer></app-renderer>
   </div>

@@ -2,7 +2,7 @@ import { Component, ComponentFactoryResolver,
          ViewChild, ViewContainerRef} from '@angular/core';
 
 import { ElementComponent } from '../element/element.component';
-import { HTMLTags } from '../models/HTMLTags';
+import { HTMLTags } from '../models/htmltags';
 import { ContainerService } from '../services/container.service';
 
 @Component({
