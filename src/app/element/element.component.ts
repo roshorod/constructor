@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HTMLTags } from '../models/htmltags';
+import { ContainerService } from '../services/container.service';
 import { ElementDirective } from './element.directive';
 
 @Component({
@@ -23,6 +24,7 @@ export class ElementComponent implements OnInit {
 
   constructor(
     private sanitized: DomSanitizer,
+    private container: ContainerService
   ) { }
 
   private signHTML(content: string) : SafeHtml {
@@ -30,8 +32,8 @@ export class ElementComponent implements OnInit {
   }
 
   select() {
+    this.container.selectedComponent = this;
     const element = this.directive as ElementDirective;
-
     element.showElement();
   }
 

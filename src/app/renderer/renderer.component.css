@@ -1,0 +1,29 @@
+.content {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+
+  grid-template-rows: 1fr 10fr 1fr;
+  grid-template-columns: 1fr 3fr 1fr;
+
+  grid-template-areas: "top top top"
+                       "left center right"
+                       "bottom bottom bottom";
+}
+
+.top {
+  grid-area: top;
+}
+
+.left {
+  grid-area: left;
+}
+
+.center {
+  grid-area: center;
+}
+
+.bottom {
+  grid-area: bottom;
+}

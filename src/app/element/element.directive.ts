@@ -49,15 +49,15 @@ export class ElementDirective implements OnDestroy{
     const move = fromEvent<MouseEvent>(this.element, 'mousemove').pipe(
       takeUntil(fromEvent<MouseEvent>(this.element, 'mouseup')));
 
+    //Change this on window resize
     const minBoundX = (this.renderer.offsetParent) as HTMLElement;
     const minBoundY = (this.renderer.offsetParent) as HTMLElement;
-
     const maxBoundX = minBoundX.offsetLeft + this.renderer.offsetWidth -
       this.element.offsetWidth;
-
     const maxBoundY = minBoundY.offsetTop + this.renderer.offsetHeight -
       this.element.offsetHeight;
 
+    //Change this on window resize
     this.initX = event.clientX - this.currentX;
     this.initY = event.clientY - this.currentY;
 
@@ -66,11 +66,19 @@ export class ElementDirective implements OnDestroy{
     this.moveEvent = move.subscribe((event: MouseEvent) => {
       event.preventDefault();
 
+      //Need change initX when enter on other grid
+      //Think need reset all calculation, and somehow save borders
       const x = event.clientX - this.initX;
       const y = event.clientY - this.initY;
 
+      // console.log("x: ", x)
+      // console.log("y: ", y)
+
       this.currentX = Math.max(minBoundX.offsetLeft, Math.min(x, maxBoundX));
       this.currentY = Math.max(minBoundY.offsetTop, Math.min(y, maxBoundY));
+
+      // console.log("currentX: ", this.currentX)
+      // console.log("currentY: ", this.currentY)
 
       this.element.style.transform = `translate3d(${this.currentX}px,${this.currentY}px, 0)`;
     });

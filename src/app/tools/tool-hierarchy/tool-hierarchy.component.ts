@@ -1,5 +1,5 @@
 import { Element } from '../../models/element';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { WorkspaceService } from 'src/app/services/workspace.service';
 
 @Component({
@@ -9,6 +9,7 @@ import { WorkspaceService } from 'src/app/services/workspace.service';
 })
 export class ToolHierarchyComponent {
   @Input() elements: Element[] | undefined;
+  @Output() onUpdate = new EventEmitter();
 
   constructor(
     private workspace: WorkspaceService
@@ -16,6 +17,7 @@ export class ToolHierarchyComponent {
 
   onComponentSelect(elem: Element) {
     elem.component.instance.select();
+    this.onUpdate.emit();
   }
 
   onWorkspaceLoad() {

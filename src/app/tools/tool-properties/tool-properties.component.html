@@ -1,0 +1,15 @@
+<div>
+  <h4>Properties</h4>
+  <hr>
+  <div>
+    <label for="position">Default position:</label>
+    <select id="position" [(ngModel)]="settings.spawnPosition">
+      <option *ngFor="let position of spawnPositions | htmlTags" [value]="position">
+        {{position}}
+      </option>
+    </select>
+  </div>
+  <div *ngIf="selected != undefined">
+    <input [(ngModel)]="selected.content">
+  </div>
+</div>

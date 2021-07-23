@@ -10,7 +10,7 @@
   grid-template-rows: 1fr 20fr 1fr;
 }
 
-#app-renderer {
+.app-renderer {
   grid-row: 2;
   border-radius: 10px;
   box-shadow: 0 0 4px 0 black;
