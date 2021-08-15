@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HTMLTags } from '../models/htmltags';
+import { SpawnPosition } from '../models/settings';
 import { ContainerService } from '../services/container.service';
 import { ElementDirective } from './element.directive';
 
@@ -14,6 +15,8 @@ export class ElementComponent implements OnInit {
 
   content: string = 'test';
   tag: HTMLTags | undefined;
+
+  grid: SpawnPosition = SpawnPosition.center;
 
   getPosition = () => {
     return (this.directive as ElementDirective).getTransformPosition();
@@ -37,9 +40,13 @@ export class ElementComponent implements OnInit {
     element.showElement();
   }
 
+  update() {
+    const template = `<${this.tag}>${this.content}</${this.tag}>`;
+    this.template = this.signHTML(template);
+  }
+
   ngOnInit() {
     const template = `<${this.tag}>${this.content}</${this.tag}>`;
-
     this.template = this.signHTML(template);
   }
 }

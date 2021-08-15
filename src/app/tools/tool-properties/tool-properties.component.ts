@@ -20,4 +20,10 @@ export class ToolPropertiesComponent {
   ) {
     this.settings = containerService.settings;
   }
+
+  onUpdateCompContent() {
+    if(this.selected) {
+      this.selected.update();
+    }
+  }
 }

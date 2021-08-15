@@ -52,6 +52,7 @@ export class ElementDirective implements OnDestroy{
     //Change this on window resize
     const minBoundX = (this.renderer.offsetParent) as HTMLElement;
     const minBoundY = (this.renderer.offsetParent) as HTMLElement;
+
     const maxBoundX = minBoundX.offsetLeft + this.renderer.offsetWidth -
       this.element.offsetWidth;
     const maxBoundY = minBoundY.offsetTop + this.renderer.offsetHeight -

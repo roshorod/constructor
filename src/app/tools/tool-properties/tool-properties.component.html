@@ -1,7 +1,7 @@
 <div>
   <h4>Properties</h4>
   <hr>
-  <div>
+  <div *ngIf="selected == undefined">
     <label for="position">Default position:</label>
     <select id="position" [(ngModel)]="settings.spawnPosition">
       <option *ngFor="let position of spawnPositions | htmlTags" [value]="position">
@@ -10,6 +10,8 @@
     </select>
   </div>
   <div *ngIf="selected != undefined">
-    <input [(ngModel)]="selected.content">
+    <label for="content">Content:</label>
+    <input id="content" [(ngModel)]="selected.content"
+      (keyup)="onUpdateCompContent()">
   </div>
 </div>

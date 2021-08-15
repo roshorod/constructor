@@ -10,6 +10,7 @@ export class WorkspaceService {
   title: string = "MyTitle"
   projectBody: HTMLElement;
   projectStyle: HTMLElement;
+  projectGrid: HTMLElement;
 
   constructor(
     @Inject(DOCUMENT) private document: Document
@@ -17,9 +18,46 @@ export class WorkspaceService {
     this.project = document.implementation.createHTMLDocument(this.title);
     this.projectBody = this.project.body;
     this.projectStyle = this.project.createElement('style');
-    this.projectBody.appendChild(this.projectStyle);
+    this.projectGrid = this.project.createElement('div');
 
-    this.projectStyle.innerHTML = "h1 { margin: 10px; }"
+    this.projectBody.appendChild(this.projectStyle);
+    this.projectBody.appendChild(this.projectGrid);
+
+    this.projectStyle.innerHTML = `
+.content {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr 10fr 1fr;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-areas: "top top top"
+                       "left center right"
+                       "bottom bottom bottom";
+}
+.top {
+  grid-area: top;
+}
+.left {
+  grid-area: left;
+}
+.right {
+  grid-area: right;
+}
+.center {
+  grid-area: center;
+}
+.bottom {
+  grid-area: bottom;
+} `;
+
+    this.projectGrid.className = 'content';
+    this.projectGrid.innerHTML = `
+<div class="top" id="top"></div>
+<div class="left" id="left"></div>
+<div class="center" id="center"></div>
+<div class="right" id="right"></div>
+<div class="bottom" id="bottom"></div>
+`;
   }
 
   loadProjectOnScreen(elements: Element[]) {

@@ -14,10 +14,17 @@
 
 .top {
   grid-area: top;
+  border-bottom: 2px dotted black;
 }
 
 .left {
   grid-area: left;
+  border-right: 2px dotted black;
+}
+
+.right {
+  grid-area: right;
+  border-left: 2px dotted black;
 }
 
 .center {
@@ -26,4 +33,5 @@
 
 .bottom {
   grid-area: bottom;
+  border-top: 2px dotted black;
 }
