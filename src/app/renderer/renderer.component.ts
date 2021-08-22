@@ -1,11 +1,11 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { AfterViewInit, Component, ComponentFactoryResolver,
          OnInit,
-         ViewChild, ViewContainerRef} from '@angular/core';
+         ViewChild, ViewContainerRef, ViewRef} from '@angular/core';
 
 import { ElementComponent } from '../element/element.component';
 import { HTMLTags } from '../models/htmltags';
 import { SpawnPosition } from '../models/settings';
+import { Element } from '../models/element';
 import { ContainerService } from '../services/container.service';
 
 @Component({
@@ -39,6 +39,71 @@ export class RendererComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.createElement('h1' as HTMLTags, SpawnPosition.top);
     this.createElement('h1' as HTMLTags, SpawnPosition.bottom);
+  }
+
+  private detachEelemet(element: Element) {
+    const hostView = element.component.hostView;
+
+    const top = this.top as ViewContainerRef;
+    const left = this.left as ViewContainerRef;
+    const center = this.center as ViewContainerRef;
+    const right = this.right as ViewContainerRef;
+    const bottom = this.bottom as ViewContainerRef;
+
+    if (center.indexOf(hostView) != -1) {
+      center.detach(center.indexOf(hostView));
+    }
+    else if(top.indexOf(hostView) != -1) {
+      top.detach(top.indexOf(hostView));
+    }
+    else if (left.indexOf(hostView) != -1) {
+      left.detach(left.indexOf(hostView));
+    }
+    else if (right.indexOf(hostView) != -1) {
+      right.detach(right.indexOf(hostView));
+    }
+    else if (bottom.indexOf(hostView) != -1) {
+      bottom.detach(bottom.indexOf(hostView));
+    } else {
+      throw new Error("Container detach error. Can't find right container...");
+    }
+  }
+
+  updateElementPosition(element: Element) {
+    this.detachEelemet(element);
+
+    element.component.instance.reset();
+
+    switch (element.component.instance.grid) {
+      case SpawnPosition.top: {
+        const containerView = this.top as ViewContainerRef;
+        containerView.insert(element.component.hostView);
+        break;
+      }
+      case SpawnPosition.left: {
+        const containerView = this.left as ViewContainerRef;
+        containerView.insert(element.component.hostView);
+        break;
+      }
+      case SpawnPosition.center: {
+        const containerView = this.center as ViewContainerRef;
+        containerView.insert(element.component.hostView);
+        break;
+      }
+      case SpawnPosition.right: {
+        const containerView = this.right as ViewContainerRef;
+        containerView.insert(element.component.hostView);
+        break;
+      }
+      case SpawnPosition.bottom: {
+        const containerView = this.bottom as ViewContainerRef;
+        containerView.insert(element.component.hostView);
+        break;
+      }
+      default: {
+        throw new Error("Container insert error. Can't find right container...");
+      }
+    }
   }
 
   createElement(tag: HTMLTags, grid?: SpawnPosition) {

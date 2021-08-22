@@ -26,8 +26,7 @@ export class ElementComponent implements OnInit {
   directive: ElementDirective | undefined;
 
   constructor(
-    private sanitized: DomSanitizer,
-    private container: ContainerService
+    private sanitized: DomSanitizer
   ) { }
 
   private signHTML(content: string) : SafeHtml {
@@ -35,7 +34,6 @@ export class ElementComponent implements OnInit {
   }
 
   select() {
-    this.container.selectedComponent = this;
     const element = this.directive as ElementDirective;
     element.showElement();
   }
@@ -43,6 +41,10 @@ export class ElementComponent implements OnInit {
   update() {
     const template = `<${this.tag}>${this.content}</${this.tag}>`;
     this.template = this.signHTML(template);
+  }
+
+  reset () {
+    (this.directive as ElementDirective).resetPosition();
   }
 
   ngOnInit() {

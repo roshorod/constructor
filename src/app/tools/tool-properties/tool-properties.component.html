@@ -2,16 +2,22 @@
   <h4>Properties</h4>
   <hr>
   <div *ngIf="selected == undefined">
-    <label for="position">Default position:</label>
-    <select id="position" [(ngModel)]="settings.spawnPosition">
-      <option *ngFor="let position of spawnPositions | htmlTags" [value]="position">
-        {{position}}
-      </option>
-    </select>
+    <h5>Select hierarchy component</h5>
   </div>
   <div *ngIf="selected != undefined">
     <label for="content">Content:</label>
-    <input id="content" [(ngModel)]="selected.content"
-      (keyup)="onUpdateCompContent()">
+    <input id="content" [(ngModel)]="selected.component.instance.content"
+      (keyup)="onUpdateContent()">
+
+    <label for="position">Default position:</label>
+    <!-- [(ngModel)] -- call event when change  -->
+    <!-- [ngModel] -- just bind model -->
+    <select id="position" [(ngModel)]="selected.component.instance.grid"
+      (change)="onUpdatePosition()">
+      <option *ngFor="let position of spawnPositions | htmlTags"
+        [value]="position">
+        {{position}}
+      </option>
+    </select>
   </div>
 </div>

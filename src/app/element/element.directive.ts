@@ -30,6 +30,14 @@ export class ElementDirective implements OnDestroy{
     return this.element.style.transform;
   }
 
+  resetPosition() {
+    this.initX = 0;
+    this.initY = 0;
+    this.currentX = 0;
+    this.currentY = 0;
+    this.element.style.transform = `translate3d(${this.initX}px,${this.initY}px, 0)`;
+  }
+
   showElement() {
     this.element.classList.add('move-state');
     setTimeout(() => {

@@ -1,7 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { ElementComponent } from 'src/app/element/element.component';
-import { ContainerService } from 'src/app/services/container.service';
-import { SpawnPosition, Settings } from '../../models/settings';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Element } from '../../models/element';
+import { SpawnPosition } from '../../models/settings';
 
 @Component({
   selector: 'tool-properties',
@@ -9,21 +8,18 @@ import { SpawnPosition, Settings } from '../../models/settings';
   styleUrls: ['./tool-properties.component.css']
 })
 export class ToolPropertiesComponent {
-  @Input() selected: ElementComponent | undefined;
+  @Input() selected: Element | undefined;
+  @Output() onUpdatePos = new EventEmitter<SpawnPosition>();
 
   spawnPositions = SpawnPosition;
 
-  settings: Settings;
-
-  constructor(
-    containerService: ContainerService
-  ) {
-    this.settings = containerService.settings;
+  onUpdateContent() {
+    if (this.selected) {
+      this.selected.component.instance.update();
+    }
   }
 
-  onUpdateCompContent() {
-    if(this.selected) {
-      this.selected.update();
-    }
+  onUpdatePosition() {
+    this.onUpdatePos.emit();
   }
 }

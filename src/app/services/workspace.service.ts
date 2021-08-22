@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Element } from './../models/element';
 import { Inject, Injectable } from '@angular/core';
+import { SpawnPosition } from '../models/settings';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,10 @@ export class WorkspaceService {
     this.projectBody.appendChild(this.projectGrid);
 
     this.projectStyle.innerHTML = `
+html, body {
+  box-sizing: border-box;
+}
+
 .content {
   width: 100%;
   height: 100%;
@@ -37,6 +42,7 @@ export class WorkspaceService {
 .top {
   grid-area: top;
 }
+
 .left {
   grid-area: left;
 }
@@ -46,6 +52,7 @@ export class WorkspaceService {
 .center {
   grid-area: center;
 }
+
 .bottom {
   grid-area: bottom;
 } `;
@@ -65,16 +72,21 @@ export class WorkspaceService {
       const component = ref.component.instance;
       this.createElement(component.tag as string,
                          component.content as string,
-                         component.getPosition())});
+                         component.getPosition(),
+                         component.grid)});
 
     this.document.body.innerHTML = this.projectBody.innerHTML;
   }
 
-  private createElement(tag: string, content: string, transform: string) {
+  private createElement(tag: string,
+                        content: string,
+                        transform: string,
+                        gridPosition: SpawnPosition) {
     const node = this.project.createElement(tag);
     node.textContent = content;
     node.style.transform = transform;
 
-    this.projectBody.appendChild(node);
+    const grid = this.project.getElementById(gridPosition) as HTMLElement;
+    grid.appendChild(node)
   }
 }

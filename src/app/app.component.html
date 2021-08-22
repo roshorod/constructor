@@ -1,10 +1,11 @@
 <div id="app-container">
   <div id="app-toolbar">
     <tool-hierarchy [elements]="elements"
-      (onUpdate)="onPropertiesUpdate()">
+      (onUpdate)="onSelectedUpdate()">
     </tool-hierarchy>
     <tool-components (onUpdate)="onComponentCreate($event)"></tool-components>
-    <tool-properties [selected]="selectedElement"></tool-properties>
+    <tool-properties [selected]="selectedElement"
+      (onUpdatePos)="onUpdatePosition()"></tool-properties>
   </div>
 
   <div class="app-renderer" id="app-renderer">
