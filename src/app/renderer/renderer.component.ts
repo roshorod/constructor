@@ -1,7 +1,6 @@
-import { AfterViewInit, Component, ComponentFactoryResolver,
-         OnInit,
-         ViewChild, ViewContainerRef, ViewRef} from '@angular/core';
-
+import { AfterViewInit, Component,
+         ComponentFactoryResolver,
+         ViewChild, ViewContainerRef } from '@angular/core';
 import { ElementComponent } from '../element/element.component';
 import { HTMLTags } from '../models/htmltags';
 import { SpawnPosition } from '../models/settings';
@@ -16,19 +15,19 @@ import { ContainerService } from '../services/container.service';
 export class RendererComponent implements AfterViewInit {
 
   @ViewChild('topTempl', { read: ViewContainerRef })
-  private top: ViewContainerRef | undefined;
+  private top: ViewContainerRef;
 
   @ViewChild('leftTempl', { read: ViewContainerRef })
-  private left: ViewContainerRef | undefined;
+  private left: ViewContainerRef;
 
   @ViewChild('centerTempl', { read: ViewContainerRef })
-  private center: ViewContainerRef | undefined;
+  private center: ViewContainerRef;
 
   @ViewChild('rightTempl', { read: ViewContainerRef })
-  private right: ViewContainerRef | undefined;
+  private right: ViewContainerRef;
 
   @ViewChild('bottomTempl', { read: ViewContainerRef })
-  private bottom: ViewContainerRef | undefined;
+  private bottom: ViewContainerRef;
 
   constructor(
     public container: ContainerService,

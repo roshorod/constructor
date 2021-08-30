@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HTMLTags } from '../models/htmltags';
 import { SpawnPosition } from '../models/settings';
-import { ContainerService } from '../services/container.service';
 import { ElementDirective } from './element.directive';
 
 @Component({
@@ -11,10 +10,10 @@ import { ElementDirective } from './element.directive';
   styleUrls: ['./element.component.css'],
 })
 export class ElementComponent implements OnInit {
-  template: SafeHtml | undefined;
+  template: SafeHtml;
 
   content: string = 'test';
-  tag: HTMLTags | undefined;
+  tag: HTMLTags;
 
   grid: SpawnPosition = SpawnPosition.center;
 
@@ -23,7 +22,7 @@ export class ElementComponent implements OnInit {
   };
 
   @ViewChild('ref')
-  directive: ElementDirective | undefined;
+  directive: ElementDirective;
 
   constructor(
     private sanitized: DomSanitizer

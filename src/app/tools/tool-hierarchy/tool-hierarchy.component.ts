@@ -9,7 +9,7 @@ import { ContainerService } from 'src/app/services/container.service';
   styleUrls: ['./tool-hierarchy.component.css']
 })
 export class ToolHierarchyComponent {
-  @Input() elements: Element[] | undefined;
+  @Input() elements: Element[];
   @Output() onUpdate = new EventEmitter();
 
   constructor(

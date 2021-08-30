@@ -45,7 +45,7 @@ export class ElementDirective implements OnDestroy{
     }, 1000);
   }
 
-  private moveEvent: Subscription | undefined;
+  private moveEvent: Subscription;
 
   private initX = 0;
   private initY = 0;

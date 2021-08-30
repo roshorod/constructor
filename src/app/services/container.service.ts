@@ -9,7 +9,7 @@ import { ElementContainer } from '../models/element-container';
 export class ContainerService {
   elementContainer: ElementContainer;
 
-  selectedElement: Element | undefined;
+  selectedElement: Element;
 
   constructor() {
     this.elementContainer = new ElementContainer();
