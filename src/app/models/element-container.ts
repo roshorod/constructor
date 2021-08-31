@@ -1,27 +1,18 @@
-import { ComponentRef } from "@angular/core";
-import { ElementComponent } from "../element/element.component";
 import { Element } from './element';
 
 export class ElementContainer {
   treeRoot: Element | undefined;
 
-  private createElement(elemRef: ComponentRef<ElementComponent>) {
-    return new Element(elemRef);
-  }
+  insert(component: Element) {
+    const traverse = (element: Element): Element => {
+      return element.next == undefined ? element.next = component
+        : element.next instanceof Element ? traverse(element.next)
+        : element };
 
-  insert(elemRef: ComponentRef<ElementComponent>) {
-    const elemObj = this.createElement(elemRef);
-
-    if(this.treeRoot == undefined)
-      this.treeRoot = elemObj;
-    else {
-      const traverse = (element: Element) : Element => {
-        return element.next == undefined ? element.next = elemObj
-          : element.next instanceof Element ? traverse(element.next)
-          : element;
-      };
-      traverse(this.treeRoot);
-    }
+    if(!this.treeRoot)
+      this.treeRoot = component;
+    else
+      traverse(this.treeRoot)
   }
 
   getArray() : Element[] {

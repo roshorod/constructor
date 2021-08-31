@@ -73,7 +73,7 @@ export class RendererComponent implements AfterViewInit {
 
     element.component.instance.reset();
 
-    switch (element.component.instance.grid) {
+    switch (element.component.instance.position) {
       case SpawnPosition.top: {
         const containerView = this.top as ViewContainerRef;
         containerView.insert(element.component.hostView);
@@ -105,43 +105,42 @@ export class RendererComponent implements AfterViewInit {
     }
   }
 
-  createElement(tag: HTMLTags, grid?: SpawnPosition) {
+  createElement(tag: HTMLTags, grid: SpawnPosition = SpawnPosition.center) {
     const componentType = this.ngFactory.resolveComponentFactory(ElementComponent);
     const component = this.ngContainer.createComponent(componentType);
     component.instance.tag = tag;
+    component.instance.position = grid;
+    component.instance.component = component
 
-    if(grid)
-      component.instance.grid = grid;
-
-    switch(component.instance.grid){
+    switch(component.instance.position){
       case SpawnPosition.top: {
         const containerView = this.top as ViewContainerRef;
         containerView.insert(component.hostView);
-        this.container.elementContainer.insert(component);
+        this.container.elements.insert(component.instance);
         break;
       }
       case SpawnPosition.left: {
         const containerView = this.left as ViewContainerRef;
         containerView.insert(component.hostView);
-        this.container.elementContainer.insert(component);
+        this.container.elements.insert(component.instance);
         break;
       }
       case SpawnPosition.center: {
         const containerView = this.center as ViewContainerRef;
         containerView.insert(component.hostView);
-        this.container.elementContainer.insert(component);
+        this.container.elements.insert(component.instance);
         break;
       }
       case SpawnPosition.right: {
         const containerView = this.right as ViewContainerRef;
         containerView.insert(component.hostView);
-        this.container.elementContainer.insert(component);
+        this.container.elements.insert(component.instance);
         break;
       }
       case SpawnPosition.bottom: {
         const containerView = this.bottom as ViewContainerRef;
         containerView.insert(component.hostView);
-        this.container.elementContainer.insert(component);
+        this.container.elements.insert(component.instance);
         break;
       }
       default: {

@@ -1,21 +1,21 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, forwardRef } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HTMLTags } from '../models/htmltags';
-import { SpawnPosition } from '../models/settings';
 import { ElementDirective } from './element.directive';
+import { Element } from "../models/element";
+
 
 @Component({
   selector: 'app-element',
   template: `<div [innerHTML]="template" class="element" #ref=appElement></div>`,
   styleUrls: ['./element.component.css'],
+  providers: [
+    { provide: Element,
+      useExisting: forwardRef(() => ElementComponent)}
+  ],
 })
-export class ElementComponent implements OnInit {
+export class ElementComponent extends Element implements OnInit {
   template: SafeHtml;
-
-  content: string = 'test';
-  tag: HTMLTags;
-
-  grid: SpawnPosition = SpawnPosition.center;
 
   getPosition = () => {
     return (this.directive as ElementDirective).getTransformPosition();
@@ -26,7 +26,9 @@ export class ElementComponent implements OnInit {
 
   constructor(
     private sanitized: DomSanitizer
-  ) { }
+  ) {
+    super(HTMLTags.h1, "Initial");
+  }
 
   private signHTML(content: string) : SafeHtml {
     return this.sanitized.bypassSecurityTrustHtml(content);

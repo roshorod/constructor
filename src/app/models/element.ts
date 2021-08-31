@@ -1,16 +1,17 @@
 import { ComponentRef } from "@angular/core";
 import { ElementComponent } from "../element/element.component";
+import { HTMLTags } from "./htmltags";
+import { SpawnPosition } from "./settings";
 
-
-export class Element {
-  next: Element | undefined;
-  child: Element[] = [];
-
+export abstract class Element {
   constructor(
-    public component: ComponentRef<ElementComponent>,
+    public tag: HTMLTags,
+    public content: string,
+    public position: SpawnPosition = SpawnPosition.center
   ) { }
+  component: ComponentRef<ElementComponent>;
 
-  addChild(element: Element) {
-    this.child.push(element);
-  }
+  next: Element | undefined;
+
+  child: Element[] = [];
 }

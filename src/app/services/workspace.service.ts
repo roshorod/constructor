@@ -73,7 +73,7 @@ html, body {
       this.createElement(component.tag as string,
                          component.content as string,
                          component.getPosition(),
-                         component.grid)});
+                         component.position)});
 
     this.document.body.innerHTML = this.projectBody.innerHTML;
   }

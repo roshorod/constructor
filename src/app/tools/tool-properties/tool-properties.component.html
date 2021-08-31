@@ -12,7 +12,7 @@
     <label for="position">Default position:</label>
     <!-- [(ngModel)] -- call event when change  -->
     <!-- [ngModel] -- just bind model -->
-    <select id="position" [(ngModel)]="selected.component.instance.grid"
+    <select id="position" [(ngModel)]="selected.component.instance.position"
       (change)="onUpdatePosition()">
       <option *ngFor="let position of spawnPositions | htmlTags"
         [value]="position">

@@ -21,7 +21,8 @@ export class AppComponent {
 
   onComponentCreate(tag: string) {
     this.renderer.createElement(tag as HTMLTags);
-    this.elements = this.container.elementContainer.getArray();
+    this.elements = this.container.elements.getArray();
+    console.log(this.container.elements.treeRoot)
   }
 
   onSelectedUpdate() {

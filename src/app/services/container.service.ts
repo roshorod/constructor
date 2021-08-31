@@ -7,11 +7,11 @@ import { ElementContainer } from '../models/element-container';
   providedIn: 'root'
 })
 export class ContainerService {
-  elementContainer: ElementContainer;
+  elements: ElementContainer;
 
   selectedElement: Element;
 
   constructor() {
-    this.elementContainer = new ElementContainer();
+    this.elements = new ElementContainer();
   }
 }
