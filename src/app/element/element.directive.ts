@@ -54,13 +54,13 @@ export class ElementDirective implements OnDestroy{
     const realElem = this.element.firstElementChild as HTMLElement;
     const bound = document.getElementById(realElem.className) as HTMLElement;
 
-    const minBoundX = (bound.offsetParent) as HTMLElement;
-    const minBoundY = (bound.offsetParent) as HTMLElement;
+    const minBoundX = bound.offsetParent as HTMLElement;
+    const minBoundY = bound.offsetParent as HTMLElement;
 
     const maxBoundX = minBoundX.offsetLeft + bound.offsetWidth -
-      this.element.offsetWidth;
+      realElem.offsetWidth;
     const maxBoundY = minBoundY.offsetTop + bound.offsetHeight -
-      this.element.offsetHeight;
+      realElem.offsetHeight;
 
     this.initX = event.clientX - this.currentX;
     this.initY = event.clientY - this.currentY;
