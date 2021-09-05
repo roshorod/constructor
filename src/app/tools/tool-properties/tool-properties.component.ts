@@ -20,6 +20,9 @@ export class ToolPropertiesComponent {
   }
 
   onUpdatePosition() {
-    this.onUpdatePos.emit();
+    if (this.selected) {
+      this.onUpdatePos.emit();
+      this.selected.component.instance.update();
+    }
   }
 }

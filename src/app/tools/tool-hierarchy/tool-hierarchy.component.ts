@@ -18,7 +18,6 @@ export class ToolHierarchyComponent {
   ) { }
 
   onComponentSelect(elem: Element) {
-    console.log(elem)
     elem.component.instance.select();
     this.container.selectedElement = elem;
     this.onUpdate.emit();

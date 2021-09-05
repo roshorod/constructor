@@ -42,20 +42,44 @@ html, body {
 .top {
   grid-area: top;
 }
-
+.top > * {
+  width: max-content;
+  height: max-content;
+  position: absolute;
+}
 .left {
   grid-area: left;
+}
+.left > * {
+  width: max-content;
+  height: max-content;
+  position: absolute;
 }
 .right {
   grid-area: right;
 }
+.right > * {
+  width: max-content;
+  height: max-content;
+  position: absolute;
+}
 .center {
   grid-area: center;
 }
-
+.center > * {
+  width: max-content;
+  height: max-content;
+  position: absolute;
+}
 .bottom {
   grid-area: bottom;
-} `;
+}
+.bottom > * {
+  width: max-content;
+  height: max-content;
+  position: absolute;
+}
+ `;
 
     this.projectGrid.className = 'content';
     this.projectGrid.innerHTML = `

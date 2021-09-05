@@ -40,7 +40,9 @@ export class ElementComponent extends Element implements OnInit {
   }
 
   update() {
-    const template = `<${this.tag}>${this.content}</${this.tag}>`;
+    const template =
+      `<${this.tag} class="${this.position}">${this.content}</${this.tag}>`;
+
     this.template = this.signHTML(template);
   }
 
@@ -49,7 +51,9 @@ export class ElementComponent extends Element implements OnInit {
   }
 
   ngOnInit() {
-    const template = `<${this.tag}>${this.content}</${this.tag}>`;
+    const template =
+      `<${this.tag} class="${this.position}">${this.content}</${this.tag}>`;
+
     this.template = this.signHTML(template);
   }
 }
