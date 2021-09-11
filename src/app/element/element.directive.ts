@@ -54,12 +54,12 @@ export class ElementDirective implements OnDestroy{
     const realElem = this.element.firstElementChild as HTMLElement;
     const bound = document.getElementById(realElem.className) as HTMLElement;
 
-    const minBoundX = bound.offsetParent as HTMLElement;
-    const minBoundY = bound.offsetParent as HTMLElement;
+    const minBoundX = (bound.offsetParent as HTMLElement).offsetLeft;
+    const minBoundY = (bound.offsetParent as HTMLElement).offsetTop;
 
-    const maxBoundX = minBoundX.offsetLeft + bound.offsetWidth -
+    const maxBoundX = minBoundX + bound.offsetWidth -
       realElem.offsetWidth;
-    const maxBoundY = minBoundY.offsetTop + bound.offsetHeight -
+    const maxBoundY = minBoundY + bound.offsetHeight -
       realElem.offsetHeight;
 
     this.initX = event.clientX - this.currentX;
@@ -67,17 +67,77 @@ export class ElementDirective implements OnDestroy{
 
     this.element.classList.add('move-state');
 
+    const scale = Math.min(realElem.offsetWidth/maxBoundX,
+                           realElem.offsetHeight/maxBoundY);
+
     this.moveEvent = move.subscribe((event: MouseEvent) => {
       event.preventDefault();
 
       const x = event.clientX - this.initX;
       const y = event.clientY - this.initY;
 
-      this.currentX = Math.max(minBoundX.offsetLeft, Math.min(x, maxBoundX));
-      this.currentY = Math.max(minBoundY.offsetTop, Math.min(y, maxBoundY));
+      this.currentX = Math.max(minBoundX, Math.min(x, maxBoundX));
+      this.currentY = Math.max(minBoundY, Math.min(y, maxBoundY));
 
       this.element.style.transform = `translate3d(${this.currentX}px,${this.currentY}px, 0)`;
    });
+  }
+
+  private getScale() {
+    const realElem = this.element.firstElementChild as HTMLElement;
+    const bound = document.getElementById(realElem.className) as HTMLElement;
+
+    const minBoundX = (bound.offsetParent as HTMLElement).offsetLeft;
+    const minBoundY = (bound.offsetParent as HTMLElement).offsetTop;
+
+    const maxBoundX = minBoundX + bound.offsetWidth -
+      realElem.offsetWidth;
+    const maxBoundY = minBoundY + bound.offsetHeight -
+      realElem.offsetHeight;
+
+    return Math.min(realElem.offsetWidth / maxBoundX,
+                    realElem.offsetHeight / maxBoundY);
+  }
+
+  private lastWindowX: number;
+  private lastWindowY: number;
+
+  @HostListener('window:resize', ['$event'])
+  private onResize(event: any) {
+    clearTimeout();
+
+    console.log(window.innerWidth, " : ", window.innerHeight);
+
+    const scale = this.getScale();
+
+    if (window.innerWidth < this.lastWindowX) {
+      this.currentX -= scale;
+      // console.log("decrease X");
+    } else if (window.innerWidth > this.lastWindowX) {
+      this.currentX += scale;
+      // console.log("encrease X");
+    }
+
+    if (window.innerHeight < this.lastWindowY) {
+      this.currentY -= scale;
+      console.log("decrease Y");
+    } else if (window.innerHeight > this.lastWindowY) {
+      this.currentY += scale;
+      console.log("encrease Y");
+    }
+
+    this.element.style.transform =
+      `translate3d(${this.currentX}px,${this.currentY}px, 0)`;
+
+    // Capture last window position.
+    setTimeout(() => {
+      this.lastWindowX = window.innerWidth;
+      this.lastWindowY = window.innerHeight;
+    }, 250);
+  }
+
+  @HostListener('window:load', ['$event'])
+  private onLoad(event: any) {
   }
 
   @HostListener('mouseup', ['$event'])

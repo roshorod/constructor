@@ -12,6 +12,7 @@ export class WorkspaceService {
   projectBody: HTMLElement;
   projectStyle: HTMLElement;
   projectGrid: HTMLElement;
+  projectScript: HTMLElement;
 
   constructor(
     @Inject(DOCUMENT) private document: Document
@@ -20,9 +21,11 @@ export class WorkspaceService {
     this.projectBody = this.project.body;
     this.projectStyle = this.project.createElement('style');
     this.projectGrid = this.project.createElement('div');
+    this.projectScript = this.project.createElement('script');
 
     this.projectBody.appendChild(this.projectStyle);
     this.projectBody.appendChild(this.projectGrid);
+    this.projectBody.appendChild(this.projectScript);
 
     this.projectStyle.innerHTML = `
 html, body {
@@ -88,6 +91,12 @@ html, body {
 <div class="center" id="center"></div>
 <div class="right" id="right"></div>
 <div class="bottom" id="bottom"></div>
+`;
+
+    this.projectScript.innerHTML = `
+    document.addEventListener('load', () => {
+      console.log("Test");
+    });
 `;
   }
 
