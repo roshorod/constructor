@@ -7,8 +7,9 @@ export abstract class Element {
   constructor(
     public tag: HTMLTags,
     public content: string,
-    public position: SpawnPosition = SpawnPosition.center
+    public position: SpawnPosition = SpawnPosition.center,
   ) { }
+
   component: ComponentRef<ElementComponent>;
 
   next: Element | undefined;

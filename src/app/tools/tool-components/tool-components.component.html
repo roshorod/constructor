@@ -1,9 +1,7 @@
-<div>
+<cdk-virtual-scroll-viewport itemSize="50" class="viewport">
   <h4>Components</h4>
   <hr>
-  <div class="tag" *ngFor="let tag of tags | htmlTags">
-    <button (click)="onComponentCreate(tag)">
-      {{tag}}
-    </button>
+  <div *cdkVirtualFor="let tag of tags | htmlTags" class="viewport-item">
+    <button (click)="onComponentCreate(tag)">{{tag}}</button>
   </div>
-</div>
+</cdk-virtual-scroll-viewport>

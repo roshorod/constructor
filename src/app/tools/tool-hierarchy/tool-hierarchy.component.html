@@ -1,12 +1,26 @@
-<div>
+<cdk-virtual-scroll-viewport itemSize="50" class="viewport">
   <h4>Hierarchy</h4>
-  <button (click)="onWorkspaceLoad()">
-    Load Project
-  </button>
+  <button (click)="onWorkspaceLoad()">Load Project</button>
   <hr>
-  <div class="tag" *ngFor="let element of elements">
-    <button (click)="onComponentSelect(element)">
-      {{element.tag}}
-    </button>
-  </div>
-</div>
+  <mat-tree [dataSource]="_elemController"
+    [treeControl]="_treeControl">
+
+    <mat-tree-node *matTreeNodeDef="let elem; when: hasChild">
+      <button (click)="onComponentSelect(elem.component.instance)">
+        {{elem.name}}
+      </button>
+      <button mat-icon-button matTreeNodeToggle>
+        <mat-icon>
+          {{_treeControl.isExpanded(elem) ? 'expand_more' : 'chevron_right'}}
+        </mat-icon>
+      </button>
+    </mat-tree-node>
+
+    <mat-tree-node *matTreeNodeDef="let elem">
+      <button (click)="onComponentSelect(elem.component.instance)">
+          {{elem.name}}
+      </button>
+    </mat-tree-node>
+
+  </mat-tree>
+</cdk-virtual-scroll-viewport>

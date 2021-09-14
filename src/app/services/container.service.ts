@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Element } from '../models/element';
 import { ElementContainer } from '../models/element-container';
 
-
 @Injectable({
   providedIn: 'root'
 })

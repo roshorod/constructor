@@ -6,6 +6,7 @@ import { RendererComponent } from './renderer/renderer.component';
 import { ElementComponent } from './element/element.component';
 import { ElementDirective } from './element/element.directive';
 import { ToolsModule } from './tools/tools.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { ToolsModule } from './tools/tools.module';
   ],
   imports: [
     BrowserModule,
-    ToolsModule
+    ToolsModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

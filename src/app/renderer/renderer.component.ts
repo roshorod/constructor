@@ -36,8 +36,8 @@ export class RendererComponent implements AfterViewInit {
   ) { }
 
   ngAfterViewInit() {
-    this.createElement('h1' as HTMLTags, SpawnPosition.top);
-    this.createElement('h1' as HTMLTags, SpawnPosition.bottom);
+    // this.createElement('h1' as HTMLTags, SpawnPosition.top);
+    // this.createElement('h1' as HTMLTags, SpawnPosition.bottom);
   }
 
   private detachEelemet(element: Element) {
@@ -105,12 +105,20 @@ export class RendererComponent implements AfterViewInit {
     }
   }
 
-  createElement(tag: HTMLTags, grid: SpawnPosition = SpawnPosition.center) {
+  createElement(tag: HTMLTags, grid: SpawnPosition = SpawnPosition.center) : Element {
     const componentType = this.ngFactory.resolveComponentFactory(ElementComponent);
     const component = this.ngContainer.createComponent(componentType);
     component.instance.tag = tag;
     component.instance.position = grid;
-    component.instance.component = component
+    component.instance.component = component;
+
+    if (tag == HTMLTags.h1)
+      component.instance.child
+        .push(this.createElement('i' as HTMLTags, SpawnPosition.bottom))
+
+    if (tag == HTMLTags.i)
+      component.instance.child
+        .push(this.createElement('b' as HTMLTags, SpawnPosition.right))
 
     switch(component.instance.position){
       case SpawnPosition.top: {
@@ -134,18 +142,27 @@ export class RendererComponent implements AfterViewInit {
       case SpawnPosition.right: {
         const containerView = this.right as ViewContainerRef;
         containerView.insert(component.hostView);
-        this.container.elements.insert(component.instance);
+
+        if (tag != HTMLTags.b) {
+          this.container.elements.insert(component.instance);
+        }
         break;
       }
       case SpawnPosition.bottom: {
         const containerView = this.bottom as ViewContainerRef;
         containerView.insert(component.hostView);
-        this.container.elements.insert(component.instance);
+
+        if (tag != HTMLTags.i)
+        {
+          this.container.elements.insert(component.instance);
+        }
         break;
       }
       default: {
         component.destroy();
       }
     }
+
+    return component.instance;
   }
 }
