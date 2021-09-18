@@ -49,4 +49,12 @@ export class ToolHierarchyComponent implements OnChanges {
   onWorkspaceLoad() {
     this.workspace.loadProjectOnScreen(this.elements as Element[]);
   }
+
+  setElementNodeLevel(elem: ElementNode) {
+    const styles = {
+      'margin-left': elem.level > 1 ?  (elem.level - 1) + 'em' : 0,
+    };
+
+    return styles;
+  }
 }

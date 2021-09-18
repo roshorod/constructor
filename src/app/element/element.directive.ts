@@ -106,24 +106,18 @@ export class ElementDirective implements OnDestroy{
   private onResize(event: any) {
     clearTimeout();
 
-    console.log(window.innerWidth, " : ", window.innerHeight);
-
     const scale = this.getScale();
 
     if (window.innerWidth < this.lastWindowX) {
       this.currentX -= scale;
-      // console.log("decrease X");
     } else if (window.innerWidth > this.lastWindowX) {
       this.currentX += scale;
-      // console.log("encrease X");
     }
 
     if (window.innerHeight < this.lastWindowY) {
       this.currentY -= scale;
-      console.log("decrease Y");
     } else if (window.innerHeight > this.lastWindowY) {
       this.currentY += scale;
-      console.log("encrease Y");
     }
 
     this.element.style.transform =
@@ -134,10 +128,6 @@ export class ElementDirective implements OnDestroy{
       this.lastWindowX = window.innerWidth;
       this.lastWindowY = window.innerHeight;
     }, 250);
-  }
-
-  @HostListener('window:load', ['$event'])
-  private onLoad(event: any) {
   }
 
   @HostListener('mouseup', ['$event'])
