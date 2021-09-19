@@ -23,10 +23,10 @@
   (try
     (wcar* (car/set key? value?))
     (catch Exception e
-      (log/info "Cann't set value." e))))
+      (log/warn "Cann't set value." e))))
 
 (defn get-value [key?]
   (try
     (wcar* (car/get key?))
     (catch Exception e
-      (log/info "Cann't get value" e))))
+      (log/warn "Cann't get value" e))))

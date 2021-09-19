@@ -1,6 +1,7 @@
 (ns component.hello-world
   (:require [hiccup.core :refer [html h]]
-            [app.redis :as redis]))
+            [app.redis :as redis]
+            [clj-time.core :as ctime]))
 
 (defn- get-cookie [request]
   (let [cookies (get request :cookies)
@@ -14,4 +15,4 @@
      (html [:div
             [:h3 "Current cookie: "
              (str (redis/get-value cookie))]])
-     :session {:cookies cookie}}))
+     }))

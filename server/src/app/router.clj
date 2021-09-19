@@ -2,8 +2,12 @@
   (:require [compojure.core :as compojure]
             [ring.util.response :as responce]
             [hiccup.core :refer [html h]]
-
+            [component.element :refer [element-get]]
             [component.hello-world :refer [hello-world]]))
 
-(def app-routers (compojure/routes
-                  (compojure/GET "/" params  hello-world)))
+(compojure/defroutes element-routes
+  (compojure/GET "/element" request element-get))
+
+(compojure/defroutes app-routers
+  (compojure/GET "/" request hello-world)
+  (compojure/context "/api/:session-id" [session-id] element-routes))
