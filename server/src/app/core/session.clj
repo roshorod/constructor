@@ -1,8 +1,9 @@
-(ns app.session
-  (:require [clj-time.core :refer [plus now minutes from-now after? date-time]]
+(ns app.core.session
+  (:require [clj-time.core :refer [plus now minutes
+                                   after? date-time]]
             [clj-time.coerce :refer [from-string]]))
 
-(def expire-time 1)
+(def ^:private expire-time 1)
 
 (defn get-cookie-expire []
   (plus (now) (minutes expire-time)))

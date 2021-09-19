@@ -1,7 +1,6 @@
 (ns component.hello-world
   (:require [hiccup.core :refer [html h]]
-            [app.redis :as redis]
-            [clj-time.core :as ctime]))
+            [app.core.redis :as redis]))
 
 (defn- get-cookie [request]
   (let [cookies (get request :cookies)

@@ -2,10 +2,9 @@
   (:require [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.session :refer [wrap-session]]
             [ring.middleware.cookies :refer [wrap-cookies]]
-            [taoensso.timbre :as log]
-            [app.redis :as redis]
             [app.router :as router]
-            [app.session :as sess]))
+            [app.core.redis :as redis]
+            [app.core.session :as sess]))
 
 (defn wrap-session-expire [handler]
   (fn [request]
