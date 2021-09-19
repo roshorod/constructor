@@ -10,10 +10,10 @@
 (defn wrap-session-expire [handler]
   (fn [request]
     (let [br-cookie (sess/get-request-cookie request)]
-      (if (not-empty (redis/get-value br-cookie))
-        (let [expire (get (redis/get-value br-cookie) :expires)]
-          (println (sess/is-cookie-expire? expire) "from" expire))
-        (redis/set-value br-cookie {:expires (str sess/get-cookie-expire)}))
+      (if-let [has? (contains? (redis/get-val br-cookie) :expires)]
+        (if (sess/is-cookie-expire? (str (get (redis/get-val br-cookie) :expires)))
+          (redis/set-val br-cookie {:expires (str (sess/get-cookie-expire))}))
+        (redis/set-val br-cookie {:expires (str (sess/get-cookie-expire))}))
       (handler (assoc request :session {:cookies br-cookie})))))
 
 (def app-middleware

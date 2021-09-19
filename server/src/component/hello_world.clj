@@ -10,9 +10,8 @@
 
 (defn hello-world [params]
   (let [cookie (get-cookie params)]
-    (redis/set-value cookie cookie)
     {:body
      (html [:div
             [:h3 "Current cookie: "
-             (str (redis/get-value cookie))]])
+             (str (redis/get-val cookie))]])
      }))
