@@ -1,9 +1,7 @@
 (ns app.router
   (:require [compojure.core :as compojure]
-            [ring.util.response :as responce]
-            [hiccup.core :refer [html h]]
-            [component.element :refer [element-get]]
-            [component.hello-world :refer [hello-world]]))
+            [app.component.element :refer [element-get]]
+            [app.component.hello-world :refer [hello-world]]))
 
 (compojure/defroutes element-routes
   (compojure/GET "/element" request element-get))

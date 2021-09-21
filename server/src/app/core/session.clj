@@ -1,6 +1,6 @@
 (ns app.core.session
   (:require [clj-time.core :refer [plus now minutes
-                                   after? date-time]]
+                                   after?]]
             [clj-time.coerce :refer [from-string]]))
 
 (def ^:private expire-time 1)

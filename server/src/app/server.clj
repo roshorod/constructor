@@ -13,7 +13,7 @@
            (httpd/run-server app-middleware {:port server-port})
 
            (-> (mount/start
-                #'app.core.redis/redis-start))
+                 #'app.core.redis/redis-start))
 
            (.addShutdownHook (Runtime/getRuntime) (Thread. mount/stop)))
   :stop (do
@@ -22,4 +22,4 @@
 
 (defn- start [& args]
   (-> (mount/start
-       #'app.server/server-start)))
+        #'app.server/server-start)))
