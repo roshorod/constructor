@@ -6,6 +6,8 @@ import { HTMLTags } from '../models/htmltags';
 import { SpawnPosition } from '../models/settings';
 import { Element } from '../models/element';
 import { ContainerService } from '../services/container.service';
+import { ApiClientSerivce } from '../services/api-client.service';
+
 
 @Component({
   selector: 'app-renderer',
@@ -31,13 +33,22 @@ export class RendererComponent implements AfterViewInit {
 
   constructor(
     public container: ContainerService,
+    public api: ApiClientSerivce,
     private ngFactory: ComponentFactoryResolver,
-    private ngContainer: ViewContainerRef
+    private ngContainer: ViewContainerRef,
   ) { }
 
   ngAfterViewInit() {
+    this.getElement();
     // this.createElement('h1' as HTMLTags, SpawnPosition.top);
     // this.createElement('h1' as HTMLTags, SpawnPosition.bottom);
+  }
+
+  private getElement() {
+    this.api.getElement()
+      .subscribe(resp =>
+        this.createElement(resp['tag'], resp['content'], resp['position'])
+      );
   }
 
   private detachEelemet(element: Element) {
@@ -105,12 +116,17 @@ export class RendererComponent implements AfterViewInit {
     }
   }
 
-  createElement(tag: HTMLTags, grid: SpawnPosition = SpawnPosition.center) : Element {
+  createElement(
+    tag: HTMLTags,
+    content: string = "Initial",
+    grid: SpawnPosition = SpawnPosition.center) : Element {
+
     const componentType = this.ngFactory.resolveComponentFactory(ElementComponent);
     const component = this.ngContainer.createComponent(componentType);
     component.instance.tag = tag;
     component.instance.position = grid;
     component.instance.component = component;
+    component.instance.content = content;
 
     if (tag == HTMLTags.h1)
       component.instance.child

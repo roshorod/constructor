@@ -27,7 +27,7 @@ export class ElementComponent extends Element implements OnInit {
   constructor(
     private sanitized: DomSanitizer
   ) {
-    super(HTMLTags.h1, "Initial");
+    super(HTMLTags.h1, "");
   }
 
   private signHTML(content: string) : SafeHtml {
