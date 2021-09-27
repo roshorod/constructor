@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Element } from '../models/element';
 import { CookiesService } from './cookie.service';
+import { SpawnPosition } from '../models/settings';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,21 @@ export class ApiClientSerivce {
     private cookie: CookiesService
   ) { }
 
-  public getElement() {
-    const cookie = 'BDCTMXvdL08Qysy0yWXfhAjIl2wz_k_GupX7mo5G';
-    const uri = `http://localhost:3000`
+  cookie_string = this.cookie.getCookie(this.cookie.cookieName);
+  uri = `http://localhost:3000`;
 
-    return this.http.get<Element>(`${uri}/api/${cookie}/element`);
+  public getElements() {
+    return this.http.get<Element[]>(`${this.uri}/api/${this.cookie_string}/element`);
+  }
+
+  public postElement(
+    tag: string,
+    content: string = "Initial",
+    spawnPosition: SpawnPosition = SpawnPosition.center) {
+    const json = {element:{tag: tag,
+                           content: content,
+                           spawnPosition: spawnPosition}};
+    return this.http
+      .post(`${this.uri}/api/${this.cookie_string}/element`, JSON.stringify(json));
   }
 }

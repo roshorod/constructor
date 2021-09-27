@@ -4,13 +4,13 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class CookiesService {
-  public cookieName = 'JSESSINOID';
+  public cookieName = 'JSESSIONID';
 
   constructor() {
     if(this.getCookie(this.cookieName) == '')
       this.setCookie(this.cookieName, this.makeHash(), 1);
     else
-      console.log("Present");
+      console.info("Session recognized")
   }
 
   public deleteCookie(name: string) {

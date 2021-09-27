@@ -1,5 +1,6 @@
-import { AfterViewInit, Component,
+import { Component,
          ComponentFactoryResolver,
+         AfterViewInit,
          ViewChild, ViewContainerRef } from '@angular/core';
 import { ElementComponent } from '../element/element.component';
 import { HTMLTags } from '../models/htmltags';
@@ -39,16 +40,16 @@ export class RendererComponent implements AfterViewInit {
   ) { }
 
   ngAfterViewInit() {
-    this.getElement();
-    // this.createElement('h1' as HTMLTags, SpawnPosition.top);
-    // this.createElement('h1' as HTMLTags, SpawnPosition.bottom);
+    this.getElements();
   }
 
-  private getElement() {
-    this.api.getElement()
-      .subscribe(resp =>
-        this.createElement(resp['tag'], resp['content'], resp['position'])
-      );
+  private getElements() {
+    this.api.getElements().subscribe(resp =>
+      resp.forEach(element => {
+        this.createElement(element.tag,
+          element.content,
+          element.position);
+      }));
   }
 
   private detachEelemet(element: Element) {
@@ -128,13 +129,13 @@ export class RendererComponent implements AfterViewInit {
     component.instance.component = component;
     component.instance.content = content;
 
-    if (tag == HTMLTags.h1)
-      component.instance.child
-        .push(this.createElement('i' as HTMLTags, SpawnPosition.bottom))
+    // if (tag == HTMLTags.h1)
+      // component.instance.child
+        // .push(this.createElement('i' as HTMLTags, SpawnPosition.bottom))
 
-    if (tag == HTMLTags.i)
-      component.instance.child
-        .push(this.createElement('b' as HTMLTags, SpawnPosition.right))
+    // if (tag == HTMLTags.i)
+      // component.instance.child
+        // .push(this.createElement('b' as HTMLTags, SpawnPosition.right))
 
     switch(component.instance.position){
       case SpawnPosition.top: {
