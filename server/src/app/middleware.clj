@@ -1,30 +1,35 @@
 (ns app.middleware
   (:require [ring.middleware.reload :refer [wrap-reload]]
-            [ring.middleware.session :refer [wrap-session]]
-            [ring.middleware.cookies :refer [wrap-cookies]]
             [ring.middleware.json :refer [wrap-json-body
+                                          wrap-json-params
                                           wrap-json-response]]
-            [app.router :as router]
-            [app.core.redis :as redis]
-            [app.core.session :refer [is-cookie-expire?
-                                      get-cookie-expire
-                                      get-request-cookie]]))
+            [app.router :as router]))
 
-(defn wrap-session-expire [handler]
+(def cors-headers
+  {"Access-Control-Allow-Origin"  "*"
+   "Access-Control-Allow-Headers" "*"
+   "Access-Control-Allow-Credentials" "*"
+   "Access-Control-Allow-Methods" "GET POST"})
+
+(defn preflight?
+  [request]
+  (= (request :request-method) :options))
+
+(defn wrap-cors
+  [handler]
   (fn [request]
-    (let [cookie       (get-request-cookie request)
-          expired-time (str (get-cookie-expire))]
-      (if-let [has? (contains? (redis/get-val cookie) :expires)]
-        (if (is-cookie-expire? (str (get (redis/get-val cookie) :expires)))
-          (redis/set-val cookie {:expires expired-time}))
-        (redis/set-val cookie {:expires expired-time}))
-      (handler (assoc request :session {:cookies cookie})))))
+    (if (preflight? request)
+      {:status  200
+       :headers cors-headers
+       :body    "preflight complete"}
+      (let [response (handler request)]
+        (update-in response [:headers]
+                   merge cors-headers )))))
 
 (def app-middleware
   (-> router/app-routers
-      wrap-session-expire
+      wrap-cors
       wrap-json-response
-      wrap-json-body
+      wrap-json-params
       wrap-reload
-      wrap-cookies
-      wrap-session))
+      (wrap-json-body {:keywords? true})))

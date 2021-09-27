@@ -1,11 +1,13 @@
 {:paths ["src", "resource"]
  :deps
  {org.clojure/clojure {:mvn/version "1.10.3"}
+  org.clojure/data.json {:mvn/version "2.4.0"}
 
   mount/mount {:mvn/version "0.1.16"}
 
   ring/ring {:mvn/version "1.9.4"}
   ring/ring-json {:mvn/version "0.5.1"}
+
   compojure/compojure {:mvn/version "1.6.2"}
 
   clj-time/clj-time {:mvn/version "0.15.2"}

@@ -1,18 +1,37 @@
 (ns app.context.element
-  [:require [app.core.redis :as redis]])
+  (:require [app.core.redis :as redis]
+            [taoensso.timbre :as log]))
 
+(defn ^:private append-element [element-map element]
+  (let [elements (get element-map :elements)]
+    (assoc element-map :elements
+           (into (map (fn [elem] elem) elements)
+                 (map (fn [elem] elem) element)))))
 
 (defn make-element
   [{:keys [id tag content position]}]
-  {:id      id
-   :tag     tag
-   :content content
+  {:id       id
+   :tag      tag
+   :content  content
    :position position})
 
-(map (fn [x] (assoc (val x) :child nil))
-     {(make-element {:id 1 :tag "h1" :content "test content"})
-      (make-element {:id 1 :tag "h1" :content "test last"})})
+(defn serialize-element [string]
+  (let [tag      (get-in string ["tag"])
+        content  (get-in string ["content"])
+        position (get-in string ["spawnPosition"])]
+    {:element {:tag      tag
+               :content  content
+               :position position}}))
 
-(get (make-element {:id 2 :tag "h2"}) :tag)
+(def id-generator
+  (let [counter (ref 0)]
+    (fn [] (dosync (let [cur-val @counter]
+                     (do (alter counter + 1)
+                         cur-val))))))
 
-(:id (make-element {:id 3 :tag "h3"}))
+(defn store-element
+  [session-id element]
+  (let [session (redis/get-val session-id)]
+    (if (contains? session :elements)
+      (redis/set-val session-id (append-element session element))
+      (redis/set-val session-id (assoc session :elements (into [] element))))))
