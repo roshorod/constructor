@@ -15,6 +15,9 @@
            (-> (mount/start
                  #'app.core.redis/redis-start))
 
+           (-> (mount/start
+                 #'app.core.session/session-expire-watcher))
+
            (.addShutdownHook (Runtime/getRuntime) (Thread. mount/stop)))
   :stop (do
           (log/info "Shutdowning the server...")
