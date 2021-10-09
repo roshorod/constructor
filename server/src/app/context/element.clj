@@ -2,11 +2,29 @@
   (:require [app.core.redis :as redis]
             [taoensso.timbre :as log]))
 
-(defn ^:private append-element [element-map element]
-  (let [elements (get element-map :elements)]
-    (assoc element-map :elements
-           (into (map (fn [elem] elem) elements)
-                 (map (fn [elem] elem) element)))))
+
+(defn ^:private store-element-record
+  "Write element into store."
+  [element-id element]
+  (if (nil? (redis/get-val element-id))
+    (redis/set-val element-id element)
+    (do
+      (log/warn "Current element id:" element-id "rewrited. May be incorect id")
+      (redis/set-val element-id element))))
+
+(defn ^:private append-element
+  "Append element id in `:elements'.
+  And call `store-element-record to save element into store.'"
+  [session-id element]
+  (let [store-session (redis/get-val session-id)
+        session       (if (nil?
+                            (get store-session :elements))
+                        (assoc store-session :elements [])
+                        store-session)]
+    (let [elements   (get session :elements)
+          element-id (str session-id (count elements))]
+      (store-element-record element-id element)
+      (assoc session :elements (conj elements element-id)))))
 
 (defn make-element
   [{:keys [id tag content position]}]
@@ -23,15 +41,9 @@
                :content  content
                :position position}}))
 
-(def id-generator
-  (let [counter (ref 0)]
-    (fn [] (dosync (let [cur-val @counter]
-                     (do (alter counter + 1)
-                         cur-val))))))
-
 (defn store-element
+  "Top level function for store element in redis."
   [session-id element]
-  (let [session (redis/get-val session-id)]
-    (if (contains? session :elements)
-      (redis/set-val session-id (append-element session element))
-      (redis/set-val session-id (assoc session :elements (into [] element))))))
+  (redis/set-val
+    session-id
+    (append-element session-id element)))
