@@ -51,7 +51,8 @@
 
 (defn ensure-session
   "Look into session table.
-  If session expire delete it from store by filter"
+  If session expire delete it from store by filter.
+  Also removing session dependent elements."
   [session-id]
   (let [expired (is-session-expired session-id)]
     (if expired
@@ -65,6 +66,11 @@
                  (some
                    (fn [session-name]
                      (= session-name %)) [session-id])) session-table)))
+
+        (mapv (fn [element-id]
+               (redis/del-val element-id))
+             (get (redis/get-val session-id) :elements))
+
         (redis/del-val session-id)
         (log/info "Removed from store:" session-id)))))
 
