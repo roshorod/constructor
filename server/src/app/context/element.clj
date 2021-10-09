@@ -37,9 +37,9 @@
   (let [tag      (get-in string ["tag"])
         content  (get-in string ["content"])
         position (get-in string ["spawnPosition"])]
-    {:element {:tag      tag
-               :content  content
-               :position position}}))
+     {:tag      tag
+      :content  content
+      :position position}))
 
 (defn store-element
   "Top level function for store element in redis."

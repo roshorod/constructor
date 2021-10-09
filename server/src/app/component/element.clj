@@ -17,11 +17,14 @@
       {:status 404})))
 
 (defn element-get [request]
-  (let [session-id (:session-id (:params request))]
+  (let [session-id (:session-id (:params request))
+        elements-id (get (redis/get-val session-id) :elements)]
     (if (start-session session-id)
       (response
         (reduce
           into []
-          (map (fn [element]  (next element))
-               (:elements (redis/get-val session-id)))))
+          (map
+            (fn [element-id]
+              [(-> (redis/get-val element-id))])
+            elements-id)))
        {:status 401})))
