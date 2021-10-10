@@ -1,7 +1,6 @@
 import { Component,
          ComponentFactoryResolver,
-         AfterViewInit,
-         ViewChild, ViewContainerRef } from '@angular/core';
+         ViewChild, ViewContainerRef, OnInit } from '@angular/core';
 import { ElementComponent } from '../element/element.component';
 import { HTMLTags } from '../models/htmltags';
 import { SpawnPosition } from '../models/settings';
@@ -15,7 +14,7 @@ import { ApiClientSerivce } from '../services/api-client.service';
   templateUrl: './renderer.component.html',
   styleUrls: ['./renderer.component.css']
 })
-export class RendererComponent implements AfterViewInit {
+export class RendererComponent implements OnInit {
 
   @ViewChild('topTempl', { read: ViewContainerRef })
   private top: ViewContainerRef;
@@ -39,7 +38,7 @@ export class RendererComponent implements AfterViewInit {
     private ngContainer: ViewContainerRef,
   ) { }
 
-  ngAfterViewInit() {
+  ngOnInit() {
     this.getElements();
   }
 

@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ViewChild } from '@angular/core';
 import { Element } from './models/element';
 import { HTMLTags } from './models/htmltags';
 import { RendererComponent } from './renderer/renderer.component';
@@ -11,7 +11,7 @@ import { CookiesService } from './services/cookie.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements AfterContentInit{
+export class AppComponent implements AfterViewChecked{
   @ViewChild(RendererComponent) renderer!: RendererComponent;
 
   elements: Element[] = [];
@@ -23,7 +23,7 @@ export class AppComponent implements AfterContentInit{
     private cookie: CookiesService
   ) { }
 
-  ngAfterContentInit() {
+  ngAfterViewChecked() {
     this.elements = this.container.elements.getArray();
   }
 
