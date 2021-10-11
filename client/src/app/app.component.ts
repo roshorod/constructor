@@ -4,14 +4,13 @@ import { HTMLTags } from './models/htmltags';
 import { RendererComponent } from './renderer/renderer.component';
 import { ApiClientSerivce } from './services/api-client.service';
 import { ContainerService } from './services/container.service';
-import { CookiesService } from './services/cookie.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements AfterViewChecked{
+export class AppComponent implements AfterViewChecked {
   @ViewChild(RendererComponent) renderer!: RendererComponent;
 
   elements: Element[] = [];
@@ -20,7 +19,6 @@ export class AppComponent implements AfterViewChecked{
   constructor(
     private container: ContainerService,
     private api: ApiClientSerivce,
-    private cookie: CookiesService
   ) { }
 
   ngAfterViewChecked() {
@@ -32,7 +30,6 @@ export class AppComponent implements AfterViewChecked{
       () => {
         this.renderer.createElement(tag as HTMLTags);
         this.elements = this.container.elements.getArray();
-        console.log(this.cookie.getCookie(this.cookie.cookieName))
       },
       () => { console.error("Cannot create element") });
   }

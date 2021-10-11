@@ -36,8 +36,6 @@ export class ToolHierarchyComponent implements OnChanges {
   ngOnChanges() {
     this._elemController.nodes = new Array(...this.elements).map(x =>
       new ElementNode(x.tag as string, x.component));
-
-    console.log(this._elemController.nodes);
   }
 
   onComponentSelect(elem: Element) {
