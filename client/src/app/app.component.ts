@@ -4,6 +4,7 @@ import { HTMLTags } from './models/htmltags';
 import { RendererComponent } from './renderer/renderer.component';
 import { ApiClientSerivce } from './services/api-client.service';
 import { ContainerService } from './services/container.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -26,15 +27,32 @@ export class AppComponent implements AfterViewChecked {
   }
 
   onComponentCreate(tag: string) {
-    this.api.postElement(tag).subscribe(
-      () => {
-        this.renderer.createElement(tag as HTMLTags);
-        this.elements = this.container.elements.getArray();
+    this.api.postElement(tag).subscribe((resp: string[]) => {
+      var elemId = '';
+
+      for (const val in resp)
+        if (val === 'id')
+          elemId = resp[val]
+
+      this.renderer.createElement(tag as HTMLTags, elemId);
+      this.elements = this.container.elements.getArray();
       },
       () => { console.error("Cannot create element") });
   }
 
-  onSelectedUpdate() {
+  onSelectedComponentPost(id: string) {
+    if (this.selectedElement) {
+      const component = this.selectedElement.component.instance;
+      console.log(component)
+      if (component.id === id) {
+        this.api.postElementById(this.selectedElement).subscribe();
+      } else
+        console.warn("Selected element id conflict");
+    } else
+      console.warn("Selected element undefined");
+  }
+
+  onSelectComponent() {
     this.selectedElement = this.container.selectedElement;
   }
 

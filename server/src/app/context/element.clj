@@ -3,7 +3,7 @@
             [taoensso.timbre :as log]))
 
 
-(defn ^:private store-element-record
+(defn store-element-record
   "Write element into store."
   [element-id element]
   (let [element-with-id (assoc element :id element-id)]
@@ -14,7 +14,7 @@
         (redis/set-val element-id element-with-id)))))
 
 (defn ^:private append-element
-  "Append element id in `:elements'.
+  "Append element id in `:elements' and save it to store.
   And call `store-element-record to save element into store.'"
   [session-id element]
   (let [store-session (redis/get-val session-id)
@@ -25,7 +25,10 @@
     (let [elements   (get session :elements)
           element-id (str session-id (count elements))]
       (store-element-record element-id element)
-      (assoc session :elements (conj elements element-id)))))
+      (redis/set-val
+        session-id
+        (assoc session :elements (conj elements element-id)))
+      element-id)))
 
 (defn make-element
   [{:keys [id tag content position]}]
@@ -35,16 +38,18 @@
    :position position})
 
 (defn serialize-element [string]
-  (let [tag      (get-in string ["tag"])
+  (let [id       (get-in string ["id"])
+        tag      (get-in string ["tag"])
         content  (get-in string ["content"])
-        position (get-in string ["spawnPosition"])]
-     {:tag      tag
-      :content  content
-      :position position}))
+        position (get-in string ["spawnPosition"])
+        cords    (get-in string ["cords"])]
+    {:id       id
+     :tag      tag
+     :content  content
+     :position position
+     :cords    cords}))
 
 (defn store-element
   "Top level function for store element in redis."
   [session-id element]
-  (redis/set-val
-    session-id
-    (append-element session-id element)))
+  (append-element session-id element))

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, forwardRef } from '@angular/core';
+import { Component, OnInit, ViewChild, forwardRef, AfterViewInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HTMLTags } from '../models/htmltags';
 import { ElementDirective } from './element.directive';
@@ -14,7 +14,7 @@ import { Element } from "../models/element";
       useExisting: forwardRef(() => ElementComponent)}
   ],
 })
-export class ElementComponent extends Element implements OnInit {
+export class ElementComponent extends Element implements OnInit, AfterViewInit {
   template: SafeHtml;
 
   getPosition = () => {
@@ -55,5 +55,9 @@ export class ElementComponent extends Element implements OnInit {
       `<${this.tag} class="${this.position}">${this.content}</${this.tag}>`;
 
     this.template = this.signHTML(template);
+  }
+
+  ngAfterViewInit() {
+    this.directive.setTransformPosition(this.cords);
   }
 }

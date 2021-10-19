@@ -24,6 +24,14 @@ export class ElementDirective implements OnDestroy{
     return this.element.style.transform;
   }
 
+  setTransformPosition(cords: {x: number, y: number}) {
+    this.currentX = cords.x;
+    this.currentY = cords.y;
+
+    this.element.style.transform =
+      `translate3d(${this.currentX}px,${this.currentY}px, 0)`;
+  }
+
   resetPosition() {
     this.initX = 0;
     this.initY = 0;
@@ -43,8 +51,8 @@ export class ElementDirective implements OnDestroy{
 
   private initX = 0;
   private initY = 0;
-  private currentX = 0;
-  private currentY = 0;
+  public currentX = 0;
+  public currentY = 0;
 
   @HostListener('mousedown', ['$event'])
   private onMoveStart(event: MouseEvent) {

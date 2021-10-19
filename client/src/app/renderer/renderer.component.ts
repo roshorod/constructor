@@ -42,12 +42,18 @@ export class RendererComponent implements OnInit {
     this.getElements();
   }
 
+  public createEmptyElement(): Element {
+    return this.createElement(HTMLTags.h1, '');
+  }
+
   private getElements() {
     this.api.getElements().subscribe(resp =>
       resp.forEach(element => {
         this.createElement(element.tag,
+          element.id,
           element.content,
-          element.position);
+          element.position,
+          element.cords);
       }));
   }
 
@@ -118,15 +124,20 @@ export class RendererComponent implements OnInit {
 
   createElement(
     tag: HTMLTags,
+    id: string = '',
     content: string = "Initial",
-    grid: SpawnPosition = SpawnPosition.center) : Element {
+    grid: SpawnPosition = SpawnPosition.center,
+    cords: {x: number, y: number} = {x: 0, y: 0}
+  ) : Element {
 
     const componentType = this.ngFactory.resolveComponentFactory(ElementComponent);
     const component = this.ngContainer.createComponent(componentType);
+    component.instance.id = id;
     component.instance.tag = tag;
     component.instance.position = grid;
     component.instance.component = component;
     component.instance.content = content;
+    component.instance.cords = cords;
 
     // if (tag == HTMLTags.h1)
       // component.instance.child

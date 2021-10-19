@@ -4,7 +4,7 @@ import { ToolHierarchyComponent } from './tool-hierarchy/tool-hierarchy.componen
 import { ToolComponentsComponent } from './tool-components/tool-components.component';
 import { HTMLTagsPipe } from '../models/htmltags.pipe';
 import { ToolPropertiesComponent } from './tool-properties/tool-properties.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTreeModule } from '@angular/material/tree';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
 
     MatTreeModule,
     ScrollingModule,

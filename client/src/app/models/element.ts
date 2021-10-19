@@ -8,7 +8,10 @@ export abstract class Element {
     public tag: HTMLTags,
     public content: string,
     public position: SpawnPosition = SpawnPosition.center,
+    public id: string = '',
   ) { }
+
+  cords: {x: number, y: number};
 
   component: ComponentRef<ElementComponent>;
 

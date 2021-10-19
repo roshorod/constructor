@@ -25,10 +25,37 @@ export class ApiClientSerivce {
     tag: string,
     content: string = "Initial",
     spawnPosition: SpawnPosition = SpawnPosition.center) {
-    const json = {element:{tag: tag,
-                           content: content,
-                           spawnPosition: spawnPosition}};
+    const json = {
+      element: {
+        tag: tag,
+        content: content,
+        spawnPosition: spawnPosition
+      }
+    };
+
     return this.http
-      .post(`${this.uri}/api/${this.cookie_string}/element`, JSON.stringify(json));
+      .post<string[]>(`${this.uri}/api/${this.cookie_string}/element`,
+            JSON.stringify(json));
+  }
+
+  public postElementById(element: Element) {
+    const elementDirective = element.component.instance.directive;
+
+    const json = {
+      element: {
+        tag: element.tag,
+        content: element.content,
+        spawnPosition: element.position,
+        id: element.id,
+        cords: {
+          x: elementDirective.currentX,
+          y: elementDirective.currentY
+        }
+      }
+    };
+
+    return this.http
+      .post(`${this.uri}/api/${this.cookie_string}/element/${element.id}`,
+            JSON.stringify(json));
   }
 }
