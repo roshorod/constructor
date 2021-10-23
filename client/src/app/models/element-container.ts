@@ -1,7 +1,3 @@
-import { CollectionViewer, DataSource, SelectionChange } from '@angular/cdk/collections';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { BehaviorSubject, Observable, merge } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Element } from './element';
 
 export class ElementContainer {

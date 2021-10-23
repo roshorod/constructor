@@ -4,14 +4,6 @@
   box-shadow: 5px 3px 5px #7d7c78;
 }
 
-.viewport {
-  height: 100%;
-  width: 100%;
-}
-.viewport-item {
-  height: 40px;
-}
-
 hr {
   border: 1px solid #7d7c78;
 }

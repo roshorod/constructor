@@ -1,5 +1,4 @@
-import { Component,
-         ComponentFactoryResolver,
+import { Component, ComponentFactoryResolver,
          ViewChild, ViewContainerRef, OnInit } from '@angular/core';
 import { ElementComponent } from '../element/element.component';
 import { HTMLTags } from '../models/htmltags';
@@ -38,23 +37,22 @@ export class RendererComponent implements OnInit {
     private ngContainer: ViewContainerRef,
   ) { }
 
-  ngOnInit() {
-    this.getElements();
-  }
-
-  public createEmptyElement(): Element {
-    return this.createElement(HTMLTags.h1, '');
-  }
-
   private getElements() {
     this.api.getElements().subscribe(resp =>
       resp.forEach(element => {
+        if (element.cords === null)
+          element.cords = { x: 0, y: 0 };
+
         this.createElement(element.tag,
           element.id,
           element.content,
           element.position,
           element.cords);
       }));
+  }
+
+  ngOnInit() {
+    this.getElements();
   }
 
   private detachEelemet(element: Element) {
@@ -85,53 +83,28 @@ export class RendererComponent implements OnInit {
     }
   }
 
-  updateElementPosition(element: Element) {
+  public updateElementPosition(element: Element) {
     this.detachEelemet(element);
 
     element.component.instance.reset();
 
-    switch (element.component.instance.position) {
-      case SpawnPosition.top: {
-        const containerView = this.top as ViewContainerRef;
-        containerView.insert(element.component.hostView);
-        break;
-      }
-      case SpawnPosition.left: {
-        const containerView = this.left as ViewContainerRef;
-        containerView.insert(element.component.hostView);
-        break;
-      }
-      case SpawnPosition.center: {
-        const containerView = this.center as ViewContainerRef;
-        containerView.insert(element.component.hostView);
-        break;
-      }
-      case SpawnPosition.right: {
-        const containerView = this.right as ViewContainerRef;
-        containerView.insert(element.component.hostView);
-        break;
-      }
-      case SpawnPosition.bottom: {
-        const containerView = this.bottom as ViewContainerRef;
-        containerView.insert(element.component.hostView);
-        break;
-      }
-      default: {
-        throw new Error("Container insert error. Can't find right container...");
-      }
-    }
+    if (this.attachToContainer(element))
+      return true;
+    else
+      throw new Error("Container insert error. Can't find right container...");
   }
 
-  createElement(
+  //https://indepth.dev/posts/1054/here-is-what-you-need-to-know-about-dynamic-components-in-angular
+  public createElement(
     tag: HTMLTags,
     id: string = '',
     content: string = "Initial",
     grid: SpawnPosition = SpawnPosition.center,
-    cords: {x: number, y: number} = {x: 0, y: 0}
+    cords: { x: number, y: number } = { x: 0, y: 0 }
   ) : Element {
-
     const componentType = this.ngFactory.resolveComponentFactory(ElementComponent);
     const component = this.ngContainer.createComponent(componentType);
+
     component.instance.id = id;
     component.instance.tag = tag;
     component.instance.position = grid;
@@ -139,57 +112,41 @@ export class RendererComponent implements OnInit {
     component.instance.content = content;
     component.instance.cords = cords;
 
-    // if (tag == HTMLTags.h1)
-      // component.instance.child
-        // .push(this.createElement('i' as HTMLTags, SpawnPosition.bottom))
+    if (this.attachToContainer(component.instance))
+      this.container.elements.insert(component.instance);
+    else
+      component.destroy();
 
-    // if (tag == HTMLTags.i)
-      // component.instance.child
-        // .push(this.createElement('b' as HTMLTags, SpawnPosition.right))
+    return component.instance;
+  }
 
-    switch(component.instance.position){
+  private attachToContainer(component: Element): boolean{
+    const hostView = component.component.hostView;
+
+    switch (component.position) {
       case SpawnPosition.top: {
-        const containerView = this.top as ViewContainerRef;
-        containerView.insert(component.hostView);
-        this.container.elements.insert(component.instance);
+        this.top.insert(hostView);
         break;
       }
       case SpawnPosition.left: {
-        const containerView = this.left as ViewContainerRef;
-        containerView.insert(component.hostView);
-        this.container.elements.insert(component.instance);
+        this.left.insert(hostView);
         break;
       }
       case SpawnPosition.center: {
-        const containerView = this.center as ViewContainerRef;
-        containerView.insert(component.hostView);
-        this.container.elements.insert(component.instance);
+        this.center.insert(hostView);
         break;
       }
       case SpawnPosition.right: {
-        const containerView = this.right as ViewContainerRef;
-        containerView.insert(component.hostView);
-
-        if (tag != HTMLTags.b) {
-          this.container.elements.insert(component.instance);
-        }
+        this.right.insert(hostView);
         break;
       }
       case SpawnPosition.bottom: {
-        const containerView = this.bottom as ViewContainerRef;
-        containerView.insert(component.hostView);
-
-        if (tag != HTMLTags.i)
-        {
-          this.container.elements.insert(component.instance);
-        }
+        this.bottom.insert(hostView);
         break;
       }
-      default: {
-        component.destroy();
-      }
+      default:
+        return false;
     }
-
-    return component.instance;
+    return true;
   }
 }

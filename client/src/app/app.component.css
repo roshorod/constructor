@@ -4,18 +4,25 @@
 
   display: grid;
 
-  gap: 10px;
+  grid-template-rows: 1fr 20fr;
+  grid-template-columns: 20fr 3fr;
+  grid-template-areas: "top top"
+                       "center center";
+}
 
-  grid-template-columns: 1fr 8fr 1fr;
-  grid-template-rows: 1fr 20fr 1fr;
+.app-toolbar {
+  grid-area: top;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.app-content {
+  grid-area: center;
 }
 
 .app-renderer {
   grid-row: 2;
-  border-radius: 10px;
-  box-shadow: 0 0 4px 0 black;
-  margin: 0 0 0px 15px;
-  grid-column: 2;
+  grid-column: 1;
 }
 
 

@@ -47,7 +47,7 @@ export class ElementComponent extends Element implements OnInit, AfterViewInit {
   }
 
   reset () {
-    (this.directive as ElementDirective).resetPosition();
+    this.directive.resetTransformPosition();
   }
 
   ngOnInit() {
