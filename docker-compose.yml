@@ -9,8 +9,10 @@ services:
       - 6379
   server:
     build:
-      context: ./server
-      dockerfile: ./build/docker-server
+      dockerfile: ../build/docker-server
+      context: ./server/
+    env_file:
+      - ./build/docker.env
     container_name: app_server
     network_mode: host
     expose:
@@ -19,13 +21,11 @@ services:
       - redis
   client:
     build:
-      context: ./
       dockerfile: ./build/docker-client
+      context: ./
     container_name: app_client
     network_mode: host
     expose:
       - 4200
     depends_on:
       - server
-
-# Default conn ip for nginx - 127.0.0.1

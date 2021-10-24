@@ -3,7 +3,9 @@
              [taoensso.carmine :as car]
              [taoensso.timbre :as log]))
 
-(def ^:private redis-uri "redis://127.0.0.1:6379")
+(if (nil? (System/getenv "REDIS_URI"))
+  (def ^:private redis-uri "redis://127.0.0.1:6379")
+  (def ^:private redis-uri (System/getenv "REDIS_URI")))
 
 (def ^:private redis-conn {:pool {} :spec {:uri redis-uri}})
 
