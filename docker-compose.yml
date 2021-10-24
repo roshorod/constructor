@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis
+    container_name: app_redis
+    network_mode: host
+    expose:
+      - 6379
+  server:
+    build:
+      context: ./server
+      dockerfile: ./build/docker-server
+    container_name: app_server
+    network_mode: host
+    expose:
+      - 3000
+    depends_on:
+      - redis
+  client:
+    build:
+      context: ./
+      dockerfile: ./build/docker-client
+    container_name: app_client
+    network_mode: host
+    expose:
+      - 4200
+    depends_on:
+      - server
+
+# Default conn ip for nginx - 127.0.0.1

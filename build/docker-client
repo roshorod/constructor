@@ -1,0 +1,11 @@
+FROM node AS build
+RUN mkdir -p /app /app/clinet
+COPY angular.json /app
+COPY package.json /app
+COPY client /app/client
+WORKDIR /app
+RUN npm install --force
+RUN npm run build
+
+FROM nginx
+COPY --from=build /app/dist/constructor /usr/share/nginx/html
