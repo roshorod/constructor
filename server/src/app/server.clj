@@ -23,6 +23,6 @@
           (log/info "Shutdowning the server...")
           (shutdown-agents)))
 
-(defn- start [& args]
+(defn -main []
   (-> (mount/start
         #'app.server/server-start)))

@@ -2,4 +2,5 @@ FROM clojure:tools-deps
 RUN mkdir /app
 COPY . /app
 WORKDIR /app
-CMD clj -X app.server/start
+CMD clj -T:build uber
+CMD java -cp target/server.jar app.server
