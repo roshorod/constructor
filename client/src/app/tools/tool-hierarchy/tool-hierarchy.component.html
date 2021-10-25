@@ -1,14 +1,15 @@
-<cdk-virtual-scroll-viewport itemSize="50" class="viewport">
+<cdk-virtual-scroll-viewport itemSize="10" class="viewport">
   <h4>Hierarchy</h4>
   <button (click)="onWorkspaceLoad()">Load Project</button>
   <hr>
   <mat-tree [dataSource]="_elemController"
-    [treeControl]="_treeControl">
+    [treeControl]="_treeControl"
+  >
 
-    <mat-tree-node *matTreeNodeDef="let elem" [ngStyle]="setElementNodeLevel(elem)">
-      <button (click)="onComponentSelect(elem.component.instance)">
-        {{elem.name}}
-      </button>
+    <mat-tree-node *matTreeNodeDef="let elem" [ngStyle]="setElementNodeLevel(elem)"
+      (click)="onComponentSelect(elem.component.instance)"
+      class="tree-node-item">
+      {{elem.name}}
     </mat-tree-node>
 
     <mat-tree-node *matTreeNodeDef="let elem; when: hasChild" [ngStyle]="setElementNodeLevel(elem)">

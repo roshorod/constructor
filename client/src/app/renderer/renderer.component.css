@@ -17,7 +17,7 @@
   height: 100%;
   grid-area: top;
   position: relative;
-  border-bottom: 1px dashed black;
+  border-bottom: 3px dashed #d1c4e9;
 }
 
 .left {
@@ -25,7 +25,7 @@
   height: 100%;
   grid-area: left;
   position: relative;
-  border-right: 1px dashed black;
+  border-right: 3px dashed #d1c4e9;
 }
 
 .right {
@@ -33,7 +33,7 @@
   height: 100%;
   grid-area: right;
   position: relative;
-  border-left: 1px dashed black;
+  border-left: 3px dashed #d1c4e9;
 }
 
 .center {
@@ -48,5 +48,5 @@
   height: 100%;
   grid-area: bottom;
   position: relative;
-  border-top: 1px dashed black;
+  border-top: 3px dashed #d1c4e9;
 }

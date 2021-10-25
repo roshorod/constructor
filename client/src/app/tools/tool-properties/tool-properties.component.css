@@ -1,13 +1,51 @@
-:host(tool-properties) {
+:host() {
   border: 1px solid #7d7c78;
   padding: 0 0 0 10px;
   box-shadow: 5px 3px 5px #7d7c78;
+  background: #d1c4e9;
+}
+
+.viewport {
+  height: 100%;
+  width: 100%;
+  background: #d1c4e9;
+}
+
+.viewport-item {
+  display: flex;
+  height: 35px;
+  background: #ede7f6;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  color: #673ab7;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.viewport-item > * {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 hr {
   border: 1px solid #7d7c78;
 }
 
+h4 {
+  color: #673ab7;
+}
+
 input {
-  width: 90%;
+  width: 70%;
+  border: 2px solid #d1c4e9;
+}
+
+input:focus {
+  outline: none;
+}
+
+select {
+  width: 70%;
 }

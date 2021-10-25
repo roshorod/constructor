@@ -3,15 +3,18 @@
 <hr>
 
 <form [formGroup]="elementForm" *ngIf="selected">
-  <label for="content">Content:</label>
-  <input id="content" type="text" formControlName="content">
-
-  <label for="position">Position:</label>
-  <select id="position" formControlName="position">
-    <option *ngFor="let position of spawnPositions | htmlTags" [value]="position">
-      {{position}}
-    </option>
-  </select>
+  <div class="viewport-item">
+    <label for="content">Content:</label>
+    <input id="content" type="text" formControlName="content">
+  </div>
+  <div class="viewport-item">
+    <label for="position">Position:</label>
+    <select id="position" formControlName="position">
+      <option *ngFor="let position of spawnPositions | htmlTags" [value]="position">
+        {{position}}
+      </option>
+    </select>
+  </div>
 </form>
 
-<h5 *ngIf="selected == undefined">Select hierarchy component</h5>
+<h4 *ngIf="selected == undefined">Select component</h4>

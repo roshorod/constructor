@@ -102,8 +102,6 @@ export class ElementDirective implements OnDestroy, OnInit {
 
         this.element.classList.remove('move-state');
 
-        console.log(this.component);
-
         this.api.postElementById(this.component).subscribe(() => {
           this.snack.open("Saved!");
         });

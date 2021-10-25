@@ -4,16 +4,32 @@
 
   display: grid;
 
-  grid-template-rows: 1fr 20fr;
+  grid-template-rows: 1.5fr 20fr;
   grid-template-columns: 20fr 3fr;
   grid-template-areas: "top top"
                        "center center";
 }
 
-.app-toolbar {
+#app-logo {
+  background:#ede7f6;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.app-header {
   grid-area: top;
   justify-content: space-between;
   user-select: none;
+}
+
+mat-toolbar {
+  background: #d1c4e9;
+  border-bottom: 1px solid #7d7c78;
+  box-shadow: 1px 1px 5px #7d7c78;
+}
+
+mat-toolbar > * {
+  color: #673ab7;
 }
 
 .app-content {
@@ -28,6 +44,7 @@
 
 #app-toolbar {
   grid-row: 2;
+  margin-right: 10px;
 
   gap: 10px;
   display: grid;
