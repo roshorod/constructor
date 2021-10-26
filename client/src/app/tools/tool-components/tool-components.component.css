@@ -1,4 +1,4 @@
-:host() {
+:host(tool-components) {
   border: 1px solid #7d7c78;
   padding: 0 0 0 10px;
   box-shadow: 5px 3px 5px #7d7c78;
@@ -22,6 +22,7 @@
   color: #673ab7;
   justify-content: center;
   align-items: center;
+  user-select: none;
 }
 
 .viewport-item:hover {
@@ -38,4 +39,12 @@ hr {
 
 h4 {
   color: #673ab7;
+}
+
+button:active {
+  border: 1px solid #ede7f6;
+}
+
+.viewport-item:active {
+  border: 1px solid #ede7f6;
 }

@@ -1,6 +1,9 @@
 <cdk-virtual-scroll-viewport itemSize="10" class="viewport">
   <h4>Hierarchy</h4>
-  <button (click)="onWorkspaceLoad()">Load Project</button>
+  <button id="load-project"
+    (click)="onWorkspaceLoad()">
+    Load Project
+  </button>
   <hr>
   <mat-tree [dataSource]="_elemController"
     [treeControl]="_treeControl"

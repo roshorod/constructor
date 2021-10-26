@@ -5,6 +5,11 @@
   background: #d1c4e9;
 }
 
+#load-project {
+  width: 95%;
+  margin-right: 10%;
+}
+
 .viewport {
   height: 100%;
   width: 100%;
@@ -35,8 +40,16 @@ hr {
   transition: 0.3s;
   transition-property: background;
   opacity: 0.9;
+  user-select: none;
+}
+
+.tree-node-item:hover {
   background: #7e57c2;
   color: white;
+}
+
+.tree-node-item:active {
+  border: 1px solid #ede7f6;
 }
 
 h4 {
@@ -53,8 +66,13 @@ button {
 
 button:hover {
   transition: 0.5s;
+  transition: 0.3s;
   transition-property: background;
   opacity: 0.9;
   background: #7e57c2;
   color: white;
+}
+
+button:active {
+  border: 1px solid #ede7f6;
 }

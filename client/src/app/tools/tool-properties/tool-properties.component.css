@@ -1,4 +1,4 @@
-:host() {
+:host(tool-properties) {
   border: 1px solid #7d7c78;
   padding: 0 0 0 10px;
   box-shadow: 5px 3px 5px #7d7c78;
@@ -22,6 +22,19 @@
   color: #673ab7;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
+}
+
+@media screen and (max-width: 1400px) {
+  .viewport-item {
+    display: block;
+    height: 48px;
+  }
+
+  .viewport-item > * {
+    width: 85%;
+    margin-right: 10%;
+  }
 }
 
 .viewport-item > * {
