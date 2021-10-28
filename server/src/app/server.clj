@@ -1,4 +1,5 @@
 (ns app.server
+  (:gen-class)
   (:require [org.httpkit.server :as httpd]
             [mount.core :as mount]
             [taoensso.timbre :as log]

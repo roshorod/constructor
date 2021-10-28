@@ -1,12 +1,10 @@
 (ns app.core.redis
-  (:require  [mount.core :as mount]
-             [taoensso.carmine :as car]
-             [taoensso.timbre :as log]))
+  (:require [environ.core :refer [env]]
+            [mount.core :as mount]
+            [taoensso.carmine :as car]
+            [taoensso.timbre :as log]))
 
-(if (nil? (System/getenv "REDIS_URI"))
-  (def ^:private redis-uri "redis://127.0.0.1:6379")
-  (def ^:private redis-uri (System/getenv "REDIS_URI")))
-
+(def ^:private redis-uri (env :redis-uri))
 (def ^:private redis-conn {:pool {} :spec {:uri redis-uri}})
 
 (defmacro ^:private wcar* [& body] `(car/wcar ~redis-conn ~@body))

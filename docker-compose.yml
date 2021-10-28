@@ -8,17 +8,20 @@ services:
     expose:
       - 6379
   server:
-    build:
-      dockerfile: ../build/docker-server
-      context: ./server/
-    env_file:
-      - ./build/docker.env
+    image: clojure:lein
     container_name: app_server
+    command:
+      # sh -c "lein uberjar && java -cp ./target/constructor.jar clojure.main -m app.server"
+      sh -c "lein run"
+    working_dir: /app/server
     network_mode: host
     expose:
       - 3000
     depends_on:
       - redis
+    volumes:
+      - ./server:/app/server:cached
+      - /.m2
   client:
     build:
       dockerfile: ./build/docker-client
