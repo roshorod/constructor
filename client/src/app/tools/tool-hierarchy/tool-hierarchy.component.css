@@ -37,8 +37,6 @@ hr {
 }
 
 .tree-node-item:hover {
-  transition: 0.3s;
-  transition-property: background;
   opacity: 0.9;
   user-select: none;
 }

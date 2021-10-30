@@ -1,6 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { HTMLTags } from '@element/models/htmltags';
-import { Action } from '@renderer/models/action';
 
 @Component({
   selector: 'tool-components',
@@ -14,9 +13,5 @@ export class ToolComponentsComponent {
 
   onComponentCreate(tag: string) {
     this.handler.emit(tag);
-    // this.handler.emit(<Action>{
-      // action: 'create',
-      // element: { tag: tag, content: 'initial' }
-    // });
   }
 }

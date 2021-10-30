@@ -22,22 +22,9 @@ export class AppComponent implements AfterContentChecked {
     this.elements = this.container.elements.getArray();
   }
 
-  onComponentCreate(tag: string) {
-    this.renderer.elementCreate(tag);
-  }
-
-  onSelectedComponentPost(id: string) {
-    if(this.selectedElement)
-      if(this.selectedElement.id === id)
-        this.renderer.elementUpdate(this.selectedElement);
-  }
-
   onSelectComponent(element: Element) {
-    this.renderer.elementSelect(element);
     this.selectedElement = element;
+    this.container.selectedElement = element;
   }
 
-  onUpdatePosition(element: Element) {
-    this.renderer.updateElementPosition(element);
-  }
 }

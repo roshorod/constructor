@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Element } from '@element/models/element';
 import { SpawnPosition } from '@element/models/spawn-positions';
-
 import { CookiesService } from '@services/cookie.service';
-import { RendererModule } from '@renderer/renderer.module';
 
 @Injectable()
 export class ApiClientSerivce {
@@ -50,7 +48,8 @@ export class ApiClientSerivce {
         cords: {
           x: elementDirective.currentX,
           y: elementDirective.currentY
-        }
+        },
+        color: element.color
       }
     };
 

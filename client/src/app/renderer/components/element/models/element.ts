@@ -12,6 +12,7 @@ export abstract class Element {
   ) { }
 
   cords: {x: number, y: number};
+  color: string = "#000000";
 
   component: ComponentRef<ElementComponent>;
 

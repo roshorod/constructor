@@ -42,12 +42,14 @@
         tag      (get-in string ["tag"])
         content  (get-in string ["content"])
         position (get-in string ["spawnPosition"])
-        cords    (get-in string ["cords"])]
+        cords    (get-in string ["cords"])
+        color    (get-in string ["color"])]
     {:id       id
      :tag      tag
      :content  content
      :position position
-     :cords    cords}))
+     :cords    cords
+     :color    color}))
 
 (defn store-element
   "Top level function for store element in redis."

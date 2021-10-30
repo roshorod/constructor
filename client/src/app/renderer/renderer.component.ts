@@ -7,8 +7,6 @@ import { HTMLTags } from '@element/models/htmltags';
 import { SpawnPosition } from '@element/models/spawn-positions';
 import { ElementComponent } from '@element/element.component';
 import { SnackBarService } from '@services/snack-bar.service';
-import { Action } from '@renderer/models/action';
-import { match } from 'ts-pattern';
 
 @Component({
   selector: 'app-renderer',
@@ -30,18 +28,6 @@ export class RendererComponent implements OnInit {
 
   @ViewChild('bottomTempl', { read: ViewContainerRef })
   private bottom: ViewContainerRef;
-
-  constructor(
-    public container: ContainerService,
-    public api: ApiClientSerivce,
-    public snack: SnackBarService,
-    private ngFactory: ComponentFactoryResolver,
-    private ngContainer: ViewContainerRef,
-  ) { }
-
-  public getElementArray() : Element[] {
-    return this.container.elements.getArray();
-  }
 
   public elementCreate(tag: string) {
     this.api.postElement(tag).subscribe(
@@ -72,30 +58,14 @@ export class RendererComponent implements OnInit {
     });
   }
 
-  public elementSelect(element: Element) {
-    this.container.selectedElement = element;
+  public elementUpdatePosition(element: Element) {
+    this.detachEelemet(element);
+    element.component.instance.reset();
+    if (this.attachToContainer(element))
+      return true;
+    else
+      throw new Error("Container insert error. Can't find right container...");
   }
-
-//   public actionHandler(action: any | Action) {
-//     const test: { tag: HTMLTags, content: string } = action["element"];
-
-//     const element = this.createElement(<HTMLTags>'h1');
-
-//     match(<Action>action)
-//       .with({ action: 'select' }, () => {
-//         this.container.selectedElement = <Element>element;
-//       })
-//       .with({ action: 'create' }, () => {
-//         if (element)
-//           this.createElement(test.tag, test.content);
-//       })
-//       .with({ action: 'update', target: 'element' }, () => {
-//         this.elementUpdate(<Element>element);
-//       })
-//       .with({ action: 'update', target: 'position' }, () => {
-//         this.updateElementPosition(<Element>element);
-//       }).exhaustive();
-//   }
 
   private getElements() {
     this.api.getElements().subscribe(resp =>
@@ -107,9 +77,18 @@ export class RendererComponent implements OnInit {
           element.id,
           element.content,
           element.position,
-          element.cords);
+          element.cords,
+          element.color);
       }));
   }
+
+  constructor(
+    private container: ContainerService,
+    private api: ApiClientSerivce,
+    private snack: SnackBarService,
+    private ngFactory: ComponentFactoryResolver,
+    private ngContainer: ViewContainerRef,
+  ) { }
 
   ngOnInit() {
     this.getElements();
@@ -118,40 +97,18 @@ export class RendererComponent implements OnInit {
   private detachEelemet(element: Element) {
     const hostView = element.component.hostView;
 
-    const top = this.top as ViewContainerRef;
-    const left = this.left as ViewContainerRef;
-    const center = this.center as ViewContainerRef;
-    const right = this.right as ViewContainerRef;
-    const bottom = this.bottom as ViewContainerRef;
-
-    if (center.indexOf(hostView) != -1) {
-      center.detach(center.indexOf(hostView));
-    }
-    else if(top.indexOf(hostView) != -1) {
-      top.detach(top.indexOf(hostView));
-    }
-    else if (left.indexOf(hostView) != -1) {
-      left.detach(left.indexOf(hostView));
-    }
-    else if (right.indexOf(hostView) != -1) {
-      right.detach(right.indexOf(hostView));
-    }
-    else if (bottom.indexOf(hostView) != -1) {
-      bottom.detach(bottom.indexOf(hostView));
-    } else {
-      throw new Error("Container detach error. Can't find right container...");
-    }
-  }
-
-  public updateElementPosition(element: Element) {
-    this.detachEelemet(element);
-
-    element.component.instance.reset();
-
-    if (this.attachToContainer(element))
-      return true;
+    if (this.center.indexOf(hostView) != -1)
+      this.center.detach(this.center.indexOf(hostView));
+    else if(this.top.indexOf(hostView) != -1)
+      this.top.detach(this.top.indexOf(hostView));
+    else if (this.left.indexOf(hostView) != -1)
+      this.left.detach(this.left.indexOf(hostView));
+    else if (this.right.indexOf(hostView) != -1)
+      this.right.detach(this.right.indexOf(hostView));
+    else if (this.bottom.indexOf(hostView) != -1)
+      this.bottom.detach(this.bottom.indexOf(hostView));
     else
-      throw new Error("Container insert error. Can't find right container...");
+      throw new Error("Container detach error. Can't find right container...");
   }
 
   //https://indepth.dev/posts/1054/here-is-what-you-need-to-know-about-dynamic-components-in-angular
@@ -160,7 +117,8 @@ export class RendererComponent implements OnInit {
     id: string = '',
     content: string = "Initial",
     grid: SpawnPosition = SpawnPosition.center,
-    cords: { x: number, y: number } = { x: 0, y: 0 }
+    cords: { x: number, y: number } = { x: 0, y: 0 },
+    color: string = '#000000'
   ) : Element {
     const componentType = this.ngFactory.resolveComponentFactory(ElementComponent);
     const component = this.ngContainer.createComponent(componentType);
@@ -171,6 +129,7 @@ export class RendererComponent implements OnInit {
     component.instance.component = component;
     component.instance.content = content;
     component.instance.cords = cords;
+    component.instance.color = color;
 
     if (this.attachToContainer(component.instance))
       this.container.elements.insert(component.instance);

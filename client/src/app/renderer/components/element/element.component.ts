@@ -58,5 +58,6 @@ export class ElementComponent extends Element implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.directive.setTransformPosition(this.cords);
+    this.directive.colorUpdate(this.color);
   }
 }

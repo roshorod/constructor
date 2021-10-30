@@ -34,6 +34,10 @@ export class ElementDirective implements OnDestroy, OnInit {
     this.element = this.elemRef.nativeElement as HTMLElement;
   }
 
+  public colorUpdate(color: string) {
+    this.element.style.color = color;
+  }
+
   public getTransformPosition() {
     return this.element.style.transform;
   }

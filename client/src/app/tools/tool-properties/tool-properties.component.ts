@@ -14,66 +14,79 @@ import { SpawnPosition } from '@element/models/spawn-positions';
 })
 export class ToolPropertiesComponent implements OnChanges, OnDestroy {
   @Input() selected: Element | undefined;
-  @Output() onUpdatePosition = new EventEmitter<Element>();
-  @Output() onSelectedComponentPost = new EventEmitter();
+  @Output() positionHandler = new EventEmitter<Element>();
+  @Output() selectionHandler = new EventEmitter<Element>();
 
   spawnPositions = SpawnPosition;
 
   elementForm = new FormGroup({
     content: new FormControl(''),
     position: new FormControl(''),
+    color: new FormControl('')
   });
 
-  private contentSub: Subscription;
-  private positionSub: Subscription;
-  private elementFormSub: Subscription;
+  private contentSub$: Subscription;
+  private positionSub$: Subscription;
+  private colorSub$: Subscription;
+  private elementFormSub$: Subscription;
 
   ngOnChanges() {
-    if (this.contentSub)
-      this.contentSub.unsubscribe();
-    if (this.positionSub)
-      this.positionSub.unsubscribe();
-    if (this.elementFormSub)
-      this.elementFormSub.unsubscribe();
+    if (this.contentSub$)
+      this.contentSub$.unsubscribe();
+    if (this.positionSub$)
+      this.positionSub$.unsubscribe();
+    if (this.elementFormSub$)
+      this.elementFormSub$.unsubscribe();
+    if(this.colorSub$)
+      this.colorSub$.unsubscribe();
 
     if (this.selected) {
       this.elementForm.setValue({
         content: this.selected.content,
         position: this.selected.position,
+        color: this.selected.color,
       });
 
       const component = this.selected.component.instance;
-      const contentObserver = this.elementForm.get('content') as FormControl;
-      const positionObserver = this.elementForm.get('position') as FormControl;
+      const contentObserver = <FormControl>this.elementForm.get('content');
+      const positionObserver = <FormControl>this.elementForm.get('position');
+      const colorObserver = <FormControl>this.elementForm.get('color');
 
-      this.contentSub = contentObserver.valueChanges.subscribe(() => {
+      this.colorSub$ = colorObserver.valueChanges.subscribe(() => {
+        component.color = colorObserver.value;
+        component.directive.colorUpdate(colorObserver.value);
+      });
+
+      this.contentSub$ = contentObserver.valueChanges.subscribe(() => {
         if (this.selected) {
           component.content = contentObserver.value;
           component.update();
         }
       });
 
-      this.positionSub = positionObserver.valueChanges.subscribe(() => {
+      this.positionSub$ = positionObserver.valueChanges.subscribe(() => {
         if (this.selected) {
           component.position = positionObserver.value;
           component.update();
-          this.onUpdatePosition.emit(component);
+          this.positionHandler.emit(component);
+          console.log(this.elementForm)
         }
       });
 
-      this.elementFormSub = this.elementForm.valueChanges.pipe(debounceTime(2000))
+      this.elementFormSub$ = this.elementForm.valueChanges.pipe(debounceTime(2000))
         .subscribe(() => {
           if(this.selected)
-            this.onSelectedComponentPost.emit(
-              component.id
+            this.selectionHandler.emit(
+              this.selected
             );
         });
     }
   }
 
   ngOnDestroy() {
-    this.contentSub.unsubscribe();
-    this.positionSub.unsubscribe();
-    this.elementFormSub.unsubscribe();
+    this.contentSub$.unsubscribe();
+    this.positionSub$.unsubscribe();
+    this.elementFormSub$.unsubscribe();
+    this.colorSub$.unsubscribe();
   }
 }

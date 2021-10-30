@@ -7,14 +7,13 @@
     <tool-hierarchy [elements]="elements"
       (onUpdate)="onSelectComponent($event)">
     </tool-hierarchy>
-
     <tool-components
-      (handler)="onComponentCreate($event)">
+      (handler)="this.renderer.elementCreate($event)">
     </tool-components>
-
-    <tool-properties [selected]="selectedElement"
-      (onUpdatePosition)="onUpdatePosition($event)"
-      (onSelectedComponentPost)="onSelectedComponentPost($event)">
+    <tool-properties
+      [selected]="selectedElement"
+      (positionHandler)="this.renderer.elementUpdatePosition($event)"
+      (selectionHandler)="this.renderer.elementUpdate($event)">
     </tool-properties>
   </div>
 

@@ -4,6 +4,7 @@ import { ContainerService } from '@renderer/services/container.service';
 import { ElementNode } from './models/element-node';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ElementTreeController } from './models/element-tree-controller';
+import { WorkspaceService } from '@renderer/services/workspace.service';
 
 @Component({
   selector: 'tool-hierarchy',
@@ -22,7 +23,7 @@ export class ToolHierarchyComponent implements DoCheck {
   };
 
   constructor(
-    public _container: ContainerService,
+    private workspace: WorkspaceService,
   ) {
     this._treeControl = new FlatTreeControl<ElementNode>(
       elem => elem.level,
@@ -43,6 +44,7 @@ export class ToolHierarchyComponent implements DoCheck {
   }
 
   onWorkspaceLoad() {
+    this.workspace.loadProjectOnScreen(this.elements);
   }
 
   setElementNodeLevel(elem: ElementNode) {
