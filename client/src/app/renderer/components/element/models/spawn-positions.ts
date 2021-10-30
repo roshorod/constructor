@@ -1,7 +1,3 @@
-export interface Settings {
-  spawnPosition: SpawnPosition;
-}
-
 export enum SpawnPosition {
   top = 'top',
   left = 'left',

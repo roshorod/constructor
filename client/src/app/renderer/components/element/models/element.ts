@@ -1,7 +1,7 @@
 import { ComponentRef } from "@angular/core";
-import { ElementComponent } from "../element/element.component";
+import { ElementComponent } from '@element/element.component'
+import { SpawnPosition } from "./spawn-positions";
 import { HTMLTags } from "./htmltags";
-import { SpawnPosition } from "./settings";
 
 export abstract class Element {
   constructor(

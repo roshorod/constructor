@@ -20,7 +20,13 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@services/*": ["./src/app/services/*"],
+      "@renderer/*": ["./src/app/renderer/*"],
+      "@element/*" : [
+        "./src/app/renderer/components/element/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

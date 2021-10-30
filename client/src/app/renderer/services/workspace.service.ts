@@ -1,11 +1,10 @@
-import { DOCUMENT } from '@angular/common';
-import { Element } from './../models/element';
 import { Inject, Injectable } from '@angular/core';
-import { SpawnPosition } from '../models/settings';
+import { DOCUMENT } from '@angular/common';
+import { Element } from '@element/models/element';
+import { SpawnPosition } from '@element/models/spawn-positions';
+import { RendererModule } from '@renderer/renderer.module';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class WorkspaceService {
   project: Document;
   title: string = "MyTitle"

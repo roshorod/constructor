@@ -1,6 +1,5 @@
 import { ComponentRef } from "@angular/core";
-import { ElementComponent } from "src/app/element/element.component";
-import { Element } from "../../../models/element";
+import { ElementComponent } from "@element/element.component";
 
 export class ElementNode {
   constructor(

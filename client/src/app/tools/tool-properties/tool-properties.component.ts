@@ -3,8 +3,8 @@ import { Component, Input, Output,
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { Element } from '../../models/element';
-import { SpawnPosition } from '../../models/settings';
+import { Element } from '@element/models/element';
+import { SpawnPosition } from '@element/models/spawn-positions';
 
 //For feature look at `https://stackoverflow.com/a/48130065' and `https://stackoverflow.com/a/58986966'
 @Component({
@@ -14,7 +14,7 @@ import { SpawnPosition } from '../../models/settings';
 })
 export class ToolPropertiesComponent implements OnChanges, OnDestroy {
   @Input() selected: Element | undefined;
-  @Output() onUpdatePosition = new EventEmitter();
+  @Output() onUpdatePosition = new EventEmitter<Element>();
   @Output() onSelectedComponentPost = new EventEmitter();
 
   spawnPositions = SpawnPosition;
@@ -57,7 +57,7 @@ export class ToolPropertiesComponent implements OnChanges, OnDestroy {
         if (this.selected) {
           component.position = positionObserver.value;
           component.update();
-          this.onUpdatePosition.emit();
+          this.onUpdatePosition.emit(component);
         }
       });
 

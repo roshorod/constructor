@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Element } from '../models/element';
-import { CookiesService } from './cookie.service';
-import { SpawnPosition } from '../models/settings';
+import { Element } from '@element/models/element';
+import { SpawnPosition } from '@element/models/spawn-positions';
 
-@Injectable({
-  providedIn: 'root'
-})
+import { CookiesService } from '@services/cookie.service';
+import { RendererModule } from '@renderer/renderer.module';
+
+@Injectable()
 export class ApiClientSerivce {
 
   constructor(

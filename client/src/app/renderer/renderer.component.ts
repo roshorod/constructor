@@ -1,12 +1,14 @@
 import { Component, ComponentFactoryResolver,
          ViewChild, ViewContainerRef, OnInit } from '@angular/core';
-import { ElementComponent } from '../element/element.component';
-import { HTMLTags } from '../models/htmltags';
-import { SpawnPosition } from '../models/settings';
-import { Element } from '../models/element';
-import { ContainerService } from '../services/container.service';
-import { ApiClientSerivce } from '../services/api-client.service';
-
+import { ContainerService } from '@renderer/services/container.service';
+import { ApiClientSerivce } from '@renderer/services/api-client.service';
+import { Element } from '@element/models/element';
+import { HTMLTags } from '@element/models/htmltags';
+import { SpawnPosition } from '@element/models/spawn-positions';
+import { ElementComponent } from '@element/element.component';
+import { SnackBarService } from '@services/snack-bar.service';
+import { Action } from '@renderer/models/action';
+import { match } from 'ts-pattern';
 
 @Component({
   selector: 'app-renderer',
@@ -14,7 +16,6 @@ import { ApiClientSerivce } from '../services/api-client.service';
   styleUrls: ['./renderer.component.css']
 })
 export class RendererComponent implements OnInit {
-
   @ViewChild('topTempl', { read: ViewContainerRef })
   private top: ViewContainerRef;
 
@@ -33,9 +34,68 @@ export class RendererComponent implements OnInit {
   constructor(
     public container: ContainerService,
     public api: ApiClientSerivce,
+    public snack: SnackBarService,
     private ngFactory: ComponentFactoryResolver,
     private ngContainer: ViewContainerRef,
   ) { }
+
+  public getElementArray() : Element[] {
+    return this.container.elements.getArray();
+  }
+
+  public elementCreate(tag: string) {
+    this.api.postElement(tag).subscribe(
+      (resp: string[]) => {
+        var elemId = '';
+
+        for (const val in resp)
+          if (val === 'id')
+            elemId = resp[val];
+
+        this.createElement(<HTMLTags>tag, elemId);
+        this.snack.open("Saved!");
+      },
+      () => {
+        console.error("Cannot create element");
+      });
+  }
+
+  public elementUpdate(element: Element) {
+    this.api.postElementById(element).subscribe({
+      complete: () => {
+        this.snack.open("Saved!");
+      },
+      error: () => {
+        this.snack.open("Server error!");
+        console.warn("Server error!");
+      }
+    });
+  }
+
+  public elementSelect(element: Element) {
+    this.container.selectedElement = element;
+  }
+
+//   public actionHandler(action: any | Action) {
+//     const test: { tag: HTMLTags, content: string } = action["element"];
+
+//     const element = this.createElement(<HTMLTags>'h1');
+
+//     match(<Action>action)
+//       .with({ action: 'select' }, () => {
+//         this.container.selectedElement = <Element>element;
+//       })
+//       .with({ action: 'create' }, () => {
+//         if (element)
+//           this.createElement(test.tag, test.content);
+//       })
+//       .with({ action: 'update', target: 'element' }, () => {
+//         this.elementUpdate(<Element>element);
+//       })
+//       .with({ action: 'update', target: 'position' }, () => {
+//         this.updateElementPosition(<Element>element);
+//       }).exhaustive();
+//   }
 
   private getElements() {
     this.api.getElements().subscribe(resp =>
@@ -95,7 +155,7 @@ export class RendererComponent implements OnInit {
   }
 
   //https://indepth.dev/posts/1054/here-is-what-you-need-to-know-about-dynamic-components-in-angular
-  public createElement(
+  private createElement(
     tag: HTMLTags,
     id: string = '',
     content: string = "Initial",

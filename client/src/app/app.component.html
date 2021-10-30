@@ -5,13 +5,15 @@
 
   <div id="app-toolbar">
     <tool-hierarchy [elements]="elements"
-      (onUpdate)="onSelectComponent()">
+      (onUpdate)="onSelectComponent($event)">
     </tool-hierarchy>
+
     <tool-components
-      (onUpdate)="onComponentCreate($event)">
+      (handler)="onComponentCreate($event)">
     </tool-components>
+
     <tool-properties [selected]="selectedElement"
-      (onUpdatePosition)="onUpdatePosition()"
+      (onUpdatePosition)="onUpdatePosition($event)"
       (onSelectedComponentPost)="onSelectedComponentPost($event)">
     </tool-properties>
   </div>

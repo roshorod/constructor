@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewChild, forwardRef, AfterViewInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { HTMLTags } from '../models/htmltags';
 import { ElementDirective } from './element.directive';
-import { Element } from "../models/element";
-
+import { Element} from './models/element';
+import { HTMLTags } from './models/htmltags';
 
 @Component({
   selector: 'app-element',
@@ -35,7 +34,7 @@ export class ElementComponent extends Element implements OnInit, AfterViewInit {
   }
 
   select() {
-    const element = this.directive as ElementDirective;
+    const element = <ElementDirective>this.directive;
     element.showElement();
   }
 

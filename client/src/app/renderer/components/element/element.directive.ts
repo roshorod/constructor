@@ -1,10 +1,10 @@
-import { Directive, ElementRef,
-         OnDestroy, OnInit} from "@angular/core";
+import { Directive, ElementRef, OnDestroy, OnInit} from "@angular/core";
+import { ElementComponent } from "./element.component";
+import { ApiClientSerivce } from "@renderer/services/api-client.service";
+import { SnackBarService } from "@services/snack-bar.service";
 import { fromEvent, Subscription } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { ApiClientSerivce } from "../services/api-client.service";
-import { SnackBarService } from "../services/snack-bar.service";
-import { ElementComponent } from "./element.component";
+
 
 @Directive({
   selector: '.element',
