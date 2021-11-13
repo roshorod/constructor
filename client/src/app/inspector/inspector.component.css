@@ -1,0 +1,32 @@
+.inspector-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    margin-top: 10px;
+}
+
+.inspector-item-group {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.inspector-item-group > button {
+  margin-left: 10px;
+}
+
+.inspector-item input[type="number"] {
+  width: 60%;
+}
+
+.inspector-item input[type="text"] {
+  width: 60%;
+}
+
+.inspector-item input[type="color"] {
+  width: 60%;
+}
+
+.inspector-item input[type="checkbox"] {
+  margin-right: 55.5%;
+}

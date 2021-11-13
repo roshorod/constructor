@@ -1,8 +1,8 @@
 (ns app.router
   (:require [compojure.core :as compojure]
-            [app.component.element :refer [element-get
-                                           element-post
-                                           element-post-by-id]]))
+            [app.controller.element :refer [element-get
+                                            element-post
+                                            element-post-by-id]]))
 
 (compojure/defroutes element-routes
   (compojure/GET "/element" request element-get)

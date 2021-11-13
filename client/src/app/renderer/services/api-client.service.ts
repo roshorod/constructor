@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Element } from '@element/models/element';
-import { SpawnPosition } from '@element/models/spawn-positions';
+import { Element } from '@renderer/models/element';
 import { CookiesService } from '@services/cookie.service';
+import { Observable } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ApiClientSerivce {
 
   constructor(
@@ -19,42 +21,17 @@ export class ApiClientSerivce {
     return this.http.get<Element[]>(`${this.uri}/api/${this.cookie_string}/element`);
   }
 
-  public postElement(
-    tag: string,
-    content: string = "Initial",
-    spawnPosition: SpawnPosition = SpawnPosition.center) {
-    const json = {
-      element: {
-        tag: tag,
-        content: content,
-        spawnPosition: spawnPosition
-      }
-    };
+  public postElement(element: Element): Observable<string[]> {
+    console.log(JSON.stringify(element))
 
     return this.http
       .post<string[]>(`${this.uri}/api/${this.cookie_string}/element`,
-            JSON.stringify(json));
+                      JSON.stringify({element: element}));
   }
 
   public postElementById(element: Element) {
-    const elementDirective = element.component.instance.directive;
-
-    const json = {
-      element: {
-        tag: element.tag,
-        content: element.content,
-        spawnPosition: element.position,
-        id: element.id,
-        cords: {
-          x: elementDirective.currentX,
-          y: elementDirective.currentY
-        },
-        color: element.color
-      }
-    };
-
     return this.http
       .post(`${this.uri}/api/${this.cookie_string}/element/${element.id}`,
-            JSON.stringify(json));
+            JSON.stringify({element: element}));
   }
 }

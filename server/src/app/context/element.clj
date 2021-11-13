@@ -38,18 +38,26 @@
    :position position})
 
 (defn serialize-element [string]
-  (let [id       (get-in string ["id"])
-        tag      (get-in string ["tag"])
-        content  (get-in string ["content"])
-        position (get-in string ["spawnPosition"])
-        cords    (get-in string ["cords"])
-        color    (get-in string ["color"])]
-    {:id       id
-     :tag      tag
-     :content  content
-     :position position
-     :cords    cords
-     :color    color}))
+  (let [id           (get-in string ["id"])
+        tag          (get-in string ["tag"])
+        content      (get-in string ["content"])
+        position     (get-in string ["position"])
+        color        (get-in string ["color"])
+        background   (get-in string ["background"])
+        resizeBottom (get-in string ["resizeBottom"])
+        resizeLeft   (get-in string ["resizeLeft"])
+        resizeRight  (get-in string ["resizeRight"])
+        resizeTop    (get-in string ["resizeTop"])]
+    {:id           id
+     :tag          tag
+     :content      content
+     :position     position
+     :color        color
+     :background   background
+     :resizeBottom resizeBottom
+     :resizeLeft   resizeLeft
+     :resizeRight  resizeRight
+     :resizeTop    resizeTop}))
 
 (defn store-element
   "Top level function for store element in redis."

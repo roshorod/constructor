@@ -1,17 +1,7 @@
-<div class="content">
-  <div class="top" id="top">
-    <ng-template #topTempl></ng-template>
-  </div>
-  <div class="left" id="left">
-    <ng-template #leftTempl></ng-template>
-  </div>
-  <div class="center" id="center">
-    <ng-template #centerTempl></ng-template>
-  </div>
-  <div class="right" id="right">
-    <ng-template #rightTempl></ng-template>
-  </div>
-  <div class="bottom" id="bottom">
-    <ng-template #bottomTempl></ng-template>
-  </div>
-</div>
+<app-grid [elements]="container"
+  [pixelSize]="1" [pixelType]="'fr'"
+  [rows]="this.settings.rows"
+  [columns]="this.settings.columns"
+  [showLines]="this.settings.lines"
+  [showCorners]="this.settings.corners">
+</app-grid>

@@ -1,4 +1,4 @@
-(ns app.component.element
+(ns app.controller.element
   (:require [ring.util.response :refer [response]]
             [clojure.data.json :refer [read-str]]
             [app.core.session :refer [start-session]]

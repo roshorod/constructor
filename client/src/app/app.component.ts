@@ -1,30 +1,34 @@
-import { AfterContentChecked,
-         Component, ViewChild } from '@angular/core';
-import { Element } from '@element/models/element';
+import { Component, HostListener, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
 import { RendererComponent } from '@renderer/renderer.component';
-import { ContainerService } from '@renderer/services/container.service';
-
+import { RendererService } from '@renderer/services/renderer.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements AfterContentChecked {
-  @ViewChild(RendererComponent) renderer: RendererComponent;
+export class AppComponent {
+  @ViewChild(RendererComponent) renderer!: RendererComponent;
+  @ViewChild('sidenav') sidenav!: MatSidenav;
 
-  elements: Element[] = [];
-  selectedElement: Element | undefined;
+  public env = environment;
 
-  constructor(private container: ContainerService) {}
+  constructor(public rendererService: RendererService) { }
 
-  ngAfterContentChecked() {
-    this.elements = this.container.elements.getArray();
+  @HostListener('window:keyup.esc') closeSidenav() {
+    this.sidenav.close();
   }
 
-  onSelectComponent(element: Element) {
-    this.selectedElement = element;
-    this.container.selectedElement = element;
+  @HostListener('window:keyup.o') openSidenav() {
+    this.sidenav.open();
   }
 
+  @HostListener('window:keyup.e') elementCreate() {
+    this.renderer.elementCreate({
+      content: "Initial text",
+      position: { cellX: 0, cellY: 0, width: 5, height: 5 }
+    });
+  }
 }

@@ -1,23 +1,29 @@
-<div id="app-container">
-  <mat-toolbar class="app-header">
-    <h1 id="app-logo">Constructor</h1>
-  </mat-toolbar>
-
-  <div id="app-toolbar">
-    <tool-hierarchy [elements]="elements"
-      (onUpdate)="onSelectComponent($event)">
-    </tool-hierarchy>
-    <tool-components
-      (handler)="this.renderer.elementCreate($event)">
-    </tool-components>
-    <tool-properties
-      [selected]="selectedElement"
-      (positionHandler)="this.renderer.elementUpdatePosition($event)"
-      (selectionHandler)="this.renderer.elementUpdate($event)">
-    </tool-properties>
+<mat-toolbar class="toolbar-container">
+  <h1 id="app-logo">Constructor</h1>
+  <div>
+    <button mat-icon-button (click)="elementCreate()">
+      <mat-icon>border_outer</mat-icon>
+    </button>
+    <button mat-icon-button (click)="sidenav.toggle()">
+      <mat-icon>list</mat-icon>
+    </button>
   </div>
+</mat-toolbar>
 
-  <div class="app-renderer" id="app-renderer">
+<mat-sidenav-container>
+  <mat-sidenav #sidenav
+    opened
+    mode="side"
+    position="end"
+    class="sidenav-container">
+    <app-inspector 
+      [settings]="rendererService.settings"
+      [element]="rendererService.currentElement"
+      [debug]="env.debug">
+    </app-inspector>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
     <app-renderer></app-renderer>
-  </div>
-</div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

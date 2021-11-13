@@ -1,0 +1,40 @@
+<div #gird_container
+  class="grid-container"
+  [style.grid-template-columns]="columnsType | safeStyle"
+  [style.grid-template-rows]="rowsType | safeStyle">
+
+
+  <ng-container *ngIf="showLines">
+    <div class="line-row"
+      *ngFor="let r of rowsType; let y = index"
+      [style.grid-area]="{ cellX: 0, cellY: y, width: columnsType.length, height: 1 } | gridArea">
+    </div>
+
+    <div class="line-column"
+      *ngFor="let c of columnsType; let i = index; let x = index"
+      [style.grid-area]="{ cellX: x, cellY: 0, width: 1, height: rowsType.length } | gridArea">
+    </div>
+  </ng-container>
+
+
+
+  <div *ngFor="let element of elements; let i = index"
+    #elements_container
+    class="grid-element"
+    [style.grid-area]="element.position | gridArea"
+    [style.color]="element.color"
+    [style.background-color]="element.background"
+    [style.cursor]="cursor"
+    (mousedown)="onMouseDown($event, element, i)"
+    (mousemove)="onMouseMove($event, element)">
+
+    {{element.content}}
+
+    <ng-container *ngIf="showCorners">
+      <div class="corner-left-top"></div>
+      <div class="corner-right-top"></div>
+      <div class="corner-left-bottom"></div>
+      <div class="corner-right-bottom"></div>
+    </ng-container>
+  </div>
+</div>

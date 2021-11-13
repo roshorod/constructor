@@ -24,8 +24,9 @@
     "paths": {
       "@services/*": ["./src/app/services/*"],
       "@renderer/*": ["./src/app/renderer/*"],
-      "@element/*" : [
-        "./src/app/renderer/components/element/*"]
+      "@sandbox/*":  [
+        "./src/app/renderer/components/sandbox/*"],
+      "@environment": ["./src/environments/environment.ts"]
     }
   },
   "angularCompilerOptions": {
