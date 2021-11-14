@@ -6,13 +6,15 @@ import { settings } from "@renderer/models/settings";
     providedIn: 'root'
 })
 export class RendererService {
-    public settings: settings = {
-        rows: 40,
-        columns: 60,
+  public settings: settings = {
+    mode: 0,
 
-        lines: true,
-        corners: true,
-    };
+    rows: 40,
+    columns: 60,
 
-    public currentElement?: Element;
+    lines: true,
+    corners: true,
+  };
+
+  public currentElement?: Element;
 }

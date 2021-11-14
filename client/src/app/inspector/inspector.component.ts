@@ -2,12 +2,14 @@ import { AfterViewInit, Component, Input, NgModule, OnChanges, OnDestroy } from 
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatExpansionModule } from "@angular/material/expansion";
+import { MatIconModule } from "@angular/material/icon";
 import { BrowserModule } from "@angular/platform-browser";
 import { Element } from "@renderer/models/element";
 import { settings } from "@renderer/models/settings";
 import { ApiClientSerivce } from "@renderer/services/api-client.service";
 import { Subject } from "rxjs";
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { ModeButtonDirective } from "./mode-button.directive";
 import { PropertiesComponent } from "./properties.component";
 
 @Component({
@@ -63,6 +65,25 @@ import { PropertiesComponent } from "./properties.component";
         </form>
       </properties>
     </ng-container>
+    <properties title="Workspace">
+      <div class="inspector-item workspace-block">
+        <label>Mode:</label>
+        <div class="workspace-group">
+          <button mat-raised-button mode-button
+            [target]="0"
+            [mode]="this.settings.mode"
+            (click)="onModeSelect()">
+            Select
+          </button>
+          <button mat-raised-button mode-button
+            [target]="1"
+            [mode]="this.settings.mode"
+            (click)="onModeCreate()">
+            Create
+          </button>
+        </div>
+      </div>
+    </properties>
     <properties title="Grid">
       <form [formGroup]="this.gridGroup$">
         <div class="inspector-item">
@@ -237,6 +258,14 @@ export class InspectorComponent implements AfterViewInit, OnDestroy, OnChanges {
       this.element.background = '';
   };
 
+  public onModeSelect() {
+    this.settings.mode = 0;
+  }
+
+  public onModeCreate() {
+    this.settings.mode = 1;
+  }
+
   ngOnDestroy() {
     this.unsubTrigger$.next();
     this.unsubTrigger$.complete();
@@ -248,14 +277,16 @@ export class InspectorComponent implements AfterViewInit, OnDestroy, OnChanges {
     BrowserModule,
     MatExpansionModule,
     ReactiveFormsModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule
   ],
   exports: [
     InspectorComponent,
   ],
   declarations:[
     InspectorComponent,
-    PropertiesComponent
+    PropertiesComponent,
+    ModeButtonDirective
   ]
 })
 export class InspectorModule { }

@@ -15,22 +15,23 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   text-align: center;
+  z-index: 1;
 }
 
 .line-row {
   height: 1px;
   align-self: end;
   border-bottom: 1px dashed gray;
-  z-index: 50;
   pointer-events: none;
+  z-index: 0;
 }
 
 .line-column {
   width: 1px;
   justify-self: end;
   border-right: 1px dashed gray;
-  z-index: 50;
   pointer-events: none;
+  z-index: 0;
 }
 
 .element-select {

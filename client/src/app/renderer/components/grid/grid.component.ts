@@ -7,6 +7,8 @@ import { RendererService } from "@renderer/services/renderer.service";
 import { Subject } from "rxjs";
 import { switchMap, debounceTime, takeLast } from "rxjs/operators";
 import { ApiClientSerivce } from "@renderer/services/api-client.service";
+import { RendererMode } from "@renderer/models/mode";
+import { RendererComponent } from "@renderer/renderer.component";
 
 @Component({
   selector: 'app-grid',
@@ -47,6 +49,9 @@ export class GridComponent {
   @Input() public rowsType: Size[] = [];
   @Input() public columnsType: Size[] = [];
 
+  @Input() public mode: RendererMode = 0;
+  public RendererMode = RendererMode;
+
   @Input() public elements: Element[] = [];
 
   @Input() public showLines: boolean = true;
@@ -76,8 +81,9 @@ export class GridComponent {
   }
 
   constructor(
-    private rendererService: RendererService,
-    private api: ApiClientSerivce
+    public rendererService: RendererService,
+    private api: ApiClientSerivce,
+    private renderer: RendererComponent
   ) { }
 
   private elementRect(element: any): DOMRect {
@@ -241,18 +247,19 @@ export class GridComponent {
   }
 
   public onMouseMove(event: MouseEvent, element: Element) {
-    switch (this.getElementAction(event, element)) {
-      case ElementAction.left_top: this.cursor = 'se-resize'; break;
-      case ElementAction.left_bottom: this.cursor = 'ne-resize'; break;
-      case ElementAction.right_top: this.cursor = 'ne-resize'; break;
-      case ElementAction.right_bottom: this.cursor = 'se-resize'; break;
-      case ElementAction.top:
-      case ElementAction.bottom: this.cursor = 'ns-resize'; break;
-      case ElementAction.left:
-      case ElementAction.right: this.cursor = 'w-resize'; break;
-      case ElementAction.move: this.cursor = 'move'; break;
-      case ElementAction.none: this.cursor = 'default'; break;
-    }
+    if (this.mode == 0)
+      switch (this.getElementAction(event, element)) {
+        case ElementAction.left_top: this.cursor = 'se-resize'; break;
+        case ElementAction.left_bottom: this.cursor = 'ne-resize'; break;
+        case ElementAction.right_top: this.cursor = 'ne-resize'; break;
+        case ElementAction.right_bottom: this.cursor = 'se-resize'; break;
+        case ElementAction.top:
+        case ElementAction.bottom: this.cursor = 'ns-resize'; break;
+        case ElementAction.left:
+        case ElementAction.right: this.cursor = 'w-resize'; break;
+        case ElementAction.move: this.cursor = 'move'; break;
+        case ElementAction.none: this.cursor = 'default'; break;
+      }
   }
 
   private elementOnResize = (event: MouseEvent) => {
@@ -401,25 +408,47 @@ export class GridComponent {
   }
 
   public onMouseDown(event: MouseEvent, element: Element, index: number) {
-    this.onSelectElement(element, index);
+    switch(this.mode) {
+      case RendererMode.select: {
+        this.onSelectElement(element, index);
 
-    this.savedElementPosition = { ...element.position }
+        this.savedElementPosition = { ...element.position };
+        this.savedMousePosition = this.getCell(event.clientX, event.clientY);
 
-    this.savedMousePosition = this.getCell(event.clientX, event.clientY);
+        const elementAction = this.getElementAction(event, element);
 
-    const elementAction = this.getElementAction(event, element);
-
-    if (
-      elementAction > ElementAction.none &&
-      elementAction > ElementAction.move
-    ) {
-      this.elementAction = elementAction;
-
-      document.addEventListener('mousemove', this.elementOnResize, true);
-      document.addEventListener('mouseup', this.elementOnMouseUp, true);
-    } else {
-      document.addEventListener('mousemove', this.elementOnMove, true);
-      document.addEventListener('mouseup', this.elementOnMouseUp, true);
+        if (
+          elementAction > ElementAction.none &&
+          elementAction > ElementAction.move
+        ) {
+          this.elementAction = elementAction;
+          document.addEventListener('mousemove', this.elementOnResize, true);
+          document.addEventListener('mouseup', this.elementOnMouseUp, true);
+        } else {
+          document.addEventListener('mousemove', this.elementOnMove, true);
+          document.addEventListener('mouseup', this.elementOnMouseUp, true);
+        }
+        break;
+      }
     }
+  }
+
+  public onElementCreate(event: MouseEvent) {
+    const cell = this.getCell(event.clientX, event.clientY);
+
+    const element = this.renderer.elementCreate({
+      content: "Initial text",
+      position: { ...cell, width: 5, height: 5 },
+      resizeTop: true,
+      resizeLeft: true,
+      resizeRight: true,
+      resizeBottom: true
+    });
+
+    this.savedElementPosition = { ...element.position };
+    this.savedMousePosition = cell;
+
+    this.mode = this.RendererMode.select;
+    this.rendererService.settings.mode = this.mode;
   }
 }

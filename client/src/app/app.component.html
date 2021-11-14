@@ -1,11 +1,11 @@
 <mat-toolbar class="toolbar-container">
   <h1 id="app-logo">Constructor</h1>
   <div>
-    <button mat-icon-button (click)="elementCreate()">
+    <button mat-icon-button (click)="onElementCreate()">
       <mat-icon>border_outer</mat-icon>
     </button>
     <button mat-icon-button (click)="sidenav.toggle()">
-      <mat-icon>list</mat-icon>
+      <mat-icon>{{sidenav.opened ? 'closed' : 'list'}}</mat-icon>
     </button>
   </div>
 </mat-toolbar>
@@ -16,7 +16,7 @@
     mode="side"
     position="end"
     class="sidenav-container">
-    <app-inspector 
+    <app-inspector
       [settings]="rendererService.settings"
       [element]="rendererService.currentElement"
       [debug]="env.debug">

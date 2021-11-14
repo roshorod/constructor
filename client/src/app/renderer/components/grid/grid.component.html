@@ -1,7 +1,9 @@
 <div #gird_container
   class="grid-container"
   [style.grid-template-columns]="columnsType | safeStyle"
-  [style.grid-template-rows]="rowsType | safeStyle">
+  [style.grid-template-rows]="rowsType | safeStyle"
+  [style.cursor]="mode == RendererMode.create ? 'cell' : '' "
+  (mousedown)="mode == RendererMode.create ? onElementCreate($event) : '' ">
 
 
   <ng-container *ngIf="showLines">
@@ -16,15 +18,13 @@
     </div>
   </ng-container>
 
-
-
   <div *ngFor="let element of elements; let i = index"
     #elements_container
     class="grid-element"
     [style.grid-area]="element.position | gridArea"
     [style.color]="element.color"
     [style.background-color]="element.background"
-    [style.cursor]="cursor"
+    [style.cursor]="mode == RendererMode.select ? cursor : '' "
     (mousedown)="onMouseDown($event, element, i)"
     (mousemove)="onMouseMove($event, element)">
 

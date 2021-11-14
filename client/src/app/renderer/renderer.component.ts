@@ -13,7 +13,7 @@ export class RendererComponent implements AfterViewInit, OnInit {
   public container: Element[] = [];
   public settings: settings;
 
-  public elementCreate(element: Element) {
+  public elementCreate(element: Element): Element {
     this.api.postElement(element).subscribe(
       (req: string[]) => {
         for (const val in req)
@@ -21,10 +21,12 @@ export class RendererComponent implements AfterViewInit, OnInit {
             element.id = req[val];
 
         this.container.push(element);
+
       });
+    return element;
   }
 
-  public elementUpdate(element: Element) {
+  public elementUpdate(element: Element): Element {
     this.api.postElementById(element).subscribe({
       complete: () => {
         this.snack.open("Saved!");
@@ -34,9 +36,11 @@ export class RendererComponent implements AfterViewInit, OnInit {
         console.warn("Server error!");
       }
     });
+
+    return element;
   }
 
-  private elementsGet() {
+  private elementsGet(): Element[] {
     this.api.getElements().subscribe(req => {
       req.forEach(element => {
         if (element.position == undefined)
@@ -45,6 +49,8 @@ export class RendererComponent implements AfterViewInit, OnInit {
         this.container.push(element);
       });
     });
+
+    return this.container;
   }
 
   constructor(

@@ -26,6 +26,14 @@ export class AppComponent {
   }
 
   @HostListener('window:keyup.e') elementCreate() {
+    this.renderer.settings.mode = 1;
+  }
+
+  @HostListener('window:keyup.s') elementSelect() {
+    this.renderer.settings.mode = 0;
+  }
+
+  public onElementCreate() {
     this.renderer.elementCreate({
       content: "Initial text",
       position: { cellX: 0, cellY: 0, width: 5, height: 5 }

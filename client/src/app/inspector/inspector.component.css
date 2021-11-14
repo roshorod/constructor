@@ -7,8 +7,20 @@
 }
 
 .inspector-item-group {
+  display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
-  align-items: center;
+}
+
+@media screen and (max-width: 1120px) {
+  .inspector-item-group {
+    justify-content: flex-end;
+  }
+
+  .inspector-item-group > button {
+    margin-top: 10px;
+    width: 70%;
+  }
 }
 
 .inspector-item-group > button {
@@ -29,4 +41,29 @@
 
 .inspector-item input[type="checkbox"] {
   margin-right: 55.5%;
+}
+
+.workspace-block {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.workspace-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.workspace-group > button {
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+
+@media screen and (max-width: 1120px) {
+  .workspace-group > button {
+    margin-top: 10px;
+    width: 60%;
+  }
 }

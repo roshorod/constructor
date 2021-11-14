@@ -1,3 +1,5 @@
+import { RendererMode } from "./mode";
+
 type gridSettings = {
   rows: number;
   columns: number;
@@ -7,6 +9,8 @@ type gridSettings = {
   background?: string;
 };
 
-export type settings = gridSettings & {
 
+
+export type settings = gridSettings & {
+  mode: RendererMode;
 };
