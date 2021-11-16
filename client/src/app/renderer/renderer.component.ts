@@ -1,7 +1,6 @@
 import { Component,  AfterViewInit, OnInit } from '@angular/core';
 import { ApiClientSerivce } from '@renderer/services/api-client.service';
 import { Element } from './models/element';
-import { SnackBarService } from '@services/snack-bar.service';
 import { RendererService } from './services/renderer.service';
 import { settings } from './models/settings';
 
@@ -14,25 +13,18 @@ export class RendererComponent implements AfterViewInit, OnInit {
   public settings: settings;
 
   public elementCreate(element: Element): Element {
-    this.api.postElement(element).subscribe(
-      (req: string[]) => {
-        for (const val in req)
-          if (val === 'id')
-            element.id = req[val];
+    this.api.postElement(element).subscribe((req: string[]) => Object
+      .keys(req).forEach((key: string, index: number) => key == 'id'
+        ? element.id = req[index]
+        : element));
 
-        this.container.push(element);
-
-      });
+    this.container.push(element);
     return element;
   }
 
   public elementUpdate(element: Element): Element {
     this.api.postElementById(element).subscribe({
-      complete: () => {
-        this.snack.open("Saved!");
-      },
       error: () => {
-        this.snack.open("Server error!");
         console.warn("Server error!");
       }
     });
@@ -55,7 +47,6 @@ export class RendererComponent implements AfterViewInit, OnInit {
 
   constructor(
     private api: ApiClientSerivce,
-    private snack: SnackBarService,
     private _settings: RendererService,
   ) { }
 

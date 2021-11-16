@@ -11,7 +11,7 @@
     "build": "ng build",
     "postinstall": "ngcc",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test --no-watch --no-progress --browsers=ChromeHeadlessCI"
   },
   "private": true,
   "dependencies": {

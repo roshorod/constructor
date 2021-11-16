@@ -218,7 +218,7 @@ export class InspectorComponent implements AfterViewInit, OnDestroy, OnChanges {
 
     this.elementGroup$.valueChanges.pipe(
       takeUntil(this.unsubTrigger$),
-      debounceTime(5000)
+      debounceTime(500)
     ).subscribe(() => {
       if(this.element)
         this.api.postElementById(this.element).subscribe();
