@@ -12,7 +12,7 @@ export class ModeButtonDirective implements OnChanges {
 
   ngOnChanges() {
     if (this.target == this.mode)
-      this.elemRef.nativeElement.style = "border-bottom: 2px solid black;";
+      this.elemRef.nativeElement.style = "background:  #d65d0e;";
     else
       this.elemRef.nativeElement.style = "";
   }

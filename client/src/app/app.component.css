@@ -1,26 +1,24 @@
-#app-logo {
-  background:#ede7f6;
+:host {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.toolbar-container {
+  flex: 0;
+  justify-content: space-between;
+  min-height: 55px;
+}
+
+.toolbar-logo {
   padding: 5px;
   border-radius: 5px;
 }
 
-mat-toolbar {
-  background: #d1c4e9;
-  border-bottom: 1px solid #7d7c78;
-  box-shadow: 1px 1px 5px #7d7c78;
-}
-
-mat-toolbar > * {
-  color: #673ab7;
-}
-
-mat-sidenav-container {
-  width: 100%;
-  height: 93%;
-}
-
-.toolbar-container {
-  justify-content: space-between;
+.renderer-container {
+  flex: 1;
 }
 
 .sidenav-container {

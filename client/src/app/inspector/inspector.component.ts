@@ -65,7 +65,7 @@ import { PropertiesComponent } from "./properties.component";
         </form>
       </properties>
     </ng-container>
-    <properties title="Workspace">
+    <properties title="Workspace" expanded="true">
       <div class="inspector-item workspace-block">
         <label>Mode:</label>
         <div class="workspace-group">
@@ -84,7 +84,7 @@ import { PropertiesComponent } from "./properties.component";
         </div>
       </div>
     </properties>
-    <properties title="Grid">
+    <properties title="Grid" expanded="true">
       <form [formGroup]="this.gridGroup$">
         <div class="inspector-item">
           <label for="grid-lines">Lines</label>

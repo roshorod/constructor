@@ -13,10 +13,8 @@ export class RendererComponent implements AfterViewInit, OnInit {
   public settings: settings;
 
   public elementCreate(element: Element): Element {
-    this.api.postElement(element).subscribe((req: string[]) => Object
-      .keys(req).forEach((key: string, index: number) => key == 'id'
-        ? element.id = req[index]
-        : element));
+    this.api.postElement(element)
+      .subscribe((req: {id: string}) => element.id = req.id);
 
     this.container.push(element);
     return element;

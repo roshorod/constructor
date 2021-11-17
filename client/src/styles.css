@@ -9,8 +9,3 @@ html, body {
 * {
   box-sizing: border-box;
 }
-
-.app-snackbar {
-  background: #d1c4e9;
-  color: #673ab7;
-}

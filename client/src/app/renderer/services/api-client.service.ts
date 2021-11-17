@@ -15,23 +15,24 @@ export class ApiClientSerivce {
   ) { }
 
   cookie_string = this.cookie.getCookie(this.cookie.cookieName);
-  uri = `http://localhost:3000`;
+
+  uri = '/api';
 
   public getElements() {
-    return this.http.get<Element[]>(`${this.uri}/api/${this.cookie_string}/element`);
+    return this.http.get<Element[]>(`${this.uri}/${this.cookie_string}/element`);
   }
 
-  public postElement(element: Element): Observable<string[]> {
+  public postElement(element: Element): Observable<{id: string}> {
     console.log(JSON.stringify(element))
 
     return this.http
-      .post<string[]>(`${this.uri}/api/${this.cookie_string}/element`,
+      .post<{id: string}>(`${this.uri}/${this.cookie_string}/element`,
                       JSON.stringify({element: element}));
   }
 
   public postElementById(element: Element) {
     return this.http
-      .post(`${this.uri}/api/${this.cookie_string}/element/${element.id}`,
+      .post(`${this.uri}/${this.cookie_string}/element/${element.id}`,
             JSON.stringify({element: element}));
   }
 }

@@ -8,35 +8,34 @@
 
 .inspector-item-group {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  flex-direction: column;
+  width: 60%;
 }
-
-@media screen and (max-width: 1120px) {
-  .inspector-item-group {
-    justify-content: flex-end;
-  }
-
-  .inspector-item-group > button {
-    margin-top: 10px;
-    width: 70%;
-  }
-}
-
 .inspector-item-group > button {
-  margin-left: 10px;
+  background: #ebdbb2;
+  margin-bottom: 10px;
 }
 
 .inspector-item input[type="number"] {
   width: 60%;
+  padding: 5px;
+  border: none;
+  background: #ebdbb2;
 }
 
 .inspector-item input[type="text"] {
   width: 60%;
+  padding: 5px;
+  border: none;
+  background: #ebdbb2;
 }
 
 .inspector-item input[type="color"] {
+  padding: 0;
   width: 60%;
+  min-height: 30px;
+  border: 4px solid #ebdbb2;
+  border-radius: 4px;
 }
 
 .inspector-item input[type="checkbox"] {
@@ -53,11 +52,14 @@
   flex-direction: row;
   flex-wrap: wrap;
   margin-top: 10px;
+  align-self: center;
+  width: 100%;
 }
 
 .workspace-group > button {
   margin-right: 10px;
   margin-top: 10px;
+  background: #ebdbb2;
 }
 
 
@@ -66,4 +68,8 @@
     margin-top: 10px;
     width: 60%;
   }
+}
+
+input:focus {
+  outline: none;
 }
