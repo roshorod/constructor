@@ -1,4 +1,4 @@
-import { Component,  AfterViewInit, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ApiClientSerivce } from '@renderer/services/api-client.service';
 import { Element } from './models/element';
 import { RendererService } from './services/renderer.service';
@@ -8,7 +8,7 @@ import { settings } from './models/settings';
   selector: 'app-renderer',
   templateUrl: './renderer.component.html',
 })
-export class RendererComponent implements AfterViewInit, OnInit {
+export class RendererComponent {
   public container: Element[] = [];
   public settings: settings;
 
@@ -31,28 +31,24 @@ export class RendererComponent implements AfterViewInit, OnInit {
   }
 
   private elementsGet(): Element[] {
+    let container: Element[] = [];
+
     this.api.getElements().subscribe(req => {
       req.forEach(element => {
         if (element.position == undefined)
           element.position = { cellX: 0, cellY: 0, height: 1, width: 1 };
 
-        this.container.push(element);
+        container.push(element);
       });
     });
-
-    return this.container;
+    return container;
   }
 
   constructor(
     private api: ApiClientSerivce,
     private _settings: RendererService,
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.settings = this._settings.settings;
-  }
-
-  ngAfterViewInit() {
-    this.elementsGet();
+    this.container = this.elementsGet();
   }
 }

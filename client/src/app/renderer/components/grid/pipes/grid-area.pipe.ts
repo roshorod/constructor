@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
-import { Position } from "@renderer/models/position";
+import { Position } from "@renderer/models/units";
 
 @Pipe({
   name: 'gridArea'

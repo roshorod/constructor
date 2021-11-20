@@ -9,6 +9,12 @@ export class RendererService {
   public settings: settings = {
     mode: 0,
 
+    /*
+     * Grid Settings
+     */
+    pixelType: 'fr',
+    pixelSize: 1,
+
     rows: 40,
     columns: 60,
 

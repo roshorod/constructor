@@ -1,6 +1,11 @@
 import { RendererMode } from "./mode";
 
-type gridSettings = {
+type gridUnits = {
+  pixelType: 'px' | 'fr';
+  pixelSize: number;
+};
+
+type gridSettings = gridUnits & {
   rows: number;
   columns: number;
 

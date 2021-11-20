@@ -1,4 +1,4 @@
-import { Position } from "@renderer/models/position";
+import { Position } from "@renderer/models/units";
 
 export abstract class Element {
   public id?: string;

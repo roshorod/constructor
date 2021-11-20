@@ -2,11 +2,10 @@
   class="grid-container"
   [style.grid-template-columns]="columnsType | safeStyle"
   [style.grid-template-rows]="rowsType | safeStyle"
-  [style.cursor]="mode == RendererMode.create ? 'cell' : '' "
-  (mousedown)="mode == RendererMode.create ? onElementCreate($event) : '' ">
+  [style.cursor]="this.settings.mode == RendererMode.create ? 'cell' : '' "
+  (mousedown)="this.settings.mode == RendererMode.create ? onElementCreate($event) : '' ">
 
-
-  <ng-container *ngIf="showLines">
+  <ng-container *ngIf="this.settings.lines">
     <div class="line-row"
       *ngFor="let r of rowsType; let y = index"
       [style.grid-area]="{ cellX: 0, cellY: y, width: columnsType.length, height: 1 } | gridArea">
@@ -24,13 +23,13 @@
     [style.grid-area]="element.position | gridArea"
     [style.color]="element.color"
     [style.background-color]="element.background"
-    [style.cursor]="mode == RendererMode.select ? cursor : '' "
+    [style.cursor]="this.settings.mode == RendererMode.select ? cursor : '' "
     (mousedown)="onMouseDown($event, element, i)"
     (mousemove)="onMouseMove($event, element)">
 
     {{element.content}}
 
-    <ng-container *ngIf="showCorners">
+    <ng-container *ngIf="this.settings.corners">
       <div class="corner-left-top"></div>
       <div class="corner-right-top"></div>
       <div class="corner-left-bottom"></div>

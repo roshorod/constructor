@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
-import { Size } from "@renderer/models/size";
+import { Size } from "@renderer/models/units";
 
 @Pipe({
   name: 'safeStyle'
