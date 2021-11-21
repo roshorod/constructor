@@ -37,3 +37,9 @@
     width: 35%;
   }
 }
+
+@media screen and (max-width: 801px) {
+  .sidenav-container {
+    width: 100%;
+  }
+}

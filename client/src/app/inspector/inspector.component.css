@@ -56,7 +56,6 @@
 .workspace-group {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   margin-top: 10px;
   align-self: center;
   width: 100%;
@@ -66,6 +65,7 @@
   margin-right: 10px;
   margin-top: 10px;
   background: #ebdbb2;
+  width: 50%;
 }
 
 
