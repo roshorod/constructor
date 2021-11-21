@@ -7,6 +7,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { Element } from "@renderer/models/element";
 import { settings } from "@renderer/models/settings";
 import { ApiClientSerivce } from "@renderer/services/api-client.service";
+import { RendererService } from "@renderer/services/renderer.service";
 import { Subject } from "rxjs";
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { ModeButtonDirective } from "./mode-button.directive";
@@ -61,6 +62,10 @@ import { PropertiesComponent } from "./properties.component";
             <label for="element-bottom">Resize bottom:</label>
             <input id="element-bottom" type="checkbox"
               formControlName="elementBottom">
+          </div>
+          <div class="inspector-item">
+            <label>Delete element:</label>
+            <button mat-raised-button (click)="this.onDeleteElement()">Delete</button>
           </div>
         </form>
       </properties>
@@ -140,7 +145,10 @@ export class InspectorComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   public unsubTrigger$ = new Subject();
 
-  constructor(private api: ApiClientSerivce) { }
+  constructor(
+    private api: ApiClientSerivce,
+    private rendererService: RendererService
+  ) { }
 
   ngAfterViewInit() {
     const settings = this.settings;
@@ -257,6 +265,17 @@ export class InspectorComponent implements AfterViewInit, OnDestroy, OnChanges {
     if (this.element)
       this.element.background = '';
   };
+
+  public onDeleteElement() {
+    if (this.element)
+      this.api.deleteElement(this.element).subscribe(() => {
+        const container = this.rendererService.container;
+        const index = container.findIndex(elem => elem.id == this.element?.id);
+
+        this.element = undefined;
+        container.splice(index);
+      });
+  }
 
   public onModeSelect() {
     this.settings.mode = 0;

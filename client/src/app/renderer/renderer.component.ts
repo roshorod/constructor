@@ -13,8 +13,8 @@ export class RendererComponent {
   public settings: settings;
 
   public elementCreate(element: Element): Element {
-    this.api.postElement(element)
-      .subscribe((req: {id: string}) => element.id = req.id);
+    this.api.postElement(element).subscribe(
+      (req: { id: string }) => element.id = req.id);
 
     this.container.push(element);
     return element;
@@ -30,25 +30,11 @@ export class RendererComponent {
     return element;
   }
 
-  private elementsGet(): Element[] {
-    let container: Element[] = [];
-
-    this.api.getElements().subscribe(req => {
-      req.forEach(element => {
-        if (element.position == undefined)
-          element.position = { cellX: 0, cellY: 0, height: 1, width: 1 };
-
-        container.push(element);
-      });
-    });
-    return container;
-  }
-
   constructor(
     private api: ApiClientSerivce,
-    private _settings: RendererService,
+    private rendererService: RendererService,
   ) {
-    this.settings = this._settings.settings;
-    this.container = this.elementsGet();
+    this.settings = this.rendererService.settings;
+    this.container = this.rendererService.container;
   }
 }

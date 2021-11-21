@@ -2,9 +2,18 @@
   (:require [ring.util.response :refer [response]]
             [clojure.data.json :refer [read-str]]
             [app.core.session :refer [start-session]]
+            [taoensso.timbre :as log]
             [app.context.element :as context]
             [app.core.redis :as redis]))
 
+(defn element-delete [request]
+  (let [element-id (get (:params request) :element-id)]
+    (try
+      (redis/del-val element-id)
+      {:status 200}
+      (catch Exception e
+        (log/warn e)
+        {:status 204}))))
 
 (defn element-post-by-id [request]
   (let [body (get-in (read-str (slurp (:body request))) ["element"])

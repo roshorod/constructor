@@ -9,9 +9,7 @@
   (let [element-with-id (assoc element :id element-id)]
     (if (nil? (redis/get-val element-id))
       (redis/set-val element-id element-with-id)
-      (do
-        (log/warn "Current element id:" element-id "rewrited. May be incorect id")
-        (redis/set-val element-id element-with-id)))))
+      (redis/set-val element-id element-with-id))))
 
 (defn ^:private append-element
   "Append element id in `:elements' and save it to store.

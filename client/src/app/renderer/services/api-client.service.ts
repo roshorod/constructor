@@ -22,17 +22,20 @@ export class ApiClientSerivce {
     return this.http.get<Element[]>(`${this.uri}/${this.cookie_string}/element`);
   }
 
-  public postElement(element: Element): Observable<{id: string}> {
-    console.log(JSON.stringify(element))
-
+  public postElement(element: Element): Observable<{ id: string }> {
     return this.http
-      .post<{id: string}>(`${this.uri}/${this.cookie_string}/element`,
-                      JSON.stringify({element: element}));
+      .post<{ id: string }>(`${this.uri}/${this.cookie_string}/element`,
+        JSON.stringify({ element: element }));
   }
 
   public postElementById(element: Element) {
     return this.http
       .post(`${this.uri}/${this.cookie_string}/element/${element.id}`,
-            JSON.stringify({element: element}));
+        JSON.stringify({ element: element }));
+  }
+
+  public deleteElement(element: Element) {
+    return this.http
+      .delete(`${this.uri}/${this.cookie_string}/element/${element.id}`);
   }
 }

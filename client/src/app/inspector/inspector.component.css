@@ -7,10 +7,15 @@
     font-size: 1rem;
 }
 
+.inspector-item > button {
+  background: #ebdbb2;
+  width: 150px;
+}
+
 .inspector-item-group {
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 150px;
 }
 .inspector-item-group > button {
   background: #ebdbb2;
@@ -18,14 +23,14 @@
 }
 
 .inspector-item input[type="number"] {
-  width: 60%;
+  width: 150px;
   padding: 5px;
   border: none;
   background: #ebdbb2;
 }
 
 .inspector-item input[type="text"] {
-  width: 60%;
+  width: 150px;
   padding: 5px;
   border: none;
   background: #ebdbb2;
@@ -33,7 +38,7 @@
 
 .inspector-item input[type="color"] {
   padding: 0;
-  width: 60%;
+  width: 150px;
   min-height: 30px;
   border: 4px solid #ebdbb2;
   border-radius: 4px;
