@@ -10,10 +10,11 @@
   flex: 0;
   justify-content: space-between;
   min-height: 55px;
+  padding: 10px;
 }
 
 .toolbar-logo {
-  padding: 5px;
+  padding: 4px 24px;
   border-radius: 5px;
   font-size: 1.563rem;
 }

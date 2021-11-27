@@ -1,5 +1,5 @@
 <app-grid
-  [elements]="container"
+  [elements]="rendererService.container$ | async"
   [settings]="this.settings"
 
   [rows]="this.settings.rows"

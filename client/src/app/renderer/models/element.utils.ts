@@ -1,4 +1,5 @@
 import { ElementAction, Element } from "./element";
+import { Cell } from '@renderer/models/units';
 
 function elementRect(element: any): DOMRect {
   return element.getBoundingClientRect();
@@ -85,4 +86,65 @@ export function getElementAction(
     return ElementAction.move;
   else
     return ElementAction.none;
+}
+
+export function transformElementByAction(
+  element: Element,
+  action: ElementAction,
+  cell: Cell,
+  position: { left: number, right: number, top: number, bottom: number }
+) {
+  let left = position.left;
+  let right = position.right;
+  let top = position.top;
+  let bottom = position.bottom;
+
+  switch (action) {
+    case ElementAction.left:
+      if (!(element.resizeLeft ?? true)) break;
+      [left, right] = [cell.cellX, right];
+      break;
+    case ElementAction.right:
+      if (!(element.resizeRight ?? true)) break;
+      [left, right] = [left, cell.cellX];
+      break;
+    case ElementAction.top:
+      if (!(element.resizeTop ?? true)) break;
+      [top, bottom] = [cell.cellY, bottom];
+      break;
+    case ElementAction.bottom:
+      if (!(element.resizeBottom ?? true)) break;
+      [top, bottom] = [top, cell.cellY];
+      break;
+
+    case ElementAction.left_top:
+      if (!(element.resizeLeft ?? true)) break;
+      if (!(element.resizeTop ?? true)) break;
+      [left, top, right, bottom] = [cell.cellX, cell.cellY, right, bottom];
+      break;
+    case ElementAction.left_bottom:
+      if (!(element.resizeLeft ?? true)) break;
+      if (!(element.resizeBottom ?? true)) break;
+      [left, top, right, bottom] = [cell.cellX, top, right, cell.cellY];
+      break;
+    case ElementAction.right_top:
+      if (!(element.resizeRight ?? true)) break;
+      if (!(element.resizeTop ?? true)) break;
+      [left, top, right, bottom] = [left, cell.cellY, cell.cellX, bottom];
+      break;
+    case ElementAction.right_bottom:
+      if (!(element.resizeRight ?? true)) break;
+      if (!(element.resizeBottom ?? true)) break;
+      [left, top, right, bottom] = [left, top, cell.cellX, cell.cellY];
+      break;
   }
+
+  element.position = {
+    cellX: left,
+    cellY: top,
+    width: right - left + 1,
+    height: bottom - top + 1
+  };
+
+  return element;
+}

@@ -25,7 +25,8 @@
     [style.background-color]="element.background"
     [style.cursor]="this.settings.mode == RendererMode.select ? cursor : '' "
     (mousedown)="onMouseDown($event, element, i)"
-    (mousemove)="onMouseMove($event, element)">
+    (mousemove)="onMouseMove($event, element)"
+    (touchstart)="onTouchStart($event, element, i)">
 
     {{element.content}}
 

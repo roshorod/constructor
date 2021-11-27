@@ -14,8 +14,10 @@ type gridSettings = gridUnits & {
   background?: string;
 };
 
+type sideNavSettings = {
+  sideNavMode: 'over' | 'side';
+};
 
-
-export type settings = gridSettings & {
+export type settings = gridSettings & sideNavSettings & {
   mode: RendererMode;
 };

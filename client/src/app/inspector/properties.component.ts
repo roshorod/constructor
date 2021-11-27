@@ -14,7 +14,7 @@ import { Component, Input } from "@angular/core";
       </ng-template>
     </mat-expansion-panel>`,
   styles: [`mat-panel-title { user-select: none; font-size: 1.25rem; }
-            mat-expansion-panel { margin: 0 10px 10px 10px; }`]
+            mat-expansion-panel { margin: 0 10px 7px 10px; }`]
 })
 export class PropertiesComponent {
   @Input() title: string;

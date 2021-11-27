@@ -32,7 +32,7 @@ export class RendererComponent {
 
   constructor(
     private api: ApiClientSerivce,
-    private rendererService: RendererService,
+    public rendererService: RendererService,
   ) {
     this.settings = this.rendererService.settings;
     this.container = this.rendererService.container;

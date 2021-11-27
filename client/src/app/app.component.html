@@ -1,8 +1,15 @@
 <mat-toolbar class="toolbar-container bg1 fg">
   <h1 class="toolbar-logo bg2">Constructor</h1>
   <div>
+    <button mat-icon-button (click)="onElementMove()">
+      <mat-icon>open_with</mat-icon>
+    </button>
+    <button mat-icon-button (click)="onElementResize()">
+      <mat-icon>transform</mat-icon>
+    </button>
+
     <button mat-icon-button (click)="onElementCreate()">
-      <mat-icon>border_outer</mat-icon>
+      <mat-icon>crop_free</mat-icon>
     </button>
     <button mat-icon-button (click)="sidenav.toggle()">
       <mat-icon>{{sidenav.opened ? 'closed' : 'list'}}</mat-icon>

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { RendererComponent } from '@renderer/renderer.component';
 import { RendererService } from '@renderer/services/renderer.service';
@@ -8,25 +8,21 @@ import { environment } from '../environments/environment';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements AfterViewInit {
   @ViewChild(RendererComponent) renderer!: RendererComponent;
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
-  public sidenavMode = () => {
-    const width = window.screen.width;
-
-    if (width < 801)
-      this.sidenav.mode = 'over';
-    else
-      this.sidenav.mode = 'side';
-  };
-
   public env = environment;
 
-  constructor(public rendererService: RendererService,
-              private cdRef: ChangeDetectorRef) { }
+  public sidenavMode = () => {
+    this.sidenav.mode = this.rendererService.settings.sideNavMode;
+  };
+
+  constructor(
+    public rendererService: RendererService,
+    private cdRef: ChangeDetectorRef
+  ) { }
 
   ngAfterViewInit() {
     this.sidenavMode();
@@ -47,6 +43,14 @@ export class AppComponent implements AfterViewInit {
 
   @HostListener('window:keyup.s') elementSelect() {
     this.renderer.settings.mode = 0;
+  }
+
+  public onElementMove() {
+    this.renderer.settings.mode = 0;
+  }
+
+  public onElementResize() {
+    this.renderer.settings.mode = 2;
   }
 
   public onElementCreate() {

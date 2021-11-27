@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, QueryList, ViewChild, ViewChildren } from "@angular/core";
-import { getElementAction } from "@renderer/models/element.utils";
+import { Component, ElementRef, Input,
+         QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { Element, ElementAction } from "@renderer/models/element";
 import { getCell } from "@renderer/models/units.utils";
 import { Cell, Size, Position } from "@renderer/models/units";
@@ -8,20 +8,21 @@ import { ApiClientSerivce } from "@renderer/services/api-client.service";
 import { RendererComponent } from "@renderer/renderer.component";
 import { RendererMode } from "@renderer/models/mode";
 import { settings } from "@renderer/models/settings";
+import { getElementAction,
+         transformElementByAction } from "@renderer/models/element.utils";
 
 @Component({
   selector: 'app-grid',
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.css']
+  styleUrls: ['./grid.component.css'],
 })
 export class GridComponent {
   @ViewChild('gird_container') grid_container: ElementRef;
   @ViewChildren('elements_container') elements_container: QueryList<ElementRef>;
 
   @Input() public settings: settings;
-  @Input() public elements: Element[] = [];
+  @Input() public elements: Element[] | null = [];
 
-  public rowsType: Size[] = [];
   @Input() public set rows(numbers: number) {
     this.rowsType = [];
 
@@ -37,7 +38,6 @@ export class GridComponent {
     }
   }
 
-  public columnsType: Size[] = [];
   @Input() public set columns(numbers: number) {
     this.columnsType = [];
 
@@ -51,10 +51,21 @@ export class GridComponent {
     }
   }
 
+  public get rows(): number {
+    return this.rowsType.length;
+  }
+
+  public get columns(): number {
+    return this.columnsType.length;
+  }
+
+  public rowsType: Size[] = [];
+  public columnsType: Size[] = []
+
   public cursor: string = 'default';
   public RendererMode = RendererMode;
 
-  private mouseOffset: number = 5;
+  private offset: number = 5;
   private savedMousePosition: Cell;
   private savedElementPosition: Position;
 
@@ -65,6 +76,9 @@ export class GridComponent {
   private lastElementIndex?: number;
 
   private elementAction = ElementAction.none;
+
+  private boundWidth: number;
+  private boundHeight: number;
 
   constructor(
     public rendererService: RendererService,
@@ -78,7 +92,7 @@ export class GridComponent {
 
   public onMouseMove(event: MouseEvent, element: Element) {
     if (this.settings.mode == 0)
-      switch (getElementAction(event, element, this.mouseOffset)) {
+      switch (getElementAction(event, element, this.offset)) {
         case ElementAction.left_top: this.cursor = 'se-resize'; break;
         case ElementAction.left_bottom: this.cursor = 'ne-resize'; break;
         case ElementAction.right_top: this.cursor = 'ne-resize'; break;
@@ -98,11 +112,11 @@ export class GridComponent {
    * After that i check which action i need to do,
    * the next step i set cord for elemen bound with cortege.
    */
-  private elementOnResize = (event: MouseEvent) => {
+  private elementOnResize = async (event: MouseEvent) => {
     if (!this.currentElement)
       return;
 
-    // Helps to get current mouse cell.
+    // Get cell of resized element
     // Which help us to transform element.
     const cell = getCell(
       {
@@ -115,60 +129,64 @@ export class GridComponent {
         columns: this.columnsType
       });
 
-    let left = this.savedElementPosition.cellX;
-    let right = this.savedElementPosition.cellX + this.savedElementPosition.width - 1;
-    let top = this.currentElement.position.cellY;
-    let bottom = this.savedElementPosition.cellY + this.savedElementPosition.height - 1;
-
-    switch (this.elementAction) {
-      case ElementAction.left:
-        if (!(this.currentElement.resizeLeft ?? true)) return;
-        [left, right] = [cell.cellX, right];
-        break;
-      case ElementAction.right:
-        if (!(this.currentElement.resizeRight ?? true)) return;
-        [left, right] = [left, cell.cellX];
-        break;
-      case ElementAction.top:
-        if (!(this.currentElement.resizeTop ?? true)) return;
-        [top, bottom] = [cell.cellY, bottom];
-        break;
-      case ElementAction.bottom:
-        if (!(this.currentElement.resizeBottom ?? true)) return;
-        [top, bottom] = [top, cell.cellY];
-        break;
-
-      case ElementAction.left_top:
-        if (!(this.currentElement.resizeLeft ?? true)) return;
-        if (!(this.currentElement.resizeTop ?? true)) return;
-        [left, top, right, bottom] = [cell.cellX, cell.cellY, right, bottom];
-        break;
-      case ElementAction.left_bottom:
-        if (!(this.currentElement.resizeLeft ?? true)) return;
-        if (!(this.currentElement.resizeBottom ?? true)) return;
-        [left, top, right, bottom] = [cell.cellX, top, right, cell.cellY];
-        break;
-      case ElementAction.right_top:
-        if (!(this.currentElement.resizeRight ?? true)) return;
-        if (!(this.currentElement.resizeTop ?? true)) return;
-        [left, top, right, bottom] = [left, cell.cellY, cell.cellX, bottom];
-        break;
-      case ElementAction.right_bottom:
-        if (!(this.currentElement.resizeRight ?? true)) return;
-        if (!(this.currentElement.resizeBottom ?? true)) return;
-        [left, top, right, bottom] = [left, top, cell.cellX, cell.cellY];
-        break;
-    }
-    this.currentElement.position = {
-      ...this.currentElement.position,
-      cellX: left,
-      cellY: top,
-      width: right - left + 1,
-      height: bottom - top + 1
-    };
+    // Transform element to show resize
+    await transformElementByAction(
+      this.currentElement,
+      this.elementAction,
+      cell,
+      {
+        left: this.savedElementPosition.cellX,
+        right: this.savedElementPosition.cellX + this.savedElementPosition.width - 1,
+        top: this.savedElementPosition.cellY,
+        bottom: this.savedElementPosition.cellY + this.savedElementPosition.height - 1
+      });
   }
 
-  public elementOnMove = (event: MouseEvent) => {
+  public elementOnTouchResize = async (event: TouchEvent) => {
+    if (!this.currentElement)
+      return;
+
+    const cell = getCell(
+      {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY
+      },
+      {
+        rect: this.rect,
+        rows: this.rowsType,
+        columns: this.columnsType
+      });
+
+    let left = this.savedElementPosition.cellX;
+    let right = this.savedElementPosition.cellX
+      + this.savedElementPosition.width - 1;
+
+    let top = this.savedElementPosition.cellY;
+    let bottom = this.savedElementPosition.cellY
+      + this.savedElementPosition.height - 1;
+
+    if (left > cell.cellX)
+      this.elementAction = ElementAction.left;
+    if (right < cell.cellX)
+      this.elementAction = ElementAction.right;
+    if (top > cell.cellY)
+      this.elementAction = ElementAction.top;
+    if (bottom < cell.cellY)
+      this.elementAction = ElementAction.bottom;
+
+    await transformElementByAction(
+      this.currentElement,
+      this.elementAction,
+      cell,
+      {
+        left: left,
+        right: right,
+        top: top,
+        bottom: bottom
+      });
+  }
+
+  public elementOnMove = async (event: MouseEvent) => {
     if (!this.currentElement)
       return;
 
@@ -186,14 +204,56 @@ export class GridComponent {
     const x = cell.cellX - this.savedMousePosition.cellX;
     const y = cell.cellY - this.savedMousePosition.cellY;
 
-    this.currentElement.position = {
-      ...this.currentElement.position,
-      cellX: this.savedElementPosition.cellX + x,
-      cellY: this.savedElementPosition.cellY + y
-    }
+    const newCellX = this.savedElementPosition.cellX + x;
+    const newCellY = this.savedElementPosition.cellY + y;
+
+    if (
+      (newCellX >= 0 && newCellX <= this.boundWidth) &&
+      (newCellY >= 0 && newCellY <= this.boundHeight)
+    )
+      this.currentElement.position = await {
+        ...this.currentElement.position,
+        cellX: newCellX,
+        cellY: newCellY
+      }
   }
 
-  private unsubscribeEvent() {
+  public elementOnTouchMove =  async (event: TouchEvent) => {
+    if (!this.currentElement)
+      return;
+
+    const cell = getCell(
+      {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY
+      },
+      {
+        rect: this.rect,
+        rows: this.rowsType,
+        columns: this.columnsType
+      });
+
+    const x = cell.cellX - this.savedMousePosition.cellX;
+    const y = cell.cellY - this.savedMousePosition.cellY;
+
+    const newCellX = this.savedElementPosition.cellX + x;
+    const newCellY = this.savedElementPosition.cellY + y;
+
+    if (
+      (newCellX >= 0 && newCellX <= this.boundWidth) &&
+      (newCellY >= 0 && newCellY <= this.boundHeight)
+    )
+      this.currentElement.position = await {
+        ...this.currentElement.position,
+        cellX: newCellX,
+        cellY: newCellY
+      }
+  }
+
+  public elementOnMouseUp = (event: MouseEvent) => {
+    if (this.currentElement)
+      this.api.postElementById(this.currentElement).subscribe();
+
     this.currentElement = undefined;
     this.cursor = 'default';
 
@@ -202,14 +262,15 @@ export class GridComponent {
     document.removeEventListener('mouseup', this.elementOnMouseUp, true);
   }
 
-  public elementOnMouseUp = (event: MouseEvent) => {
-    this.unsubscribeEvent();
+  public elementOnTouchEnd = (event: TouchEvent) => {
+    if (this.currentElement)
+      this.api.postElementById(this.currentElement).subscribe();
 
-    const element = this.rendererService.currentElement;
+    this.currentElement = undefined;
 
-    // May find better position for it. Look at rxjs better.
-    if (element)
-      this.api.postElementById(element).subscribe();
+    document.removeEventListener('touchmove', this.elementOnTouchResize, true);
+    document.removeEventListener('touchmove', this.elementOnTouchMove, true);
+    document.removeEventListener('touchend', this.elementOnTouchEnd, true);
   }
 
   private onSelectElement(element: Element, index: number) {
@@ -245,21 +306,84 @@ export class GridComponent {
 
         this.savedMousePosition = cell;
 
-        const elementAction = getElementAction(event, element, this.mouseOffset);
+        const elementAction = getElementAction(event, element, this.offset);
 
         if (
           elementAction > ElementAction.none &&
           elementAction > ElementAction.move
         ) {
           this.elementAction = elementAction;
+
           document.addEventListener('mousemove', this.elementOnResize, true);
           document.addEventListener('mouseup', this.elementOnMouseUp, true);
         } else {
+
+          const x = cell.cellX - this.savedMousePosition.cellX;
+          const y = cell.cellY - this.savedMousePosition.cellY;
+
+          this.boundWidth = Math.abs(x - element.position.width + this.columns);
+          this.boundHeight = Math.abs(y + element.position.height - this.rows);
+
           document.addEventListener('mousemove', this.elementOnMove, true);
           document.addEventListener('mouseup', this.elementOnMouseUp, true);
         }
         break;
       }
+    }
+  }
+
+  public onTouchStart(event: TouchEvent, element: Element, index: number) {
+    switch (this.settings.mode) {
+      case RendererMode.select: {
+        this.onSelectElement(element, index);
+        this.savedElementPosition = { ...element.position };
+
+        const cell = getCell(
+          {
+            x: event.touches[0].clientX,
+            y: event.touches[0].clientY
+          },
+          {
+            rect: this.rect,
+            rows: this.rowsType,
+            columns: this.columnsType
+          });
+
+        this.savedMousePosition = cell;
+
+        const x = cell.cellX - this.savedMousePosition.cellX;
+        const y = cell.cellY - this.savedMousePosition.cellY;
+
+        this.boundWidth = x + element.position.width;
+        this.boundHeight = Math.abs(y + element.position.height - this.rows);
+
+        document.addEventListener('touchmove', this.elementOnTouchMove, true);
+        document.addEventListener('touchend', this.elementOnTouchEnd, true);
+
+        break;
+      };
+      case RendererMode.resize: {
+        this.onSelectElement(element, index);
+        this.savedElementPosition = { ...element.position };
+
+        const cell = getCell(
+          {
+            x: event.touches[0].clientX,
+            y: event.touches[0].clientY
+          },
+          {
+            rect: this.rect,
+            rows: this.rowsType,
+            columns: this.columnsType
+          });
+
+        this.savedMousePosition = cell;
+
+        document.addEventListener('touchmove', this.elementOnTouchResize, true);
+        document.addEventListener('touchend', this.elementOnTouchEnd, true);
+
+        break;
+      };
     }
   }
 
