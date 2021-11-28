@@ -1,5 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import { settings } from '@renderer/models/settings';
 import { RendererComponent } from '@renderer/renderer.component';
 import { RendererService } from '@renderer/services/renderer.service';
 import { environment } from '../environments/environment';
@@ -15,6 +16,8 @@ export class AppComponent implements AfterViewInit {
 
   public env = environment;
 
+  public settings: settings;
+
   public sidenavMode = () => {
     this.sidenav.mode = this.rendererService.settings.sideNavMode;
   };
@@ -22,7 +25,9 @@ export class AppComponent implements AfterViewInit {
   constructor(
     public rendererService: RendererService,
     private cdRef: ChangeDetectorRef
-  ) { }
+  ) {
+    this.settings = rendererService.settings;
+  }
 
   ngAfterViewInit() {
     this.sidenavMode();

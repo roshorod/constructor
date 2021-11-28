@@ -2,7 +2,7 @@
   class="grid-container"
   [style.grid-template-columns]="columnsType | safeStyle"
   [style.grid-template-rows]="rowsType | safeStyle"
-  [style.cursor]="this.settings.mode == RendererMode.create ? 'cell' : '' "
+  [style.cursor]="this.settings.mode == RendererMode.create  ? 'cell' : '' "
   (mousedown)="this.settings.mode == RendererMode.create ? onElementCreate($event) : '' ">
 
   <ng-container *ngIf="this.settings.lines">
@@ -23,7 +23,7 @@
     [style.grid-area]="element.position | gridArea"
     [style.color]="element.color"
     [style.background-color]="element.background"
-    [style.cursor]="this.settings.mode == RendererMode.select ? cursor : '' "
+    [style.cursor]="this.settings.mode == RendererMode.select || this.settings.mode == 2 ? cursor : '' "
     (mousedown)="onMouseDown($event, element, i)"
     (mousemove)="onMouseMove($event, element)"
     (touchstart)="onTouchStart($event, element, i)">

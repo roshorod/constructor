@@ -7,6 +7,16 @@
     font-size: 1rem;
 }
 
+.inspector-item > :first-child {
+  flex: 1;
+  min-width: calc(10% + 70px);
+}
+
+.inspector-item > :last-child {
+  flex: 2;
+  min-width: calc(10% + 150px);
+}
+
 .inspector-item > button {
   background: #ebdbb2;
   width: 150px;
@@ -14,12 +24,11 @@
 
 .inspector-item-group {
   display: flex;
-  flex-direction: column;
-  width: 150px;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .inspector-item-group > button {
   background: #ebdbb2;
-  margin-bottom: 10px;
 }
 
 .inspector-item input[type="number"] {
@@ -44,8 +53,8 @@
   border-radius: 4px;
 }
 
-.inspector-item input[type="checkbox"] {
-  margin-right: 55.5%;
+.inspector > item.input[type="checkbox"] {
+  justify-content: flex-start;
 }
 
 .workspace-block {
@@ -78,4 +87,22 @@
 
 input:focus {
   outline: none;
+}
+
+.delete-button {
+  margin-left: 5px;
+}
+
+mat-icon {
+  font-size: 18px;
+  height: 21px;
+  width: 18px;
+}
+
+.resize-icon {
+  height: 17px;
+}
+
+.create-icon {
+  height: 19px;
 }

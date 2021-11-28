@@ -91,7 +91,7 @@ export class GridComponent {
   }
 
   public onMouseMove(event: MouseEvent, element: Element) {
-    if (this.settings.mode == 0)
+    if (this.settings.mode == 0 || this.settings.mode == 2)
       switch (getElementAction(event, element, this.offset)) {
         case ElementAction.left_top: this.cursor = 'se-resize'; break;
         case ElementAction.left_bottom: this.cursor = 'ne-resize'; break;
@@ -328,6 +328,29 @@ export class GridComponent {
           document.addEventListener('mouseup', this.elementOnMouseUp, true);
         }
         break;
+      }
+      case RendererMode.resize: {
+        this.onSelectElement(element, index);
+
+        this.savedElementPosition = { ...element.position };
+
+        const cell = getCell(
+          {
+            x: event.clientX,
+            y: event.clientY
+          },
+          {
+            rect: this.rect,
+            rows: this.rowsType,
+            columns: this.columnsType
+          });
+
+        this.savedMousePosition = cell;
+
+        this.elementAction = getElementAction(event, element, this.offset);
+
+        document.addEventListener('mousemove', this.elementOnResize, true);
+        document.addEventListener('mouseup', this.elementOnMouseUp, true);
       }
     }
   }

@@ -1,13 +1,18 @@
 <mat-toolbar class="toolbar-container bg1 fg">
   <h1 class="toolbar-logo bg2">Constructor</h1>
-  <div>
-    <button mat-icon-button (click)="onElementMove()">
+  <div class="mode-group-button">
+    <button mat-icon-button mode-button
+      [target]="0"
+      [mode]="this.settings.mode"
+      (click)="onElementMove()">
       <mat-icon>open_with</mat-icon>
     </button>
-    <button mat-icon-button (click)="onElementResize()">
+    <button mat-icon-button mode-button
+      [target]="2"
+      [mode]="this.settings.mode"
+      (click)="onElementResize()">
       <mat-icon>transform</mat-icon>
     </button>
-
     <button mat-icon-button (click)="onElementCreate()">
       <mat-icon>crop_free</mat-icon>
     </button>

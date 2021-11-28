@@ -14,7 +14,7 @@
 }
 
 .toolbar-logo {
-  padding: 4px 24px;
+  padding: 4px 15px;
   border-radius: 5px;
   font-size: 1.563rem;
 }
@@ -25,6 +25,17 @@
 
 .sidenav-container {
   width: 20%;
+}
+
+.mode-group-button {
+  border-radius: 5px;
+}
+
+.mode-group-button > button {
+  margin-right: 4px;
+  margin-left: 4px;
+  border-radius: 5px;
+  background: #504945;
 }
 
 @media screen and (max-width: 1550px) {

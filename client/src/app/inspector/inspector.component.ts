@@ -65,7 +65,7 @@ import { PropertiesComponent } from "./properties.component";
           </div>
           <div class="inspector-item">
             <label>Delete element:</label>
-            <button mat-raised-button (click)="this.onDeleteElement()">Delete</button>
+            <button mat-raised-button (click)="this.onDeleteElement()" class="delete-button">Delete</button>
           </div>
         </form>
       </properties>
@@ -79,12 +79,21 @@ import { PropertiesComponent } from "./properties.component";
             [mode]="this.settings.mode"
             (click)="onModeSelect()">
             Select
+            <mat-icon>open_with</mat-icon>
+          </button>
+          <button mat-raised-button mode-button
+            [target]="2"
+            [mode]="this.settings.mode"
+            (click)="onModeResize()">
+            Resize
+            <mat-icon class="resize-icon">transform</mat-icon>
           </button>
           <button mat-raised-button mode-button
             [target]="1"
             [mode]="this.settings.mode"
             (click)="onModeCreate()">
             Create
+            <mat-icon class="create-icon">crop_free</mat-icon>
           </button>
         </div>
       </div>
@@ -285,6 +294,10 @@ export class InspectorComponent implements AfterViewInit, OnDestroy, OnChanges {
     this.settings.mode = 1;
   }
 
+  public onModeResize() {
+    this.settings.mode = 2;
+  }
+
   ngOnDestroy() {
     this.unsubTrigger$.next();
     this.unsubTrigger$.complete();
@@ -301,6 +314,7 @@ export class InspectorComponent implements AfterViewInit, OnDestroy, OnChanges {
   ],
   exports: [
     InspectorComponent,
+    ModeButtonDirective
   ],
   declarations:[
     InspectorComponent,
