@@ -7,13 +7,15 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { GridComponent } from "./components/grid/grid.component";
 import { SafeStylePipe } from "./components/grid/pipes/safe-style.pipe";
 import { GridAreaPipe } from "./components/grid/pipes/grid-area.pipe";
+import { DefaultPipe } from "./pipes/default.pipe";
 
 @NgModule({
   declarations: [
     RendererComponent,
     GridComponent,
     SafeStylePipe,
-    GridAreaPipe
+    GridAreaPipe,
+    DefaultPipe
   ],
   imports: [
     BrowserModule,

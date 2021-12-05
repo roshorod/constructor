@@ -35,6 +35,14 @@
        :status 201}
       {:status 404})))
 
+(defn element-get-by-id [request]
+  (let [session-id (get (:params request) :session-id)
+        element-id (get (:params request) :element-id)]
+    (if (start-session session-id)
+      {:body (redis/get-val element-id)
+       :status 200}
+      {:status 501})))
+
 (defn element-get [request]
   (let [session-id  (:session-id (:params request))
         elements-id (get (redis/get-val session-id) :elements)]

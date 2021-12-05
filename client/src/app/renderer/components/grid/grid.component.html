@@ -17,7 +17,7 @@
     </div>
   </ng-container>
 
-  <div *ngFor="let element of elements; let i = index"
+  <div *ngFor="let element of elements; let i = index;"
     #elements_container
     class="grid-element"
     [style.grid-area]="element.position | gridArea"
@@ -27,6 +27,7 @@
     (mousedown)="onMouseDown($event, element, i)"
     (mousemove)="onMouseMove($event, element)"
     (touchstart)="onTouchStart($event, element, i)">
+
 
     {{element.content}}
 

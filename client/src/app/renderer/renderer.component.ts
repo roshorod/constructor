@@ -1,40 +1,26 @@
-import { Component } from '@angular/core';
-import { ApiClientSerivce } from '@renderer/services/api-client.service';
-import { Element } from './models/element';
-import { RendererService } from './services/renderer.service';
-import { settings } from './models/settings';
+import { AfterViewInit, Component, Inject } from '@angular/core';
+import { Settings } from './models/settings';
+import { StoreService } from '@services/store.service';
+import { SettingsService } from '@services/settings.service';
+import { CONFIG } from '@services/settings.config';
 
 @Component({
   selector: 'app-renderer',
   templateUrl: './renderer.component.html',
 })
-export class RendererComponent {
-  public container: Element[] = [];
-  public settings: settings;
-
-  public elementCreate(element: Element): Element {
-    this.api.postElement(element).subscribe(
-      (req: { id: string }) => element.id = req.id);
-
-    this.container.push(element);
-    return element;
-  }
-
-  public elementUpdate(element: Element): Element {
-    this.api.postElementById(element).subscribe({
-      error: () => {
-        console.warn("Server error!");
-      }
-    });
-
-    return element;
-  }
+export class RendererComponent implements AfterViewInit {
 
   constructor(
-    private api: ApiClientSerivce,
-    public rendererService: RendererService,
-  ) {
-    this.settings = this.rendererService.settings;
-    this.container = this.rendererService.container;
+    public store: StoreService,
+    public settings: SettingsService,
+    /*
+     * Set config when settings.settings$ == null
+     */
+    @Inject(CONFIG) public defaultConfig: Settings
+  ) { }
+
+  ngAfterViewInit() {
+    this.store.watcher().subscribe();
+    this.store.fetch().subscribe();
   }
 }

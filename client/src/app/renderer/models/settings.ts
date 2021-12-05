@@ -1,11 +1,11 @@
 import { RendererMode } from "./mode";
 
-type gridUnits = {
+type GridUnits = {
   pixelType: 'px' | 'fr';
   pixelSize: number;
 };
 
-type gridSettings = gridUnits & {
+type GridSettings = GridUnits & {
   rows: number;
   columns: number;
 
@@ -14,10 +14,10 @@ type gridSettings = gridUnits & {
   background?: string;
 };
 
-type sideNavSettings = {
+type SideNavSettings = {
   sideNavMode: 'over' | 'side';
 };
 
-export type settings = gridSettings & sideNavSettings & {
+export type Settings = GridSettings & SideNavSettings & {
   mode: RendererMode;
 };

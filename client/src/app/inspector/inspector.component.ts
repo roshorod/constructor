@@ -1,301 +1,121 @@
-import { AfterViewInit, Component, Input, NgModule, OnChanges, OnDestroy } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { ChangeDetectionStrategy, Component,
+         Input, NgModule, OnDestroy, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatIconModule } from "@angular/material/icon";
 import { BrowserModule } from "@angular/platform-browser";
 import { Element } from "@renderer/models/element";
-import { settings } from "@renderer/models/settings";
-import { ApiClientSerivce } from "@renderer/services/api-client.service";
-import { RendererService } from "@renderer/services/renderer.service";
+import { RendererMode } from "@renderer/models/mode";
+import { Settings } from "@renderer/models/settings";
+import { SettingsService } from "@services/settings.service";
+import { StoreService } from "@services/store.service";
 import { Subject } from "rxjs";
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import { ModeButtonDirective } from "./mode-button.directive";
 import { PropertiesComponent } from "./properties.component";
 
 @Component({
   selector: 'app-inspector',
-  template: `
-  <mat-accordion multi>
-    <ng-container *ngIf="this.element">
-      <properties title="Element">
-        <form [formGroup]="this.elementGroup$">
-          <div class="inspector-item" *ngIf="this.debug" style="user-select: text;">
-            <label>{{this.elementId$.value}}</label>
-          </div>
-          <div class="inspector-item">
-            <label for="element-content">Content:</label>
-            <input id="element-content" type="text"
-              formControlName="elementContent">
-          </div>
-          <div class="inspector-item">
-            <label for="element-color">Text color:</label>
-            <input id="element-color" type="color" formControlName="elementColor">
-          </div>
-          <div class="inspector-item">
-            <label for="element-background">Background:</label>
-            <input id="element-background" type="color" formControlName="elementBackground">
-          </div>
-          <div class="inspector-item">
-            <label>Reset:</label>
-            <div class="inspector-item-group">
-              <button mat-raised-button (click)="onResetBackground()">Backgorund</button>
-              <button mat-raised-button (click)="onResetColor()">Color</button>
-            </div>
-          </div>
-          <div class="inspector-item">
-            <label for="element-top">Resize top:</label>
-            <input id="element-top" type="checkbox"
-              formControlName="elementTop">
-          </div>
-          <div class="inspector-item">
-            <label for="element-left">Resize left:</label>
-            <input id="element-left" type="checkbox"
-              formControlName="elementLeft">
-          </div>
-          <div class="inspector-item">
-            <label for="element-right">Resize right:</label>
-            <input id="element-right" type="checkbox"
-              formControlName="elementRight">
-          </div>
-          <div class="inspector-item">
-            <label for="element-bottom">Resize bottom:</label>
-            <input id="element-bottom" type="checkbox"
-              formControlName="elementBottom">
-          </div>
-          <div class="inspector-item">
-            <label>Delete element:</label>
-            <button mat-raised-button (click)="this.onDeleteElement()" class="delete-button">Delete</button>
-          </div>
-        </form>
-      </properties>
-    </ng-container>
-    <properties title="Workspace" expanded="true">
-      <div class="inspector-item workspace-block">
-        <label>Mode:</label>
-        <div class="workspace-group">
-          <button mat-raised-button mode-button
-            [target]="0"
-            [mode]="this.settings.mode"
-            (click)="onModeSelect()">
-            Select
-            <mat-icon>open_with</mat-icon>
-          </button>
-          <button mat-raised-button mode-button
-            [target]="2"
-            [mode]="this.settings.mode"
-            (click)="onModeResize()">
-            Resize
-            <mat-icon class="resize-icon">transform</mat-icon>
-          </button>
-          <button mat-raised-button mode-button
-            [target]="1"
-            [mode]="this.settings.mode"
-            (click)="onModeCreate()">
-            Create
-            <mat-icon class="create-icon">crop_free</mat-icon>
-          </button>
-        </div>
-      </div>
-    </properties>
-    <properties title="Grid" expanded="true">
-      <form [formGroup]="this.gridGroup$">
-        <div class="inspector-item">
-          <label for="grid-lines">Lines</label>
-          <input id="grid-lines" type="checkbox"
-            formControlName="gridLines">
-        </div>
-        <div class="inspector-item">
-          <label for="grid-corners">Corners:</label>
-          <input id="grid-corners" type="checkbox"
-            formControlName="gridCorners">
-        </div>
-        <div class="inspector-item">
-          <label for="grid-rows">Rows:</label>
-          <input id="grid-rows" type="number"
-            formControlName="gridRows">
-        </div>
-        <div class="inspector-item">
-          <label for="grid-columns">Columns:</label>
-          <input id="grid-columns" type="number"
-            formControlName="gridColumns">
-        </div>
-      </form>
-    </properties>
-  </mat-accordion>`,
+  templateUrl: 'inspector.component.html',
   styleUrls: ['inspector.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InspectorComponent implements AfterViewInit, OnDestroy, OnChanges {
-  @Input() public element?: Element;
-  @Input() public settings: settings;
+export class InspectorComponent implements OnInit, OnDestroy {
   @Input() public debug?: boolean;
 
-  public elementId$ = new FormControl()
-  public elementGroup$ = new FormGroup({
-    elementContent: new FormControl(),
+  @Input() public set element(element: Element | null | undefined) {
+    this.elementGroup$ = this.fb.group({ ...element });
 
-    elementColor: new FormControl(),
-    elementBackground: new FormControl(),
-
-    elementTop: new FormControl(true),
-    elementLeft: new FormControl(true),
-    elementRight: new FormControl(true),
-    elementBottom: new FormControl(true),
-  });
-
-  public gridGroup$ = new FormGroup({
-    gridRows: new FormControl(),
-    gridColumns: new FormControl(),
-
-    gridLines: new FormControl(true),
-    gridCorners: new FormControl(true),
-    gridBackground: new FormControl()
-  });
-
-  public unsubTrigger$ = new Subject();
-
-  constructor(
-    private api: ApiClientSerivce,
-    private rendererService: RendererService
-  ) { }
-
-  ngAfterViewInit() {
-    const settings = this.settings;
-
-    this.gridGroup$.setValue({
-      gridRows: settings.rows,
-      gridColumns: settings.columns,
-
-      gridLines: settings.lines,
-      gridCorners: settings.corners,
-      gridBackground: ''
-    });
-
-    const content$ = (<FormControl>this.elementGroup$.get('elementContent')).valueChanges;
-    const color$ = (<FormControl>this.elementGroup$.get('elementColor')).valueChanges;
-    const background$ = (<FormControl>this.elementGroup$.get('elementBackground')).valueChanges;
-    const top$ = (<FormControl>this.elementGroup$.get('elementTop')).valueChanges;
-    const left$ = (<FormControl>this.elementGroup$.get('elementLeft')).valueChanges;
-    const right$ = (<FormControl>this.elementGroup$.get('elementRight')).valueChanges;
-    const bottom$ = (<FormControl>this.elementGroup$.get('elementBottom')).valueChanges;
-
-    const lines$ = (<FormControl>this.gridGroup$.get('gridLines')).valueChanges;
-    const corners$ = (<FormControl>this.gridGroup$.get('gridCorners')).valueChanges;
-    const rows$ = (<FormControl>this.gridGroup$.get('gridRows')).valueChanges;
-    const columns$ = (<FormControl>this.gridGroup$.get('gridColumns')).valueChanges;
-
-    // https://kelly-kh-woo.medium.com/rxjs-better-practice-b573a9dac874
-    content$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: string) => {
-      if(this.element)
-        this.element.content = val;
-    });
-    color$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: string) => {
-      if(this.element)
-        this.element.color = val;
-    });
-    background$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: string) => {
-      if(this.element)
-        this.element.background = val;
-    });
-    top$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: boolean) => {
-      if(this.element)
-        this.element.resizeTop = val;
-    });
-    left$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: boolean) => {
-      if (this.element)
-        this.element.resizeLeft = val;
-    });
-    right$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: boolean) => {
-      if (this.element)
-        this.element.resizeRight = val;
-    });
-    bottom$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: boolean) => {
-      if (this.element)
-        this.element.resizeBottom = val;
-    });
-
-    lines$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: boolean) => {
-      settings.lines = val;
-    });
-    corners$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: boolean) => {
-      settings.corners = val;
-    });
-    rows$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: number) => {
-      if (val == null)
-        console.error('Bad rows count. Enter a valid number!');
-      else
-        settings.rows = val;
-    });
-    columns$.pipe(takeUntil(this.unsubTrigger$)).subscribe((val: number) => {
-      if (val == null)
-        console.error('Bad columns count. Enter a valid number!');
-      else
-        settings.columns = val;
-    });
-
-    this.elementGroup$.valueChanges.pipe(
-      takeUntil(this.unsubTrigger$),
-      debounceTime(500)
-    ).subscribe(() => {
-      if(this.element)
-        this.api.postElementById(this.element).subscribe();
-      else
-        console.warn("Can't reach server. Check server connection!");
-    });
+    this.elementGroup$.valueChanges
+      .subscribe((element) => {
+        if (element)
+          this.store.update(element)
+            .subscribe();
+      });
   }
 
-  ngOnChanges() {
-    const element = this.element;
+  public elementGroup$: FormGroup;
+  public settingsGroup$: FormGroup;
 
-    if (element) {
-      if (this.debug)
-        this.elementId$.setValue(element?.id)
+  public settingsPayload: Settings;
 
-      this.elementGroup$.setValue({
-        elementContent: element?.content,
+  private unsubTrigger$ = new Subject();
 
-        elementColor: element?.color ? element?.color : '#000000',
-        elementBackground: element?.background ? element?.background : '',
+  constructor(
+    private fb: FormBuilder,
+    private settings: SettingsService,
+    public store: StoreService
+  ) { }
 
-        elementTop: element?.resizeTop ? element?.resizeTop : false,
-        elementLeft: element?.resizeLeft ? element?.resizeLeft : false,
-        elementRight: element?.resizeRight ? element?.resizeRight : false,
-        elementBottom: element?.resizeBottom ? element?.resizeBottom : false,
+  ngOnInit() {
+    this.settings.settings$
+      .subscribe((settings: Settings) => {
+        this.settingsPayload = settings;
+        this.settingsGroup$ = this.fb.group({ ...settings });
+      })
+      .unsubscribe();
+
+    this.settingsGroup$.valueChanges
+      .pipe(debounceTime(800))
+      .subscribe((settings) => {
+        this.settingsPayload = settings;
+        this.settings.update(settings);
       });
-    }
   }
 
   public onResetColor() {
-    if (this.element)
-      this.element.color = '#000000';
+    const signature: Element = {
+      ...this.elementGroup$.value,
+      color: undefined
+    };
+    this.store.update(signature)
+      .subscribe();
   }
 
   public onResetBackground() {
-    if (this.element)
-      this.element.background = '';
+    const signature: Element = {
+      ...this.elementGroup$.value,
+      background: undefined
+    };
+    this.store.update(signature)
+      .subscribe();
   };
 
   public onDeleteElement() {
-    if (this.element)
-      this.api.deleteElement(this.element).subscribe(() => {
-        const container = this.rendererService.container;
-        const index = container.findIndex(elem => elem.id == this.element?.id);
+    const signature: Element = {
+      ...this.elementGroup$.value,
+    };
 
-        this.element = undefined;
-        container.splice(index);
-      });
+    this.store.remove(signature)
+      .subscribe(() => this.store.select(undefined));
   }
 
   public onModeSelect() {
-    this.settings.mode = 0;
+    this.settings.update({
+      ...this.settingsPayload,
+      mode: RendererMode.select
+    })
+      .subscribe((last) => this.settingsPayload = last)
+      .unsubscribe();
   }
 
   public onModeCreate() {
-    this.settings.mode = 1;
+    this.settings.update({
+      ...this.settingsPayload,
+      mode: RendererMode.create
+    })
+      .subscribe((last) => this.settingsPayload = last)
+      .unsubscribe();
   }
 
   public onModeResize() {
-    this.settings.mode = 2;
+    this.settings.update({
+      ...this.settingsPayload,
+      mode: RendererMode.resize
+    })
+      .subscribe((last) => this.settingsPayload = last)
+      .unsubscribe();
   }
 
   ngOnDestroy() {

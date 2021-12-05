@@ -1,7 +1,7 @@
 <app-grid
-  [elements]="rendererService.container$ | async"
-  [settings]="this.settings"
+  [elements]="store.elements$ | async"
+  [settings]="settings.settings$ | async | default: defaultConfig"
+  [rows]="(settings.settings$ | async)?.rows | default: defaultConfig.rows"
+  [columns]="(settings.settings$ | async)?.columns | default: defaultConfig.columns">
 
-  [rows]="this.settings.rows"
-  [columns]="this.settings.columns">
 </app-grid>

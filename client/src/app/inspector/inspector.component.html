@@ -1,0 +1,110 @@
+<mat-accordion multi>
+  <ng-container *ngIf="store.chosen$ | async">
+    <properties title="Element">
+      <form [formGroup]="elementGroup$">
+        <div class="inspector-item" *ngIf="this.debug" style="user-select: text;">
+          <input formControlName="id">
+        </div>
+        <div class="inspector-item">
+          <label for="element-content">Content:</label>
+          <input id="element-content" type="text"
+            formControlName="content">
+        </div>
+        <div class="inspector-item">
+          <label for="element-color">Text color:</label>
+          <input id="element-color" type="color" formControlName="color">
+        </div>
+        <div class="inspector-item">
+          <label for="element-background">Background:</label>
+          <input id="element-background" type="color" formControlName="background">
+        </div>
+        <div class="inspector-item">
+          <label>Reset:</label>
+          <div class="inspector-item-group">
+            <button mat-raised-button (click)="onResetBackground()">Backgorund</button>
+            <button mat-raised-button (click)="onResetColor()">Color</button>
+          </div>
+        </div>
+        <div class="inspector-item">
+          <label for="element-top">Resize top:</label>
+          <input id="element-top" type="checkbox"
+            formControlName="resizeTop">
+        </div>
+        <div class="inspector-item">
+          <label for="element-left">Resize left:</label>
+          <input id="element-left" type="checkbox"
+            formControlName="resizeLeft">
+        </div>
+        <div class="inspector-item">
+          <label for="element-right">Resize right:</label>
+          <input id="element-right" type="checkbox"
+            formControlName="resizeRight">
+        </div>
+        <div class="inspector-item">
+          <label for="element-bottom">Resize bottom:</label>
+          <input id="element-bottom" type="checkbox"
+            formControlName="resizeBottom">
+        </div>
+        <div class="inspector-item">
+          <label>Delete element:</label>
+          <button mat-raised-button (click)="onDeleteElement()"
+            class="delete-button">
+            Delete
+          </button>
+        </div>
+      </form>
+    </properties>
+  </ng-container>
+  <properties title="Workspace" expanded="true">
+    <div class="inspector-item workspace-block">
+      <label>Mode:</label>
+      <div class="workspace-group">
+        <button mat-raised-button mode-button
+          [target]="0"
+          [mode]="settingsPayload.mode"
+          (click)="onModeSelect()">
+          Select
+          <mat-icon>open_with</mat-icon>
+        </button>
+        <button mat-raised-button mode-button
+          [target]="2"
+          [mode]="settingsPayload.mode"
+          (click)="onModeResize()">
+          Resize
+          <mat-icon class="resize-icon">transform</mat-icon>
+        </button>
+        <button mat-raised-button mode-button
+          [target]="1"
+          [mode]="settingsPayload.mode"
+          (click)="onModeCreate()">
+          Create
+          <mat-icon class="create-icon">crop_free</mat-icon>
+        </button>
+      </div>
+    </div>
+  </properties>
+  <properties title="Grid" expanded="true">
+    <form [formGroup]="settingsGroup$">
+      <div class="inspector-item">
+        <label for="grid-lines">Lines</label>
+        <input id="grid-lines" type="checkbox"
+          formControlName="lines">
+      </div>
+      <div class="inspector-item">
+        <label for="grid-corners">Corners:</label>
+        <input id="grid-corners" type="checkbox"
+          formControlName="corners">
+      </div>
+      <div class="inspector-item">
+        <label for="grid-rows">Rows:</label>
+        <input id="grid-rows" type="number"
+          formControlName="rows">
+      </div>
+      <div class="inspector-item">
+        <label for="grid-columns">Columns:</label>
+        <input id="grid-columns" type="number"
+          formControlName="columns">
+      </div>
+    </form>
+  </properties>
+</mat-accordion>

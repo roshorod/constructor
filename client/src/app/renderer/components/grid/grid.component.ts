@@ -3,13 +3,11 @@ import { Component, ElementRef, Input,
 import { Element, ElementAction } from "@renderer/models/element";
 import { getCell } from "@renderer/models/units.utils";
 import { Cell, Size, Position } from "@renderer/models/units";
-import { RendererService } from "@renderer/services/renderer.service";
-import { ApiClientSerivce } from "@renderer/services/api-client.service";
-import { RendererComponent } from "@renderer/renderer.component";
 import { RendererMode } from "@renderer/models/mode";
-import { settings } from "@renderer/models/settings";
+import { Settings } from "@renderer/models/settings";
 import { getElementAction,
          transformElementByAction } from "@renderer/models/element.utils";
+import { StoreService } from "@services/store.service";
 
 @Component({
   selector: 'app-grid',
@@ -20,7 +18,7 @@ export class GridComponent {
   @ViewChild('gird_container') grid_container: ElementRef;
   @ViewChildren('elements_container') elements_container: QueryList<ElementRef>;
 
-  @Input() public settings: settings;
+  @Input() public settings: Settings;
   @Input() public elements: Element[] | null = [];
 
   @Input() public set rows(numbers: number) {
@@ -81,9 +79,7 @@ export class GridComponent {
   private boundHeight: number;
 
   constructor(
-    public rendererService: RendererService,
-    private api: ApiClientSerivce,
-    private renderer: RendererComponent
+    private store: StoreService
   ) { }
 
   private get rect(): DOMRect {
@@ -207,6 +203,10 @@ export class GridComponent {
     const newCellX = this.savedElementPosition.cellX + x;
     const newCellY = this.savedElementPosition.cellY + y;
 
+    /*
+      Try filter event by rxjs when rxjs find bound disable calculation
+      and wait when user input will be in grid.
+    */
     if (
       (newCellX >= 0 && newCellX <= this.boundWidth) &&
       (newCellY >= 0 && newCellY <= this.boundHeight)
@@ -251,8 +251,10 @@ export class GridComponent {
   }
 
   public elementOnMouseUp = (event: MouseEvent) => {
-    if (this.currentElement)
-      this.api.postElementById(this.currentElement).subscribe();
+    if (this.currentElement) {
+      this.store.update(this.currentElement).subscribe();
+      this.store.select(this.currentElement);
+    }
 
     this.currentElement = undefined;
     this.cursor = 'default';
@@ -263,8 +265,10 @@ export class GridComponent {
   }
 
   public elementOnTouchEnd = (event: TouchEvent) => {
-    if (this.currentElement)
-      this.api.postElementById(this.currentElement).subscribe();
+    if (this.currentElement) {
+      this.store.update(this.currentElement).subscribe();
+      this.store.select(this.currentElement);
+    }
 
     this.currentElement = undefined;
 
@@ -275,7 +279,6 @@ export class GridComponent {
 
   private onSelectElement(element: Element, index: number) {
     this.currentElement = element;
-    this.rendererService.currentElement = element;
 
     if (this.lastElementIndex || this.lastElementIndex == 0)
       this.elements_container.get(this.lastElementIndex)?.nativeElement.classList.remove('element-select');
@@ -377,7 +380,7 @@ export class GridComponent {
         const x = cell.cellX - this.savedMousePosition.cellX;
         const y = cell.cellY - this.savedMousePosition.cellY;
 
-        this.boundWidth = x + element.position.width;
+        this.boundWidth = Math.abs(x - element.position.width + this.columns);
         this.boundHeight = Math.abs(y + element.position.height - this.rows);
 
         document.addEventListener('touchmove', this.elementOnTouchMove, true);
@@ -422,19 +425,24 @@ export class GridComponent {
         columns: this.columnsType
       });
 
-    const element = this.renderer.elementCreate({
+    const signature: Element = {
       content: "Initial text",
       position: { ...cell, width: 5, height: 5 },
       resizeTop: true,
       resizeLeft: true,
       resizeRight: true,
       resizeBottom: true
+    };
+
+    this.store.create(signature).subscribe({
+      next: (element: Element) => this.currentElement = element,
+      error: (error) => {
+        this.currentElement = undefined;
+        console.error(error);
+      }
     });
 
-    this.savedElementPosition = { ...element.position };
     this.savedMousePosition = cell;
-
     this.settings.mode = this.RendererMode.select;
-    this.rendererService.settings.mode = this.settings.mode;
   }
 }
