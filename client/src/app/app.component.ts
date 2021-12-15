@@ -1,6 +1,5 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
-import { RendererComponent } from '@renderer/renderer.component';
 import { environment } from '../environments/environment';
 import { StoreService } from '@services/store.service';
 import { SettingsService } from '@services/settings.service';
@@ -11,7 +10,6 @@ import { SettingsService } from '@services/settings.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  @ViewChild(RendererComponent) renderer!: RendererComponent;
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
   public env = environment;
@@ -29,27 +27,30 @@ export class AppComponent {
     this.sidenav.open();
   }
 
-  // @HostListener('window:keyup.e') elementCreate() {
-    // this.settings.settings$
-      // .subscribe((settings) => settings.mode = 1)
-      // .unsubscribe();
-  // }
+  public onElementMove() {
+    const settings = {
+      ...this.settings.getValue(),
+      mode: 0
+    };
+    this.settings.next(settings);
+  }
 
-//   @HostListener('window:keyup.s') elementSelect() {
-//     this.renderer.settings.mode = 0;
-//   }
+  public onElementResize() {
+    const settings = {
+      ...this.settings.getValue(),
+      mode: 2
+    };
+    this.settings.next(settings);
+  }
 
-//   public onElementMove() {
-//     this.renderer.settings.mode = 0;
-//   }
-
-//   public onElementResize() {
-//     this.renderer.settings.mode = 2;
-  // }
-//
-//   public onElementCreate() {
-//     this.store.create({
-//       content: "Initial text",
-//       position: { cellX: 0, cellY: 0, width: 5, height: 5 }
-//     }).subscribe(console.log);
+  public onElementCreate() {
+    this.store.create({
+      content: "Initial text",
+      resizeTop: true,
+      resizeLeft: true,
+      resizeRight: true,
+      resizeBottom: true,
+      position: { cellX: 0, cellY: 0, width: 5, height: 5 }
+    }).subscribe();
+  }
 }

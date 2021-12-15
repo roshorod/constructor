@@ -4,7 +4,7 @@
             [taoensso.carmine :as car]
             [taoensso.timbre :as log]))
 
-(def ^:private redis-uri (env :redis-uri))
+(def ^:private redis-uri (or (System/getenv "REDIS_URL") (env :redis-uri)))
 (def ^:private redis-conn {:pool {} :spec {:uri redis-uri}})
 
 (defmacro ^:private wcar* [& body] `(car/wcar ~redis-conn ~@body))

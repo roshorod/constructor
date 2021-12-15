@@ -9,7 +9,6 @@ import { CONFIG } from '@services/settings.config';
   templateUrl: './renderer.component.html',
 })
 export class RendererComponent implements AfterViewInit {
-
   constructor(
     public store: StoreService,
     public settings: SettingsService,

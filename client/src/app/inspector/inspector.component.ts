@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component,
-         Input, NgModule, OnDestroy, OnInit } from "@angular/core";
+import {
+  AfterViewInit, ChangeDetectionStrategy, Component,
+  Input, NgModule, OnDestroy, OnInit
+} from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatExpansionModule } from "@angular/material/expansion";
@@ -21,7 +23,7 @@ import { PropertiesComponent } from "./properties.component";
   styleUrls: ['inspector.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InspectorComponent implements OnInit, OnDestroy {
+export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public debug?: boolean;
 
   @Input() public set element(element: Element | null | undefined) {
@@ -57,10 +59,17 @@ export class InspectorComponent implements OnInit, OnDestroy {
       .unsubscribe();
 
     this.settingsGroup$.valueChanges
-      .pipe(debounceTime(800))
+      .pipe(debounceTime(500))
       .subscribe((settings) => {
         this.settingsPayload = settings;
         this.settings.update(settings);
+      });
+  }
+
+  ngAfterViewInit() {
+    this.settings.settings$
+      .subscribe((settings: Settings) => {
+        this.settingsPayload.mode = settings.mode;
       });
   }
 
@@ -71,6 +80,8 @@ export class InspectorComponent implements OnInit, OnDestroy {
     };
     this.store.update(signature)
       .subscribe();
+    this.store.select(signature)
+      .subscribe();
   }
 
   public onResetBackground() {
@@ -79,6 +90,8 @@ export class InspectorComponent implements OnInit, OnDestroy {
       background: undefined
     };
     this.store.update(signature)
+      .subscribe();
+    this.store.select(signature)
       .subscribe();
   };
 

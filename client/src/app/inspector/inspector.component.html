@@ -12,44 +12,46 @@
         </div>
         <div class="inspector-item">
           <label for="element-color">Text color:</label>
-          <input id="element-color" type="color" formControlName="color">
-        </div>
-        <div class="inspector-item">
-          <label for="element-background">Background:</label>
-          <input id="element-background" type="color" formControlName="background">
-        </div>
-        <div class="inspector-item">
-          <label>Reset:</label>
           <div class="inspector-item-group">
-            <button mat-raised-button (click)="onResetBackground()">Backgorund</button>
-            <button mat-raised-button (click)="onResetColor()">Color</button>
+            <input id="element-color" type="color" formControlName="color">
+            <button class="delete-button"
+              (click)="onResetColor()">
+              <mat-icon>closed</mat-icon>
+            </button>
           </div>
         </div>
         <div class="inspector-item">
-          <label for="element-top">Resize top:</label>
-          <input id="element-top" type="checkbox"
-            formControlName="resizeTop">
+          <label for="element-background">Background:</label>
+          <div class="inspector-item-group">
+            <input id="element-background" type="color" formControlName="background">
+            <button class="delete-button"
+              (click)="onResetBackground()">
+              <mat-icon>closed</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="inspector-item box-resize-model">
+          <label>Resize: </label>
+          <div class="box-input-group">
+            <input id="element-top" type="checkbox"
+              formControlName="resizeTop">
+            <input id="element-left" type="checkbox"
+              formControlName="resizeLeft">
+            <input id="element-right" type="checkbox"
+              formControlName="resizeRight">
+            <input id="element-bottom" type="checkbox"
+              formControlName="resizeBottom">
+            <img class="box-resize-model-image" src="assets/square-outline.svg">
+            <img class="box-direction-model-image" src="assets/move-outline.svg">
+          </div>
         </div>
         <div class="inspector-item">
-          <label for="element-left">Resize left:</label>
-          <input id="element-left" type="checkbox"
-            formControlName="resizeLeft">
-        </div>
-        <div class="inspector-item">
-          <label for="element-right">Resize right:</label>
-          <input id="element-right" type="checkbox"
-            formControlName="resizeRight">
-        </div>
-        <div class="inspector-item">
-          <label for="element-bottom">Resize bottom:</label>
-          <input id="element-bottom" type="checkbox"
-            formControlName="resizeBottom">
-        </div>
-        <div class="inspector-item">
-          <label>Delete element:</label>
-          <button mat-raised-button (click)="onDeleteElement()"
-            class="delete-button">
-            Delete
+          <label>Delete: </label>
+          <button
+            (click)="onDeleteElement()"
+            class="delete-button right">
+            <img class="delete-button-icon" src="assets/trash-outline.svg">
           </button>
         </div>
       </form>
@@ -61,24 +63,24 @@
       <div class="workspace-group">
         <button mat-raised-button mode-button
           [target]="0"
+          class="inspector-item-icon select-icon"
           [mode]="settingsPayload.mode"
           (click)="onModeSelect()">
-          Select
-          <mat-icon>open_with</mat-icon>
+          <h3 class="button-name">Select</h3>
         </button>
         <button mat-raised-button mode-button
           [target]="2"
+          class="inspector-item-icon resize-icon"
           [mode]="settingsPayload.mode"
           (click)="onModeResize()">
-          Resize
-          <mat-icon class="resize-icon">transform</mat-icon>
+          <h3 class="button-name">Resize</h3>
         </button>
         <button mat-raised-button mode-button
           [target]="1"
+          class="inspector-item-icon create-icon"
           [mode]="settingsPayload.mode"
           (click)="onModeCreate()">
-          Create
-          <mat-icon class="create-icon">crop_free</mat-icon>
+          <h3 class="button-name">Create</h3>
         </button>
       </div>
     </div>

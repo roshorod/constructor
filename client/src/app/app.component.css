@@ -24,7 +24,7 @@
 }
 
 .sidenav-container {
-  width: 20%;
+  width: 385px;
 }
 
 .mode-group-button {
@@ -38,16 +38,11 @@
   background: #504945;
 }
 
-@media screen and (max-width: 1550px) {
-  .sidenav-container {
-    width: 25%;
-  }
-}
-
-@media screen and (max-width: 1320px) {
-  .sidenav-container {
-    width: 35%;
-  }
+.app-icon {
+  height: 24px;
+  filter: invert(98%) sepia(12%)
+          saturate(7498%) hue-rotate(297deg)
+          brightness(128%) contrast(85%);
 }
 
 @media screen and (max-width: 801px) {

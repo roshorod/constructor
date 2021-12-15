@@ -13,13 +13,11 @@
 }
 
 .inspector-item > :last-child {
-  flex: 2;
   min-width: calc(10% + 150px);
 }
 
 .inspector-item > button {
   background: #ebdbb2;
-  width: 150px;
 }
 
 .inspector-item-group {
@@ -47,7 +45,7 @@
 
 .inspector-item input[type="color"] {
   padding: 0;
-  width: 150px;
+  width: 144px;
   min-height: 30px;
   border: 4px solid #ebdbb2;
   border-radius: 4px;
@@ -55,6 +53,12 @@
 
 .inspector > item.input[type="checkbox"] {
   justify-content: flex-start;
+}
+
+.inspector-item-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
 }
 
 .workspace-block {
@@ -75,8 +79,97 @@
   margin-top: 10px;
   background: #ebdbb2;
   width: 50%;
+  height: 37px;
 }
 
+.inspector-item-icon:before {
+  content: '';
+  background: none;
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  display: block;
+  right: 10px;
+  top: 8px;
+}
+
+.select-icon.inspector-item-icon:before{
+  background: url('/assets/move-outline.svg') no-repeat;
+}
+
+.resize-icon.inspector-item-icon:before {
+  background: url('/assets/crop-outline.svg') no-repeat;
+  top: 9px;
+}
+
+.create-icon.inspector-item-icon:before {
+  background: url('/assets/square-outline.svg') no-repeat;
+}
+
+.button-name {
+  margin: 0;
+  margin-right: 30px;
+}
+
+.box-resize-model {
+  position: relative;
+  height: 100px;
+}
+
+.box-resize-model .box-input-group {
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  top: 40px;
+  left: 45%;
+  transform: translateX(-50%);
+}
+
+.box-resize-model-image {
+  height: 50px;
+  width: 50px;
+  right: 0;
+  top: -15px;
+  position: absolute;
+  display: block;
+  filter: invert(98%) sepia(12%)
+          saturate(7498%) hue-rotate(297deg)
+          brightness(128%) contrast(85%);
+}
+
+.box-direction-model-image {
+  height: 30px;
+  width: 30px;
+  right: 10px;
+  top: -5px;
+  position: absolute;
+  display: block;
+  filter: invert(98%) sepia(12%)
+          saturate(7498%) hue-rotate(297deg)
+          brightness(128%) contrast(85%);
+}
+
+.box-input-group > * {
+  position: absolute;
+}
+
+#element-top {
+  top: -33px;
+  right: 15px;
+}
+
+#element-left {
+  right: 50px;
+}
+
+#element-bottom {
+  top: 33px;
+  right: 15px;
+}
+
+#element-right {
+  right: -19px;
+}
 
 @media screen and (max-width: 1120px) {
   .workspace-group > button {
@@ -90,19 +183,30 @@ input:focus {
 }
 
 .delete-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
   margin-left: 5px;
+  padding: 0 15px;
+  width: 20px !important;
+  border: 0;
+}
+
+.delete-button.right {
+  align-self: flex-end;
+  min-width: 30px !important;
+  height: 30px;
+  background: #d65d0e !important;
+}
+
+.delete-button-icon {
+  width: 18px;
+  height: 21px;
 }
 
 mat-icon {
   font-size: 18px;
   height: 21px;
   width: 18px;
-}
-
-.resize-icon {
-  height: 17px;
-}
-
-.create-icon {
-  height: 19px;
 }

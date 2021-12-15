@@ -22,7 +22,8 @@ import { DefaultPipe } from "./pipes/default.pipe";
     BrowserAnimationsModule
   ],
   exports: [
-    RendererComponent
+    RendererComponent,
+    DefaultPipe
   ]
 })
 export class RendererModule { }

@@ -5,13 +5,19 @@
             [taoensso.timbre :as log]
             [app.middleware :refer [app-middleware]]))
 
-(def server-port 3000)
+(def server-port (or (System/getenv "PORT") "3000"))
+(def server-host "0.0.0.0")
+
+(defn str->int [str]
+  (if (re-matches (re-pattern "\\d+") str)
+    (read-string str)))
 
 (mount/defstate ^{:on-reload :noop}
   server-start
   :start (do
            (log/info "Starting the server on port:" server-port)
-           (httpd/run-server app-middleware {:port server-port})
+           (httpd/run-server app-middleware {:port (str->int server-port)
+                                             :host server-host})
 
            (-> (mount/start
                  #'app.core.redis/redis-start))

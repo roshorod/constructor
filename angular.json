@@ -24,7 +24,11 @@
             "tsConfig": "client/tsconfig.app.json",
             "assets": [
               "client/src/favicon.ico",
-              "client/src/assets"
+              "client/src/assets",
+              "client/src/assets/move-outline.svg",
+              "client/src/assets/crop-outline.svg",
+              "client/src/assets/square-outline.svg",
+              "client/src/assets/trash-outline.svg"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
@@ -95,7 +99,11 @@
             "karmaConfig": "client/karma.conf.js",
             "assets": [
               "client/src/favicon.ico",
-              "client/src/assets"
+              "client/src/assets",
+              "client/src/assets/move-outline.svg",
+              "client/src/assets/crop-outline.svg",
+              "client/src/assets/square-outline.svg",
+              "client/src/assets/trash-outline.svg"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",

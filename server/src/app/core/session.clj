@@ -7,9 +7,9 @@
             [app.core.redis :as redis]))
 
 
-(def ^:private expire-time 1)
+(def ^:private expire-time 20)
 (def ^:private session-table-name "session-table")
-(def ^:private session-watcher-timeout 60000)
+(def ^:private session-watcher-timeout 120000)
 
 
 (defn ^:private get-session-expire-time []

@@ -1,19 +1,19 @@
 <div #gird_container
   class="grid-container"
-  [style.grid-template-columns]="columnsType | safeStyle"
-  [style.grid-template-rows]="rowsType | safeStyle"
+  [style.grid-template-columns]="gridProps.columns | safeStyle"
+  [style.grid-template-rows]="gridProps.rows| safeStyle"
   [style.cursor]="this.settings.mode == RendererMode.create  ? 'cell' : '' "
   (mousedown)="this.settings.mode == RendererMode.create ? onElementCreate($event) : '' ">
 
   <ng-container *ngIf="this.settings.lines">
     <div class="line-row"
-      *ngFor="let r of rowsType; let y = index"
-      [style.grid-area]="{ cellX: 0, cellY: y, width: columnsType.length, height: 1 } | gridArea">
+      *ngFor="let r of gridProps.rows; let y = index"
+      [style.grid-area]="{ cellX: 0, cellY: y, width: columns, height: 1 } | gridArea">
     </div>
 
     <div class="line-column"
-      *ngFor="let c of columnsType; let i = index; let x = index"
-      [style.grid-area]="{ cellX: x, cellY: 0, width: 1, height: rowsType.length } | gridArea">
+      *ngFor="let c of gridProps.columns; let i = index; let x = index"
+      [style.grid-area]="{ cellX: x, cellY: 0, width: 1, height: rows } | gridArea">
     </div>
   </ng-container>
 
@@ -23,11 +23,10 @@
     [style.grid-area]="element.position | gridArea"
     [style.color]="element.color"
     [style.background-color]="element.background"
-    [style.cursor]="this.settings.mode == RendererMode.select || this.settings.mode == 2 ? cursor : '' "
-    (mousedown)="onMouseDown($event, element, i)"
-    (mousemove)="onMouseMove($event, element)"
-    (touchstart)="onTouchStart($event, element, i)">
-
+    [style.cursor]="settings.mode == RendererMode.select || settings.mode == 2 ? handler.cursor : '' "
+    (mousedown)="registerHandlers($event, element, i)"
+    (touchstart)="registerHandlers($event, element, i)"
+    (mousemove)="handler.onCursor($event, element, offset)">
 
     {{element.content}}
 

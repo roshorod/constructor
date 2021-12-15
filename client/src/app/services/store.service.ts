@@ -1,44 +1,28 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, Subject} from "rxjs";
-import { switchMap, tap, map,
-         withLatestFrom, filter, distinctUntilChanged} from "rxjs/operators";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import {
+  switchMap, tap, map,
+  withLatestFrom, filter
+} from "rxjs/operators";
 import { ApiClientSerivce } from "@services/api-client.service";
 import { Element } from "@renderer/models/element";
+import { GridProps } from "@renderer/components/grid/props";
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
+  private _gridProps$ = new Subject<GridProps>();
+  public readonly gridProps$ = this._gridProps$.asObservable();
+
+  public updateGridProps(gridProps: GridProps): Observable<GridProps> {
+    this._gridProps$.next(gridProps);
+
+    return this.gridProps$;
+  }
+
   private _chosen$ = new Subject<Element>();
-  public readonly chosen$ = this._chosen$.asObservable()
-    .pipe(
-      /*
-       * Resolve problem when subscribers emit next value.
-       * Which make re rendering for same element.
-       * When changed return false
-       */
-      distinctUntilChanged((first: Element | undefined, last: Element | undefined) => {
-        if (last && first) {
-          const firstPos = first.position;
-          const lastPos = last.position;
-          let changed = false;
-
-          if (first.id != last.id)
-            changed = false;
-          else if (
-            firstPos.cellX != lastPos.cellX ||
-            firstPos.cellY != lastPos.cellY ||
-            firstPos.width != lastPos.width ||
-            firstPos.height != lastPos.height)
-            changed = false;
-          else
-            changed = true;
-
-          return changed;
-        }
-        else return false;
-      })
-    );
+  public readonly chosen$ = this._chosen$.asObservable();
 
   /*
    * Consider make websocket connection with server,
@@ -46,7 +30,7 @@ export class StoreService {
    * after client add element just extend stream
    */
   private _elements$ = new BehaviorSubject(<Element[]>[]);
-  public elements$ = this._elements$.asObservable();
+  public readonly elements$ = this._elements$.asObservable();
 
   public select(target: Element | undefined): Observable<Element> {
     this._chosen$.next(target);
