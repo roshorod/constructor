@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, of, Subject } from "rxjs";
 import {
   switchMap, tap, map,
   withLatestFrom, filter
@@ -100,10 +100,14 @@ export class StoreService {
           next: () => {
             if (element?.id)
               var sub = this.recive(element.id)
-                .subscribe(() => sub.unsubscribe());
+                .subscribe((elem) => {
+                  element = elem;
+                  sub.unsubscribe()
+                });
           },
           error: console.error,
-        })
+        }),
+        switchMap(() => of(element))
       );
   }
 

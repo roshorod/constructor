@@ -6,17 +6,39 @@ function elementRect(element: any): DOMRect {
 }
 
 export function getElementAction(
-  event: MouseEvent,
+  event: Event,
   element: Element,
   mouseOffset: number
 ): ElementAction {
 
   const rect = elementRect(event.target);
 
-  const left = event.clientX - rect.left;
-  const right = rect.right - event.clientX;
-  const top = event.clientY - rect.top;
-  const bottom = rect.bottom - event.clientY;
+  let left = 0;
+  let right = 0;
+  let top = 0;
+  let bottom = 0;
+
+  let clientX = 0;
+  let clientY = 0;
+
+  if (event instanceof MouseEvent) {
+    clientX = event.clientX;
+    clientY = event.clientY;
+
+    left = clientX - rect.left;
+    right = rect.right - clientX;
+    top = clientY - rect.top;
+    bottom = rect.bottom - clientY;
+
+  } else if (event instanceof TouchEvent) {
+    clientX = event.touches[0].clientX;
+    clientY = event.touches[0].clientY;
+
+    left = clientX - rect.left;
+    right = rect.right - clientX;
+    top = clientY - rect.top;
+    bottom = rect.bottom - clientY;
+  }
 
   if (
     left >= 0 &&
@@ -53,36 +75,36 @@ export function getElementAction(
   else if (
     left >= 0 &&
     left < mouseOffset &&
-    event.clientY >= rect.top &&
-    event.clientY <= rect.bottom &&
+    clientY >= rect.top &&
+    clientY <= rect.bottom &&
     (element.resizeLeft ?? true))
     return ElementAction.left;
   else if (
     right >= 0 &&
     right < mouseOffset &&
-    event.clientY >= rect.top &&
-    event.clientY <= rect.bottom &&
+    clientY >= rect.top &&
+    clientY <= rect.bottom &&
     (element.resizeRight ?? true))
     return ElementAction.right;
   else if (
     top >= 0 &&
     top < mouseOffset &&
-    event.clientX >= rect.left &&
-    event.clientX <= rect.right &&
+    clientX >= rect.left &&
+    clientX <= rect.right &&
     (element.resizeTop ?? true))
     return ElementAction.top;
   else if (
     bottom >= 0 &&
     bottom < mouseOffset &&
-    event.clientX >= rect.left &&
-    event.clientX <= rect.right &&
+    clientX >= rect.left &&
+    clientX <= rect.right &&
     (element.resizeBottom ?? true))
     return ElementAction.bottom;
   else if (
-    event.clientX >= rect.left &&
-    event.clientX <= rect.right &&
-    event.clientY >= rect.top &&
-    event.clientY <= rect.bottom)
+    clientX >= rect.left &&
+    clientX <= rect.right &&
+    clientY >= rect.top &&
+    clientY <= rect.bottom)
     return ElementAction.move;
   else
     return ElementAction.none;

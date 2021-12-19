@@ -3,14 +3,9 @@ import { StoreService } from "@services/store.service";
 import { Handler } from "../handler.interface";
 
 export function onEnd(event: MouseEvent, element: Element, store: StoreService, handlers: Handler) {
-  store.update(element).subscribe();
-
-  if (element.id)
-    store.recive(element.id).subscribe((element) => {
-      store.select(element);
-    });
-  else
-    console.error("Can't sync element with server. It don't have id");
+  store.update(element).subscribe((element) => {
+    store.select({ ...element });
+  });
 
   document.removeEventListener(
     handlers.onMove.type,

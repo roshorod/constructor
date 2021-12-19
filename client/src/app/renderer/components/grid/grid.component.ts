@@ -115,11 +115,10 @@ export class GridComponent {
       y = event.clientY;
 
     } else if (event instanceof TouchEvent) {
+      action = getElementAction(event, element, this.offset);
 
       x = event.touches[0].clientX;
       y = event.touches[0].clientY;
-
-      action = 1;
     }
 
     const cell = getCell(
@@ -191,6 +190,13 @@ export class GridComponent {
         break;
       }
       case RendererMode.resize: {
+        if (event instanceof TouchEvent) {
+          action = getElementAction(event, element, 100);
+
+          x = event.touches[0].clientX;
+          y = event.touches[0].clientY;
+        }
+
         this.store.updateGridProps({
           ...this.gridProps,
           mouse: cell,
