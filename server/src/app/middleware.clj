@@ -1,8 +1,6 @@
 (ns app.middleware
   (:require [ring.middleware.reload :refer [wrap-reload]]
-            [ring.middleware.json :refer [wrap-json-body
-                                          wrap-json-params
-                                          wrap-json-response]]
+            [ring.middleware.params :refer [wrap-params]]
             [app.router :as router]))
 
 (def cors-headers
@@ -28,8 +26,6 @@
 
 (def app-middleware
   (-> router/app-routers
-      wrap-cors
-      wrap-json-response
-      wrap-json-params
+      wrap-params
       wrap-reload
-      (wrap-json-body {:keywords? true})))
+      wrap-cors))

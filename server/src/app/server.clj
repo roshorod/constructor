@@ -1,35 +1,35 @@
 (ns app.server
-  (:gen-class)
-  (:require [org.httpkit.server :as httpd]
+  (:gen-class :main true)
+  (:require [aleph.http :as httpd]
             [mount.core :as mount]
             [taoensso.timbre :as log]
+            [environ.core :refer [env]]
             [app.middleware :refer [app-middleware]]))
 
-(def server-port (or (System/getenv "PORT") "3000"))
-(def server-host "0.0.0.0")
-
-(defn str->int [str]
+(defn- ->int [str]
   (if (re-matches (re-pattern "\\d+") str)
-    (read-string str)))
+    (read-string str)
+    nil))
 
 (mount/defstate ^{:on-reload :noop}
   server-start
-  :start (do
-           (log/info "Starting the server on port:" server-port)
-           (httpd/run-server app-middleware {:port (str->int server-port)
-                                             :host server-host})
+  :start (let [port (->int (env :port))
+               host (env :host)]
+           (log/info "Starting on" (str host ":" port))
 
-           (-> (mount/start
-                 #'app.core.redis/redis-start))
+           (httpd/start-server app-middleware {:port     port
+                                               :host     host
+                                               :websoket true})
 
-           (-> (mount/start
-                 #'app.core.session/session-expire-watcher))
+           (-> (mount/start 'expire-watcher))
 
            (.addShutdownHook (Runtime/getRuntime) (Thread. mount/stop)))
   :stop (do
           (log/info "Shutdowning the server...")
           (shutdown-agents)))
 
-(defn -main [& args]
-  (-> (mount/start
-        #'app.server/server-start)))
+; Way to configure logs https://stackoverflow.com/a/69130936
+(log/merge-config! {:timestamp-opts {:pattern ""}})
+
+(defn -main [& _]
+  (mount/start))

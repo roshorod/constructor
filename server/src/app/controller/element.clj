@@ -1,57 +1,88 @@
 (ns app.controller.element
-  (:require [ring.util.response :refer [response]]
-            [clojure.data.json :refer [read-str]]
-            [app.core.session :refer [start-session]]
+  (:require [clojure.data.json :as json]
+            [aleph.http :as aleph]
+            [manifold.stream :as stream]
+            [manifold.deferred :as defer]
             [taoensso.timbre :as log]
-            [app.context.element :as context]
-            [app.core.redis :as redis]))
+            [app.core.session :as session :refer [->Session]]
+            [app.core.element :as element :refer [->Element]]))
 
-(defn element-delete [request]
-  (let [element-id (get (:params request) :element-id)]
-    (try
-      (redis/del-val element-id)
-      {:status 200}
-      (catch Exception e
-        (log/warn e)
-        {:status 204}))))
+;; {"session": "test", "type":"get-all"}
+;; {"session": "test", "element":{"id": "test1", "color":"red"}, "type":"create"}
+;; {"session": "test", "element":{"id": "test1", "color":"gray"}, "type":"update"}
+;; {"session": "test", "element":{"id": "test1"}, "type":"delete"}
+;; delete session and recur elements
+;; {"session": "test", "type":"delete"}
+(defn element-ws-handler [req]
+  (-> (aleph/websocket-connection req)
+      (defer/chain'
+        (fn [conn]
+          (stream/consume
+            (fn [msg]
+              (let [req-msg   (try (json/read-json msg)
+                                   (catch Exception _ :exception))
+                    type      (get req-msg :type)
+                    obj->elem (get req-msg :element)]
+                (cond
 
-(defn element-post-by-id [request]
-  (let [body (get-in (read-str (slurp (:body request))) ["element"])
-        sessoin-id (get (:params request) :session-id)
-        element-id (get (:params request) :element-id)
-        element (context/serialize-element body)]
-    (if (start-session sessoin-id)
-      (do
-        (context/store-element-record element-id element)
-        {:status 201})
-      {:status 404})))
+                  (= type "get-all")
+                  (let [session (->Session (get req-msg :session))]
+                    (try
+                      (if (session/contains-elements? session)
+                        (stream/put! conn (json/write-str
+                                            {:status   200
+                                             :elements (session/get-elements session)}))
+                        (stream/put! conn (json/write-str {:status 204})))
+                      (catch Exception e
+                        (log/info e)
+                        (stream/put! conn (json/write-str {:status 500})))))
 
-(defn element-post [request]
-  (let [body       (get-in (read-str (slurp (:body request))) ["element"])
-        element    (context/serialize-element body)
-        session-id (:session-id (:params request))]
-    (if (start-session session-id)
-      {:body   {:id (context/store-element session-id element)}
-       :status 201}
-      {:status 404})))
+                  (= type "create")
+                  (let [session (->Session (get req-msg :session))
+                        element (->Element (:id obj->elem) obj->elem)]
+                    (try
+                      (if (session/created? session)
+                        (session/append-element session element)
+                        (do (session/create session)
+                            (session/append-element session element)))
+                      (stream/put! conn (json/write-str {:status 201}))
+                      (catch Exception e
+                        (log/info e)
+                        (stream/put! conn (json/write-str {:status 500})))))
 
-(defn element-get-by-id [request]
-  (let [session-id (get (:params request) :session-id)
-        element-id (get (:params request) :element-id)]
-    (if (start-session session-id)
-      {:body (redis/get-val element-id)
-       :status 200}
-      {:status 501})))
+                  (= type "update")
+                  (let [session (->Session (get req-msg :session))
+                        element (->Element (:id obj->elem) obj->elem)]
+                    (try
+                      (if (session/created? session)
+                        (element/create element) ;; recreate
+                        (throw (Exception. "Not found session for" session)))
+                      (stream/put! conn (json/write-str {:status 200}))
+                      (catch Exception e
+                        (log/info e)
+                        (stream/put! conn (json/write-str {:status 304})))))
 
-(defn element-get [request]
-  (let [session-id  (:session-id (:params request))
-        elements-id (get (redis/get-val session-id) :elements)]
-    (if (start-session session-id)
-      (response
-        (reduce
-          into []
-          (map
-            (fn [element-id]
-              [(-> (redis/get-val element-id))])
-            elements-id)))
-       {:status 401})))
+                  (= type "delete")
+                  (let [session (->Session (get req-msg :session))
+                        element (if (empty? obj->elem) nil
+                                    (->Element (:id obj->elem) obj->elem))]
+                    (try
+                      (if (session/created? session)
+                        (if (empty? element)
+                          (session/delete session)
+                          (session/delete-element session element))
+                        (throw (Exception. "Not found session for" session)))
+                      (stream/put! conn (json/write-str {:status 200}))
+                      (catch Exception e
+                        (log/info e)
+                        (stream/put! conn (json/write-str {:status 204})))))
+
+                  :else
+                  (do
+                    (stream/put! conn (json/write-str {:status 501}))
+                    (log/info "Bad request string")))))
+            conn))
+        req)
+      (defer/catch
+          (fn [_]
+            'app.router/bad-ws-request))))
