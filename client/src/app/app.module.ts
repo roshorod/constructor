@@ -10,7 +10,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 
 import { RendererModule } from '@renderer/renderer.module';
-import { InspectorModule } from './inspector/inspector.component';
+import { InspectorModule } from '@inspector/inspector.component';
+import { WebSocketModule } from '@websocket/websocket.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,12 @@ import { InspectorModule } from './inspector/inspector.component';
     BrowserAnimationsModule,
     RendererModule,
     InspectorModule,
+
+    WebSocketModule.configure({
+      url: 'ws://0.0.0.0:10000/api/element',
+      reconnectInterval: 10000,
+      recoonectAttempts: 3
+    }),
 
     HttpClientModule,
 

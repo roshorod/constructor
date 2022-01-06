@@ -32,8 +32,7 @@
   class="renderer-container">
   <mat-sidenav
     #sidenav
-    opened
-    mode="side"
+    [mode]="(settings.settings$ | async)?.sideNavMode | default: 'over'"
     position="end"
     class="sidenav-container bg1">
     <app-inspector

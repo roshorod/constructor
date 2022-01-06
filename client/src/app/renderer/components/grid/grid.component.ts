@@ -9,7 +9,9 @@ import { Settings } from "@renderer/models/settings";
 import { getElementAction } from "@renderer/models/element.utils";
 import { StoreService } from "@services/store.service";
 import { HandlerService } from "./handlers/handler.service";
-import { GridProps } from "./props";
+import { GridProps } from "./grid.props";
+import { GridPropsService } from "./grid.props-service";
+import { makeElement } from '@renderer/models/element.utils';
 
 @Component({
   selector: 'app-grid',
@@ -79,6 +81,7 @@ export class GridComponent {
   constructor(
     private store: StoreService,
     public handler: HandlerService,
+    public gridPropsService: GridPropsService,
   ) { }
 
   public get rect(): DOMRect {
@@ -142,7 +145,7 @@ export class GridComponent {
           action > ElementAction.move
         ) {
 
-          this.store.updateGridProps({
+          this.gridPropsService.updateGridProps({
             ...this.gridProps,
             mouse: cell,
             action,
@@ -164,7 +167,7 @@ export class GridComponent {
           const boundWidth = this.columns - element.position.width;
           const boundHeight = this.rows - element.position.height;
 
-          this.store.updateGridProps({
+          this.gridPropsService.updateGridProps({
             ...this.gridProps,
             mouse: cell,
             action,
@@ -197,7 +200,7 @@ export class GridComponent {
           y = event.touches[0].clientY;
         }
 
-        this.store.updateGridProps({
+        this.gridPropsService.updateGridProps({
           ...this.gridProps,
           mouse: cell,
           action,
@@ -234,14 +237,9 @@ export class GridComponent {
         columns: this.gridProps.columns
       });
 
-    const signature: Element = {
-      content: "Initial text",
-      position: { ...cell, width: 5, height: 5 },
-      resizeTop: true,
-      resizeLeft: true,
-      resizeRight: true,
-      resizeBottom: true
-    };
+    const signature: Element = makeElement();
+
+    signature.position = {...cell, width: 5, height: 5};
 
     this.store.create(signature).subscribe((element) => {
       this.store.select(element);

@@ -1,6 +1,6 @@
 import {
   AfterViewInit, ChangeDetectionStrategy, Component,
-  Input, NgModule, OnDestroy, OnInit
+  Input, NgModule, OnChanges, OnDestroy, OnInit
 } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
@@ -12,7 +12,6 @@ import { RendererMode } from "@renderer/models/mode";
 import { Settings } from "@renderer/models/settings";
 import { SettingsService } from "@services/settings.service";
 import { StoreService } from "@services/store.service";
-import { Subject } from "rxjs";
 import { debounceTime } from 'rxjs/operators';
 import { ModeButtonDirective } from "./mode-button.directive";
 import { PropertiesComponent } from "./properties.component";
@@ -21,19 +20,19 @@ import { PropertiesComponent } from "./properties.component";
   selector: 'app-inspector',
   templateUrl: 'inspector.component.html',
   styleUrls: ['inspector.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
+export class InspectorComponent implements OnInit, AfterViewInit {
   @Input() public debug?: boolean;
 
   @Input() public set element(element: Element | null | undefined) {
     this.elementGroup$ = this.fb.group({ ...element });
 
     this.elementGroup$.valueChanges
-      .subscribe((element) => {
-        if (element)
-          this.store.update(element)
-            .subscribe();
+      .subscribe(element => {
+        this.store.update(element)
+          .subscribe(element => {
+            this.store.select(element);
+        })
       });
   }
 
@@ -42,16 +41,14 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public settingsPayload: Settings;
 
-  private unsubTrigger$ = new Subject();
-
   constructor(
     private fb: FormBuilder,
-    private settings: SettingsService,
+    private settingsService: SettingsService,
     public store: StoreService
   ) { }
 
   ngOnInit() {
-    this.settings.settings$
+    this.settingsService.settings$
       .subscribe((settings: Settings) => {
         this.settingsPayload = settings;
         this.settingsGroup$ = this.fb.group({ ...settings });
@@ -62,12 +59,14 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(debounceTime(500))
       .subscribe((settings) => {
         this.settingsPayload = settings;
-        this.settings.update(settings);
+        this.settingsService.update(settings);
       });
+
+
   }
 
   ngAfterViewInit() {
-    this.settings.settings$
+    this.settingsService.settings$
       .subscribe((settings: Settings) => {
         this.settingsPayload.mode = settings.mode;
       });
@@ -105,7 +104,7 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public onModeSelect() {
-    this.settings.update({
+    this.settingsService.update({
       ...this.settingsPayload,
       mode: RendererMode.select
     })
@@ -114,7 +113,7 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public onModeCreate() {
-    this.settings.update({
+    this.settingsService.update({
       ...this.settingsPayload,
       mode: RendererMode.create
     })
@@ -123,17 +122,12 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public onModeResize() {
-    this.settings.update({
+    this.settingsService.update({
       ...this.settingsPayload,
       mode: RendererMode.resize
     })
       .subscribe((last) => this.settingsPayload = last)
       .unsubscribe();
-  }
-
-  ngOnDestroy() {
-    this.unsubTrigger$.next();
-    this.unsubTrigger$.complete();
   }
 }
 
