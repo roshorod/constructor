@@ -1,50 +1,46 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, of, Subject } from "rxjs";
-import {
-  switchMap, tap, map,
-  withLatestFrom, filter
-} from "rxjs/operators";
-import { ApiClientSerivce } from "@services/api-client.service";
+import { switchMap, tap, map, withLatestFrom, filter, takeUntil } from "rxjs/operators";
 import { Element } from "@renderer/models/element";
-import { GridProps } from "@renderer/components/grid/props";
+import { WebSocketType, WebSocketAction, WebSocketPutElement, IResponse, WebSocketService } from "@websocket";
+import { LifetimeService } from "./lifetime.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
-  private _gridProps$ = new Subject<GridProps>();
-  public readonly gridProps$ = this._gridProps$.asObservable();
 
-  public updateGridProps(gridProps: GridProps): Observable<GridProps> {
-    this._gridProps$.next(gridProps);
-
-    return this.gridProps$;
-  }
-
-  private _chosen$ = new Subject<Element>();
-  public readonly chosen$ = this._chosen$.asObservable();
-
-  /*
-   * Consider make websocket connection with server,
-   * when session start send all array,
-   * after client add element just extend stream
-   */
   private _elements$ = new BehaviorSubject(<Element[]>[]);
+
   public readonly elements$ = this._elements$.asObservable();
 
-  public select(target: Element | undefined): Observable<Element> {
-    this._chosen$.next(target);
+  private store$ = new Observable(observer => {
+    observer.next();
+  }).pipe(takeUntil(this.lifetime$));
 
-    return this._chosen$.asObservable();
+  /**
+   * @description Attach to the base observable websocket request,
+   * which get all stored elements from server.
+   *
+   * @example Map of stream from server:
+   * storeSync$.pipe(map((resp: IResponse) => resp.elements ? resp.elements : []));
+   */
+  @WebSocketAction({ action: WebSocketType.GetAll })
+  private storeSync$(): Observable<any> {
+    return this.store$
   }
 
-  public clear() {
-    this._chosen$.next(undefined);
+  private storeElementMap$(element: Element): Observable<Element> {
+    return this.store$
+      .pipe(
+        switchMap(() => of(element))
+      );
   }
 
   public fetch(): Observable<Element[]> {
-    return this.api.getElements()
+    return this.storeSync$()
       .pipe(
+        map((resp: IResponse) => resp.elements ? resp.elements : []),
         map((elements: Element[]) => elements
           .filter((element: Element) => {
             if (element != null || element != undefined) {
@@ -63,72 +59,65 @@ export class StoreService {
       );
   }
 
-  /*
-  * Get element from ajax and take container
-  * and requested element then filter same id.
-  */
-  public recive(id: string): Observable<Element> {
-    return this.api.getElement(id)
+  @WebSocketPutElement({ action: WebSocketType.Create })
+  public create(element: Element): Observable<Element> {
+    return this.storeElementMap$(element)
       .pipe(
-        withLatestFrom(this.elements$),
+        withLatestFrom(this._elements$),
         map(([element, elements]) => {
-          const temp = elements.filter(val => val.id != element.id).concat(element);
-          this._elements$.next(temp);
+          this._elements$.next(elements
+            .filter(val => val.id != element.id).concat(element));
 
           return element;
         })
       );
   }
 
-  public create(element: Element): Observable<Element> {
-    return this.api.postElement(element)
+  @WebSocketPutElement({ action: WebSocketType.Update })
+  public update(element: Element) {
+    return this.storeElementMap$(element)
       .pipe(
-        switchMap((id: { id: string }) => {
-          if (element) {
-            element.id = id.id
-            return this.recive(element.id);
-          }
-          else throw new Error('Element not exists');
+        withLatestFrom(this.elements$),
+        map(([element, elements]) => {
+          this._elements$.next(elements
+            .filter(val => val.id != element.id).concat(element));
+
+          return element;
         })
       );
   }
 
-  public update(element: Element): Observable<Element> {
-    return this.api.postElementById(element)
+  @WebSocketPutElement({ action: WebSocketType.Delete })
+  public remove(element: Element): Observable<undefined> {
+    return this.storeElementMap$(element)
       .pipe(
-        tap({
-          next: () => {
-            if (element?.id)
-              var sub = this.recive(element.id)
-                .subscribe((elem) => {
-                  element = elem;
-                  sub.unsubscribe()
-                });
-          },
-          error: console.error,
-        }),
-        switchMap(() => of(element))
-      );
-  }
+        withLatestFrom(this.elements$),
+        map(([element, elements]) => {
+          this._elements$.next(elements
+            .filter(val => val.id != element.id));
 
-  public remove(element: Element): Observable<Object> {
-    return this.api.deleteElement(element)
-      .pipe(
-        tap({
-          next: () => {
-            const sub = this.fetch().subscribe(() => sub.unsubscribe());
-          },
-          error: console.error,
+          return undefined;
         })
       );
   }
 
-  public watcher() {
-    return this._elements$
-      .pipe(
-        filter(val => val.length != 0)
-      )
+  private _chosen$ = new Subject<Element>();
+
+  public readonly chosen$ = this._chosen$.asObservable();
+
+  public select(target: Element | undefined): Observable<Element> {
+    this._chosen$.next(target);
+
+    return this._chosen$.asObservable();
   }
 
-  constructor(private api: ApiClientSerivce) { }
+  constructor(
+    websocket: WebSocketService,
+    private lifetime$: LifetimeService
+  ) {
+    websocket.isConnected$
+      .pipe(
+        filter(val => val === true))
+      .subscribe(() => this.fetch().subscribe());
+  }
 }

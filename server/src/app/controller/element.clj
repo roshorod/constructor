@@ -31,11 +31,14 @@
                       (if (session/contains-elements? session)
                         (stream/put! conn (json/write-str
                                             {:status   200
+                                             :type     "get-all"
                                              :elements (session/get-elements session)}))
-                        (stream/put! conn (json/write-str {:status 204})))
+                        (stream/put! conn (json/write-str {:status 204
+                                                           :type   "error"})))
                       (catch Exception e
                         (log/info e)
-                        (stream/put! conn (json/write-str {:status 500})))))
+                        (stream/put! conn (json/write-str {:status 500
+                                                           :type   "error"})))))
 
                   (= type "create")
                   (let [session (->Session (get req-msg :session))
@@ -45,10 +48,12 @@
                         (session/append-element session element)
                         (do (session/create session)
                             (session/append-element session element)))
-                      (stream/put! conn (json/write-str {:status 201}))
+                      (stream/put! conn (json/write-str {:status 201
+                                                         :type   "create"}))
                       (catch Exception e
                         (log/info e)
-                        (stream/put! conn (json/write-str {:status 500})))))
+                        (stream/put! conn (json/write-str {:status 500
+                                                           :type   "error"})))))
 
                   (= type "update")
                   (let [session (->Session (get req-msg :session))
@@ -57,10 +62,12 @@
                       (if (session/created? session)
                         (element/create element) ;; recreate
                         (throw (Exception. "Not found session for" session)))
-                      (stream/put! conn (json/write-str {:status 200}))
+                      (stream/put! conn (json/write-str {:status 200
+                                                         :type   "update"}))
                       (catch Exception e
                         (log/info e)
-                        (stream/put! conn (json/write-str {:status 304})))))
+                        (stream/put! conn (json/write-str {:status 304
+                                                           :type   "error"})))))
 
                   (= type "delete")
                   (let [session (->Session (get req-msg :session))
@@ -72,14 +79,17 @@
                           (session/delete session)
                           (session/delete-element session element))
                         (throw (Exception. "Not found session for" session)))
-                      (stream/put! conn (json/write-str {:status 200}))
+                      (stream/put! conn (json/write-str {:status 200
+                                                         :type   "delete"}))
                       (catch Exception e
                         (log/info e)
-                        (stream/put! conn (json/write-str {:status 204})))))
+                        (stream/put! conn (json/write-str {:status 204
+                                                           :type   "error"})))))
 
                   :else
                   (do
-                    (stream/put! conn (json/write-str {:status 501}))
+                    (stream/put! conn (json/write-str {:status 501
+                                                       :type   "error"}))
                     (log/info "Bad request string")))))
             conn))
         req)

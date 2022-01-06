@@ -2,7 +2,8 @@ import { inject, InjectionToken } from "@angular/core";
 import { StoreService } from "@services/store.service";
 import { Handler } from "../handler.interface";
 import { Element } from "@renderer/models/element";
-import { GridProps } from "@renderer/components/grid/props";
+import { GridProps } from "@renderer/components/grid/grid.props";
+import { GridPropsService } from "@renderer/components/grid/grid.props-service";
 
 import { onResize } from "./on-resize";
 import { onMove } from "./on-move";
@@ -27,7 +28,7 @@ export const MOBILE = new InjectionToken<Handler>(
           element = chosen;
       });
 
-      inject(StoreService).gridProps$.subscribe((props) => {
+      inject(GridPropsService).gridProps$.subscribe((props) => {
         if (props)
           gProps = props;
         else

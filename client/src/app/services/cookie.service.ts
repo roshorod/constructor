@@ -4,11 +4,15 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class CookiesService {
+  public get cookie(): string {
+    return this.getCookie(this.cookieName);
+  }
+
   public cookieName = 'JSESSIONID';
 
   constructor() {
     if(this.getCookie(this.cookieName) == '')
-      this.setCookie(this.cookieName, this.makeHash(), 1);
+      this.setCookie(this.cookieName, this.makeUUID(), 1);
     else
       console.info("Session recognized")
   }
@@ -40,18 +44,27 @@ export class CookiesService {
     const expires = `expires=${d.toUTCString()}`;
     const cpath = path ? `; path=${path}` : '';
 
-
-
     document.cookie = `${name}=${value}; ${expires}${cpath}; SameSite=Lax`;
   }
 
-  private makeHash() {
-    var text = '';
-    var code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  private makeUUID() {
+    var d = new Date().getTime();
 
-    for(var i = 0; i < 25; i++)
-      text += code.charAt(Math.floor(Math.random() * code.length));
+    var d2 = ((typeof performance !== 'undefined')
+      && performance.now
+      && (performance.now() * 1000))
+      || 0;
 
-    return text;
+    return 'sxxxxxxx-2xxx-yxxx-xxxxxxxxyxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16;
+      if (d > 0) {
+        r = (d + r) % 16 | 0;
+        d = Math.floor(d / 16);
+      } else {
+        r = (d2 + r) % 16 | 0;
+        d2 = Math.floor(d2 / 16);
+      }
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
   }
 }

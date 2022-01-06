@@ -1,6 +1,6 @@
 import { getCell } from "@renderer/models/units.utils";
 import { Element } from "@renderer/models/element";
-import { GridProps } from "@renderer/components/grid/props";
+import { GridProps } from "@renderer/components/grid/grid.props";
 import { transformElementByAction } from "@renderer/models/element.utils";
 
 export function onResize(event: TouchEvent, element: Element, gridProps: GridProps) {

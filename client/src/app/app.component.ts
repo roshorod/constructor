@@ -3,6 +3,8 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { environment } from '../environments/environment';
 import { StoreService } from '@services/store.service';
 import { SettingsService } from '@services/settings.service';
+import { WebSocketService } from '@websocket/websocket.service';
+import { makeElement } from '@renderer/models/element.utils';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +18,8 @@ export class AppComponent {
 
   constructor(
     public store: StoreService,
-    public settings: SettingsService
+    public settings: SettingsService,
+    public websocket: WebSocketService
   ) { }
 
   @HostListener('window:keyup.esc') closeSidenav() {
@@ -44,13 +47,6 @@ export class AppComponent {
   }
 
   public onElementCreate() {
-    this.store.create({
-      content: "Initial text",
-      resizeTop: true,
-      resizeLeft: true,
-      resizeRight: true,
-      resizeBottom: true,
-      position: { cellX: 0, cellY: 0, width: 5, height: 5 }
-    }).subscribe();
+    this.store.create(makeElement()).subscribe();
   }
 }

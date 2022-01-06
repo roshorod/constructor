@@ -26,6 +26,9 @@
       "@renderer/*": ["./src/app/renderer/*"],
       "@sandbox/*":  [
         "./src/app/renderer/components/sandbox/*"],
+      "@inspector/*": ["./src/app/inspector/*"],
+      "@websocket/*": ["./src/app/websocket/*"],
+      "@websocket": ["./src/app/websocket/index.ts"],
       "@environment": ["./src/environments/environment.ts"]
     }
   },

@@ -1,6 +1,6 @@
 import { Element } from "@renderer/models/element";
 import { getCell } from "@renderer/models/units.utils";
-import { GridProps } from "@renderer/components/grid/props";
+import { GridProps } from "@renderer/components/grid/grid.props";
 
 export function onMove(event: MouseEvent, element: Element, gridProps: GridProps) {
 
