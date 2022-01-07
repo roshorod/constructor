@@ -101,11 +101,11 @@ export class StoreService {
       );
   }
 
-  private _chosen$ = new Subject<Element>();
+  private _chosen$ = new Subject<Element | undefined>();
 
   public readonly chosen$ = this._chosen$.asObservable();
 
-  public select(target: Element | undefined): Observable<Element> {
+  public select(target: Element | undefined): Observable<Element | undefined> {
     this._chosen$.next(target);
 
     return this._chosen$.asObservable();
