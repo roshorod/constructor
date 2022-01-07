@@ -74,7 +74,7 @@ export class StoreService {
   }
 
   @WebSocketPutElement({ action: WebSocketType.Update })
-  public update(element: Element) {
+  public update(element: Element): Observable<Element> {
     return this.storeElementMap$(element)
       .pipe(
         withLatestFrom(this.elements$),
@@ -88,7 +88,7 @@ export class StoreService {
   }
 
   @WebSocketPutElement({ action: WebSocketType.Delete })
-  public remove(element: Element): Observable<undefined> {
+  public remove(element: Element): Observable<Element> {
     return this.storeElementMap$(element)
       .pipe(
         withLatestFrom(this.elements$),
@@ -96,7 +96,7 @@ export class StoreService {
           this._elements$.next(elements
             .filter(val => val.id != element.id));
 
-          return undefined;
+          return element;
         })
       );
   }
