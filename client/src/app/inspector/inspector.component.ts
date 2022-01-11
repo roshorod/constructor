@@ -1,6 +1,6 @@
 import {
-  AfterViewInit, ChangeDetectionStrategy, Component,
-  Input, NgModule, OnChanges, OnDestroy, OnInit
+  AfterViewInit, Component,
+  Input, NgModule, OnInit
 } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
@@ -77,10 +77,11 @@ export class InspectorComponent implements OnInit, AfterViewInit {
       ...this.elementGroup$.value,
       color: undefined
     };
+
     this.store.update(signature)
-      .subscribe();
-    this.store.select(signature)
-      .subscribe();
+      .subscribe(element => {
+        this.store.select(element);
+      });
   }
 
   public onResetBackground() {
@@ -88,10 +89,11 @@ export class InspectorComponent implements OnInit, AfterViewInit {
       ...this.elementGroup$.value,
       background: undefined
     };
+
     this.store.update(signature)
-      .subscribe();
-    this.store.select(signature)
-      .subscribe();
+      .subscribe(element => {
+        this.store.select(element);
+      });
   };
 
   public onDeleteElement() {

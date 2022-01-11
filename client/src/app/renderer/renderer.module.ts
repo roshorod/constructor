@@ -4,16 +4,20 @@ import { BrowserModule } from "@angular/platform-browser";
 import { RendererComponent } from "@renderer/renderer.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
+import { ElementComponent } from "./components/element/element.component";
 import { GridComponent } from "./components/grid/grid.component";
-import { SafeStylePipe } from "./components/grid/pipes/safe-style.pipe";
-import { GridAreaPipe } from "./components/grid/pipes/grid-area.pipe";
+
+import { SizePipe } from "./pipes/size.pipe";
+import { GridAreaPipe } from "./pipes/grid-area.pipe";
 import { DefaultPipe } from "./pipes/default.pipe";
+
 
 @NgModule({
   declarations: [
     RendererComponent,
+    ElementComponent,
     GridComponent,
-    SafeStylePipe,
+    SizePipe,
     GridAreaPipe,
     DefaultPipe
   ],

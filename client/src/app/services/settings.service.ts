@@ -20,7 +20,7 @@ export class SettingsService extends BehaviorSubject<Settings> {
     this.pipe(takeUntil(lifetime$));
   }
 
-  public  update(settings: Settings) {
+  public update(settings: Settings) {
     this.next(settings);
 
     return this.settings$;

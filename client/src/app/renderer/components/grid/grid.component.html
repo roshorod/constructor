@@ -1,40 +1,22 @@
-<div #gird_container
-  class="grid-container"
-  [style.grid-template-columns]="gridProps.columns | safeStyle"
-  [style.grid-template-rows]="gridProps.rows| safeStyle"
-  [style.cursor]="this.settings.mode == RendererMode.create  ? 'cell' : '' "
-  (mousedown)="this.settings.mode == RendererMode.create ? onElementCreate($event) : '' ">
+<div
+  [style.grid-template-columns]="_columns | size"
+  [style.grid-template-rows]="_rows| size"
+  [style.cursor]="settings.mode == RendererMode.create  ? 'cell' : '' "
+  (mousedown)="settings.mode == RendererMode.create ? handler.onElementCreate($event, rect) : ''"
+  #gird_container
+  class="grid-container">
 
   <ng-container *ngIf="this.settings.lines">
     <div class="line-row"
-      *ngFor="let r of gridProps.rows; let y = index"
+      *ngFor="let r of _rows; let y = index"
       [style.grid-area]="{ cellX: 0, cellY: y, width: columns, height: 1 } | gridArea">
     </div>
 
     <div class="line-column"
-      *ngFor="let c of gridProps.columns; let i = index; let x = index"
+      *ngFor="let c of _columns; let i = index; let x = index"
       [style.grid-area]="{ cellX: x, cellY: 0, width: 1, height: rows } | gridArea">
     </div>
   </ng-container>
 
-  <div *ngFor="let element of elements; let i = index;"
-    #elements_container
-    class="grid-element"
-    [style.grid-area]="element.position | gridArea"
-    [style.color]="element.color"
-    [style.background-color]="element.background"
-    [style.cursor]="settings.mode == RendererMode.select || settings.mode == 2 ? handler.cursor : '' "
-    (mousedown)="registerHandlers($event, element, i)"
-    (touchstart)="registerHandlers($event, element, i)"
-    (mousemove)="handler.onCursor($event, element, offset)">
-
-    {{element.content}}
-
-    <ng-container *ngIf="this.settings.corners">
-      <div class="corner-left-top"></div>
-      <div class="corner-right-top"></div>
-      <div class="corner-left-bottom"></div>
-      <div class="corner-right-bottom"></div>
-    </ng-container>
-  </div>
+  <ng-content></ng-content>
 </div>

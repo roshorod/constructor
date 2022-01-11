@@ -3,15 +3,15 @@ import { Element } from "@renderer/models/element";
 import { GridProps } from "@renderer/components/grid/grid.props";
 import { transformElementByAction } from "@renderer/models/element.utils";
 
-export function onResize(event: TouchEvent, element: Element, gridProps: GridProps) {
+export function onResize(event: MouseEvent, element: Element, gridProps: GridProps) {
 
   if (!gridProps.rect)
-    throw new Error("Grid props is undefined");
+    throw new Error('Grid rect is undefined');
 
   const cell = getCell(
     {
-      x: event.touches[0].clientX,
-      y: event.touches[0].clientY
+      x: event.clientX,
+      y: event.clientY
     },
     {
       rect: gridProps.rect,

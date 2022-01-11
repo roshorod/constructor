@@ -5,7 +5,7 @@ import { GridProps } from "@renderer/components/grid/grid.props";
 export function onMove(event: TouchEvent, element: Element, gridProps: GridProps) {
 
   if (!gridProps.rect)
-    throw new Error("Grid props is undefined");
+    throw new Error('Grid rect is undefined');
 
   const cell = getCell(
     {

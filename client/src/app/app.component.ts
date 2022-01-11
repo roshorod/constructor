@@ -35,6 +35,7 @@ export class AppComponent {
       ...this.settings.getValue(),
       mode: 0
     };
+
     this.settings.next(settings);
   }
 
@@ -43,6 +44,7 @@ export class AppComponent {
       ...this.settings.getValue(),
       mode: 2
     };
+
     this.settings.next(settings);
   }
 

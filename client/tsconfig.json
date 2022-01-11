@@ -24,8 +24,8 @@
     "paths": {
       "@services/*": ["./src/app/services/*"],
       "@renderer/*": ["./src/app/renderer/*"],
-      "@sandbox/*":  [
-        "./src/app/renderer/components/sandbox/*"],
+      "@grid/*" : ["./src/app/renderer/components/grid/*"],
+      "@handlers/*" : ["./src/app/renderer/handlers/*"],
       "@inspector/*": ["./src/app/inspector/*"],
       "@websocket/*": ["./src/app/websocket/*"],
       "@websocket": ["./src/app/websocket/index.ts"],

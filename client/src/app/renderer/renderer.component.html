@@ -1,7 +1,17 @@
-<app-grid
+<app-grid *ngIf="settings.settings$ | async; let settings"
   [elements]="store.elements$ | async"
-  [settings]="settings.settings$ | async | default: defaultConfig"
-  [rows]="(settings.settings$ | async)?.rows | default: defaultConfig.rows"
-  [columns]="(settings.settings$ | async)?.columns | default: defaultConfig.columns">
+  [settings]="settings"
+  [rows]="settings.rows"
+  [columns]="settings.columns">
 
+  <div
+    *ngFor="let element of store.elements$ | async"
+    [style.grid-area]="element.position | gridArea"
+    [style.cursor]="settings.mode == 0 || settings.mode == 2 ? handler.cursor : ''"
+    (touchstart)="handler.onElementSetHandler($event, element, grid.rect)"
+    (mousedown)="handler.onElementSetHandler($event, element, grid.rect)"
+    (mousemove)="handler.onCursor($event, element, 5)"
+    [payload]="element"
+    class="element">
+  </div>
 </app-grid>
