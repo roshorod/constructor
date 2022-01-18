@@ -17,9 +17,10 @@
                host (env :host)]
            (log/info "Starting on" (str host ":" port))
 
-           (httpd/start-server app-middleware {:port     port
-                                               :host     host
-                                               :websoket true})
+           (httpd/start-server app-middleware {:port       port
+                                               :host       host
+                                               :keep-alive true
+                                               :websoket   true})
 
            (-> (mount/start 'expire-watcher))
 
