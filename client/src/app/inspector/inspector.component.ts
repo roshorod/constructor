@@ -11,6 +11,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { Element } from "@renderer/models/element";
 import { RendererMode } from "@renderer/models/mode";
 import { Settings } from "@renderer/models/settings";
+import { LocalStoreService } from "@services/localstore.service";
 import { SettingsService } from "@services/settings.service";
 import { StoreService } from "@services/store.service";
 import { debounceTime } from 'rxjs/operators';
@@ -50,6 +51,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   constructor(
     private fb: FormBuilder,
     private settingsService: SettingsService,
+    private local: LocalStoreService,
     public store: StoreService
   ) { }
 
@@ -81,10 +83,37 @@ export class InspectorComponent implements OnInit, AfterViewInit {
     const file = this.imageUpload.nativeElement.files![0];
 
     reader.onload = () => {
-      console.log(reader.result)
-    };
+      this.local.setValue(<string>reader.result)
+        .then(key => {
+          const element: Element = {
+            ...this.elementGroup$.value,
+            image: key
+          };
+
+          this.store.update(element)
+            .subscribe(element => this.store.select(element));
+        });
+   };
 
     reader.readAsDataURL(file);
+  }
+
+  public onDeleteImage() {
+    const element: Element = this.elementGroup$.value;
+
+    if (element.image) {
+      this.local.delValue(element.image);
+
+      const signature: Element = {
+        ...this.elementGroup$.value,
+        image: undefined
+      };
+
+      this.store.update(signature)
+        .subscribe(element => {
+          this.store.select(element);
+        });
+    }
   }
 
   public onResetColor() {

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LocalStoreService } from './localstore.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,11 @@ export class CookiesService {
 
   public cookieName = 'JSESSIONID';
 
-  constructor() {
-    if(this.getCookie(this.cookieName) == '')
+  constructor(local: LocalStoreService) {
+    if(this.getCookie(this.cookieName) == '') {
+      local.clear();
       this.setCookie(this.cookieName, this.makeUUID(), 1);
+    }
     else
       console.info("Session recognized")
   }

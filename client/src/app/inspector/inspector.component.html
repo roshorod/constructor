@@ -33,9 +33,9 @@
         <div>
           <label>Image:</label>
           <div>
-            <input type="file" accept="image/png,image/jpeg" id="imageUpload"
+            <input type="file" accept="image/png,image/jpeg"
               (change)="onChangeImage()" #imageUpload>
-            <button class="delete-button">
+            <button class="delete-button" (click)="onDeleteImage()">
               <mat-icon>closed</mat-icon>
             </button>
           </div>
