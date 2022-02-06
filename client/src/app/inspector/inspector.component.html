@@ -30,11 +30,16 @@
             </button>
           </div>
         </div>
-        <div>
+        <div class="inspector-item">
           <label>Image:</label>
-          <div>
+          <div class="inspector-item-group">
             <input type="file" accept="image/png,image/jpeg"
+              class="inspector-file-btn" id="imageUpload"
               (change)="onChangeImage()" #imageUpload>
+            <label for="imageUpload" class="inspector-file">
+              Select
+              <img class="delete-button-icon" src="assets/image-outline.svg">
+            </label>
             <button class="delete-button" (click)="onDeleteImage()">
               <mat-icon>closed</mat-icon>
             </button>

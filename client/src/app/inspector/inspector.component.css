@@ -205,6 +205,27 @@ input:focus {
   height: 21px;
 }
 
+.inspector-file {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 144px;
+  min-height: 30px;
+  background: #ebdbb2;
+  border-radius: 4px;
+  color: black;
+  font-size: 15px;
+}
+
+.inspector-file > img {
+  margin-left: 8px;
+}
+
+
+.inspector-file-btn {
+  display: none;
+}
+
 mat-icon {
   font-size: 18px;
   height: 21px;
