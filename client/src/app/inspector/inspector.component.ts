@@ -1,6 +1,7 @@
 import {
   AfterViewInit, Component,
-  Input, NgModule, OnInit
+  ElementRef,
+  Input, NgModule, OnInit, ViewChild
 } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
@@ -22,6 +23,8 @@ import { PropertiesComponent } from "./properties.component";
   styleUrls: ['inspector.component.css'],
 })
 export class InspectorComponent implements OnInit, AfterViewInit {
+  @ViewChild('imageUpload') public imageUpload!: ElementRef;
+
   @Input() public debug?: boolean;
 
   @Input() public set element(element: Element | null | undefined) {
@@ -34,6 +37,9 @@ export class InspectorComponent implements OnInit, AfterViewInit {
             this.store.select(element);
         })
       });
+
+    if(this.imageUpload)
+      this.imageUpload.nativeElement.value = '';
   }
 
   public elementGroup$: FormGroup;
@@ -61,8 +67,6 @@ export class InspectorComponent implements OnInit, AfterViewInit {
         this.settingsPayload = settings;
         this.settingsService.update(settings);
       });
-
-
   }
 
   ngAfterViewInit() {
@@ -70,6 +74,17 @@ export class InspectorComponent implements OnInit, AfterViewInit {
       .subscribe((settings: Settings) => {
         this.settingsPayload.mode = settings.mode;
       });
+  }
+
+  public onChangeImage() {
+    const reader = new FileReader();
+    const file = this.imageUpload.nativeElement.files![0];
+
+    reader.onload = () => {
+      console.log(reader.result)
+    };
+
+    reader.readAsDataURL(file);
   }
 
   public onResetColor() {

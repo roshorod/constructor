@@ -10,6 +10,8 @@ export abstract class Element {
   public color?: string;
   public background?: string;
 
+  public image?: string;
+
   public resizeTop?: boolean;
   public resizeLeft?: boolean;
   public resizeRight?: boolean;

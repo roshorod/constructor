@@ -30,7 +30,16 @@
             </button>
           </div>
         </div>
-
+        <div>
+          <label>Image:</label>
+          <div>
+            <input type="file" accept="image/png,image/jpeg" id="imageUpload"
+              (change)="onChangeImage()" #imageUpload>
+            <button class="delete-button">
+              <mat-icon>closed</mat-icon>
+            </button>
+          </div>
+        </div>
         <div class="inspector-item box-resize-model">
           <label>Resize: </label>
           <div class="box-input-group">
