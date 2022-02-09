@@ -14,9 +14,8 @@ export class ElementComponent implements OnInit {
    * @summary Host binding variables name must be like in `Element' type.
    */
   @HostBinding('style.color') color: string;
-  @HostBinding('style.background-color') background: string;
+  @HostBinding('style.background') background: string;
 
-  @HostBinding('style.background') image: string;
   @HostBinding('style.background-size') imageSize: string;
 
   constructor(private local: LocalStoreService) {}
@@ -27,7 +26,7 @@ export class ElementComponent implements OnInit {
     if (this.payload.image) {
       this.local.getValue(this.payload.image)
         .then(image => {
-          this.image = `url(${image}) no-repeat`;
+          this.background = `url(${image}) no-repeat`;
           this.imageSize = 'cover';
         });
     }
